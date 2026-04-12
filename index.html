@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiore de Enero | Restaurante</title>
+    <meta name="description" content="vCard Interactiva de Fiore de Enero. Descubre nuestro menú, eventos, talleres y reserva tu mesa.">
+    
+    <!-- Open Graph / WhatsApp Preview Meta Tags -->
+    <meta property="og:title" content="Fiore de Enero | Restaurante">
+    <meta property="og:description" content="Cucina Tradizionale Italiana. Descubre nuestra carta, próximos eventos y más.">
+    <meta property="og:image" itemprop="image" content="https://fiore-de-enero.vercel.app/Assets/Portada.png">
+    <meta property="og:url" content="https://fiore-de-enero.vercel.app/">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="style.css?v=4">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Intro.js for Tour -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+</head>
+<body>
+    <!-- Intro Splash -->
+    <div id="intro-splash" class="intro-splash">
+        <div class="splash-content">
+            <img src="Assets/Logo.jpg" alt="Fiore de Enero" class="splash-logo">
+            <h1 class="splash-title">Fiore de Enero</h1>
+            <p class="splash-subtitle">Cucina Tradizionale Italiana</p>
+        </div>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="bg-shape circle-1"></div>
+    <div class="bg-shape circle-2"></div>
+
+    <main class="vcard-container">
+        <!-- Portada -->
+        <div class="cover-photo fade-in"></div>
+        
+        <div class="content-wrapper">
+            <!-- Header / Identity -->
+            <header class="header-section fade-in">
+                <div class="profile-picture">
+                    <img src="Assets/Logo.jpg" alt="Fiore de Enero Logo" class="profile-img" onerror="this.src='https://images.unsplash.com/photo-1595295333158-4742f28fbd85?auto=format&fit=crop&q=80&w=200'">
+                </div>
+                
+                <div class="brand-logo">
+                    <h1>Fiore de Enero</h1>
+                    <p class="subtitle">Cucina Tradizionale Italiana</p>
+                </div>
+            
+            <div class="social-links">
+                <a href="https://www.instagram.com/fiore_de_enero" target="_blank" class="social-btn glass-effect" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.tiktok.com/@fiore_de_enero" target="_blank" class="social-btn glass-effect" aria-label="TikTok">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs fade-in" style="animation-delay: 0.1s;">
+            <button class="tab-btn active" onclick="showSection('menu')">Menú</button>
+            <button class="tab-btn" onclick="showSection('eventos')">Eventos</button>
+            <button class="tab-btn" onclick="showSection('talleres')">Talleres</button>
+            <button class="tab-btn" onclick="showSection('recompensas')">Fidelidad <i class="fas fa-gem" style="margin-left:4px; font-size:0.8rem;"></i></button>
+        </nav>
+
+        <!-- Content Sections -->
+        <div class="content-container fade-in" style="animation-delay: 0.2s;">
+            <!-- Menu Section -->
+            <section id="menu" class="content-section active">
+                <div class="section-header">
+                    <h2>Nuestra Carta</h2>
+                    <p>Pizza, pasta, vino y café de especialidad</p>
+                </div>
+                <div class="menu-tabs-container">
+                    <button class="menu-subtab active" onclick="switchMenuTab('comida', this)">Pizzas & Pastas</button>
+                    <button class="menu-subtab" onclick="switchMenuTab('bebidas', this)">Bebidas & Postres</button>
+                </div>
+
+                <div id="tab-comida" class="menu-tab-content">
+                    <div class="cenit-profile glass-effect">
+                        <h4>🍕 La Vera Pizza Napoletana</h4>
+                        <p><em>Tradición napolitana auténtica. Harina italiana de alta calidad, maduración lenta de 48 horas. Cocción a 450° por 90 segundos para un sabor único.</em></p>
+                    </div>
+                    <!-- Populated by JS -->
+                </div>
+
+                <div id="tab-bebidas" class="menu-tab-content" style="display: none;">
+                    <div class="cenit-profile glass-effect">
+                        <h4>☕ Perfil: NEGRO Cenit</h4>
+                        <p><strong>Origen:</strong> Tlaltetela Veracruz | <strong>Altura:</strong> 1500 msnm</p>
+                        <p><strong>Proceso:</strong> Honey | <strong>Variedad:</strong> Bourbon</p>
+                        <p style="margin-top: 0.5rem;"><em>Dulzor alto, acidez brillante y balanceada. Cuerpo cremoso con notas afrutadas (cereza, ciruela), achocolatadas y a caramelo.</em></p>
+                    </div>
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Eventos Section -->
+            <section id="eventos" class="content-section">
+                <div class="section-header">
+                    <h2>Cartelera</h2>
+                    <p>Próximos eventos y música en vivo</p>
+                </div>
+                <div class="card glass-effect event-card">
+                    <div class="event-date">
+                        <span class="day"><i class="far fa-calendar-alt"></i> PRÓXIMAMENTE</span>
+                    </div>
+                    <div class="event-details" style="text-align: left; margin-top: 1rem;">
+                        <h3 style="color: var(--secondary-color); font-size: 1.4rem; font-family: var(--font-heading); margin-bottom: 0.3rem;">Noche de Jazz & Vino</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.2rem; line-height: 1.4;">Disfruta de una velada romántica e íntima con música en vivo y un maridaje de nuestra cava exclusiva bajo luces cálidas.</p>
+                        <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--accent-color);">
+                            <span><i class="far fa-calendar" style="margin-right: 4px;"></i> Próximo Viernes</span>
+                            <span><i class="far fa-clock" style="margin-right: 4px;"></i> 20:30 hrs</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Talleres Section -->
+            <section id="talleres" class="content-section">
+                <div class="section-header">
+                    <h2>Actividades Especiales</h2>
+                    <p>Aprende y disfruta con nosotros</p>
+                </div>
+                <!-- 
+                    =============================================
+                    INSTRUCCIONES PARA ACTUALIZAR LOS TALLERES:
+                    1. Abre Canva y edita tu diseño de talleres.
+                    2. Da clic en "Compartir" > "Más" > "Incorporar".
+                    3. "Actualizar", copia el <iframe> que aparece.
+                    4. Pega el 'src="..."' del iframe copiado aquí abajo,
+                       reemplazando el src actual.
+                    =============================================
+                -->
+                <div class="canva-wrapper glass-effect">
+                    <div class="canva-header">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Talleres del Mes</span>
+                    </div>
+                    <div class="canva-frame-container">
+                        <iframe
+                            id="canva-talleres"
+                            src="https://www.canva.com/design/DAHEuJvO_n0/ogEJsneQvppjsfG6w6G7IA/view?embed"
+                            loading="lazy"
+                            allowfullscreen
+                            allow="fullscreen"
+                            title="Talleres Fiore de Enero"
+                        ></iframe>
+                    </div>
+                    <a href="https://wa.me/522293706307?text=Hola,%20me%20gustar%C3%ADa%20obtener%20informaci%C3%B3n%20sobre%20los%20talleres%20de%20Fiore%20de%20Enero."
+                        target="_blank" class="secondary-btn" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.2rem; text-decoration: none;">
+                        <i class="fab fa-whatsapp"></i> Registrarme en un taller
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Rewards Section (Tarjeta de Fidelidad) -->
+            <section id="recompensas" class="content-section">
+                <div class="section-header">
+                    <h2>Club Fiore</h2>
+                    <p>Acumula 7 sellos para una bebida y 10 para un descuento en tu compra</p>
+                </div>
+                
+                <div class="card glass-effect rewards-card">
+                    <div class="stamps-container" id="stamps-board">
+                        <!-- Stamps 1 to 10 -->
+                        <div class="stamp-slot" data-index="1"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="2"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="3"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="4"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="5"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="6"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot final-slot" data-index="7"><i class="fas fa-coffee placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="8"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot" data-index="9"><i class="fas fa-star placeholder-star"></i></div>
+                        <div class="stamp-slot final-slot" data-index="10"><i class="fas fa-gift placeholder-star"></i></div>
+                    </div>
+                    
+                    <div class="rewards-status">
+                        <p id="rewards-text">Tienes <strong id="stamp-count" style="color: var(--secondary-color);">0</strong> sellos acumulados</p>
+                    </div>
+                    
+                    <div class="admin-section" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed rgba(255,255,255,0.1);">
+                        <p style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Solo para Staff</p>
+                        <div class="pin-input-group" style="display: flex; gap: 0.5rem; justify-content: center; position: relative;">
+                            <input type="password" id="admin-pin" placeholder="PIN" maxlength="4" style="width: 80px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; font-family: var(--font-body); padding: 0.5rem;">
+                            <button id="add-stamp-btn" class="secondary-btn" style="margin: 0; padding: 0.5rem 1rem;">Sellar</button>
+                            <button id="reset-stamps-btn" class="secondary-btn" title="Reiniciar Tarjeta a 0" style="margin: 0; padding: 0.5rem 1rem; border-color: rgba(255, 60, 60, 0.4); color: #ff6b6b;"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                        <p id="pin-error" style="color: #ff6b6b; font-size: 0.8rem; margin-top: 0.5rem; display: none;">PIN incorrecto</p>
+                        <p id="reward-success" style="color: var(--secondary-color); font-size: 0.9rem; font-weight: 600; margin-top: 1rem; display: none; animation: glowPulse 2s infinite alternate;">¡Felicidades! Tienes tu recompensa ganada 🎉</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Social Proof / Reviews -->
+        <section class="reviews-section fade-in" style="animation-delay: 0.3s;">
+            <h2 class="section-title">Lo que dicen nuestros comensales</h2>
+            <div class="reviews-carousel">
+                <!-- Javascript will populate this -->
+            </div>
+            <a href="https://maps.google.com" target="_blank" class="secondary-btn" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem;">
+                <i class="far fa-edit"></i> Escribir una reseña
+            </a>
+        </section>
+
+        <!-- Location -->
+        <section class="location-section fade-in" style="animation-delay: 0.4s;">
+            <div class="card glass-effect location-card">
+                <div class="map-icon-container">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">Visítanos</h3>
+                    <p style="font-size: 0.9rem; opacity: 0.8; line-height: 1.4; margin-bottom: 0.5rem; margin-top: 0.3rem;">Principal 1622, Benito Juárez Barron<br>54469 Cdad. Nicolás Romero, Méx.</p>
+                    <a href="https://maps.app.goo.gl/7Btba92HnQcmpUHfA" target="_blank" class="location-link">Abrir en Google Maps <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spacer for FAB -->
+        <div class="fab-spacer"></div>
+        </div> <!-- Cierra content-wrapper -->
+    </main>
+
+    <!-- Floating Action Button -->
+    <a href="https://wa.me/522293706307" target="_blank" class="fab-whatsapp pulse-animation" aria-label="Agendar o Reservar">
+        <i class="fab fa-whatsapp"></i>
+        <span class="fab-text">Reservar</span>
+    </a>
+
+    <!-- Floating Cart Banner -->
+    <div id="floating-cart" class="floating-cart" onclick="openCartModal()">
+        <div class="cart-info">
+            <i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span> items
+        </div>
+        <div class="cart-action">
+            Ver Comanda • $<span id="cart-total-float">0.00</span>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="cart-modal">
+        <div class="cart-modal-content">
+            <div class="modal-header">
+                <h3>Tu Comanda</h3>
+                <button class="close-modal" onclick="closeCartModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-items" id="modal-items-container">
+                <!-- Injected via JS -->
+            </div>
+            <div class="cart-total-line">
+                <span>Total Estimado:</span>
+                <span>$<span id="modal-total">0.00</span></span>
+            </div>
+            <button class="btn-whatsapp-order" onclick="sendOrderToWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Enviar Comanda a Staff
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Notifications (Toast) -->
+    <div id="toast-container" class="toast-hidden">
+        <span id="toast-icon"></span>
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Ambient Audio Removed -->
+
+
+    <!-- Tour Button (floating, discreet) -->
+    <button id="start-tour" class="tour-btn" aria-label="Iniciar Tour">
+        <i class="fas fa-question-circle"></i>
+    </button>
+
+    <script src="script.js?v=5"></script>
+
+<!-- TREZE SIGNATURE -->
+<a href="https://wa.me/522214092478?text=Hola%20Treze%20Labs%2C%20me%20gustar%C3%ADa%20solicitar%20el%20desarrollo%20de%20un%20sistema%20profesional." target="_blank" style="display: flex; justify-content: center; text-decoration: none; margin-top: 24px; margin-bottom: 24px; opacity: 0.6; transition: opacity 0.3s ease;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+    <img src="assets/footer.png" alt="Ingeniería Digital por Treze Labs" style="max-height: 38px; object-fit: contain; filter: brightness(0);">
+</a>
+
+</body>
+</html>
