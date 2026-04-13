@@ -1,3 +1,20 @@
+/* ========================
+   GLOBAL MOBILE SETTINGS
+   ======================== */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+a, button, input, select, textarea, .nav-tabs, .glass-card {
+    outline: none !important;
+}
+button, a, .tab-btn {
+    user-select: none;
+    -webkit-user-select: none;
+}
+input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS auto-zoom on inputs */
+}
+
 :root {
     --primary-color: #2A3B2C; /* Base Green from Logo */
     --secondary-color: #D1CA83; /* Brighter, vibrant Gold/Olive */
@@ -106,34 +123,36 @@ body {
 .bg-shape {
     position: fixed;
     border-radius: 50%;
-    filter: blur(80px);
+    filter: blur(60px); /* Opimized blur intensity */
     z-index: -1;
-    opacity: 0.4;
+    opacity: 0.35;
+    pointer-events: none;
+    will-change: transform;
 }
 
 .circle-1 {
     width: 400px;
     height: 400px;
-    background: #8F2739; /* More vibrant Wine Red */
+    background: #8F2739;
     top: -150px;
     left: -150px;
-    animation: float 7s ease-in-out infinite alternate;
-    opacity: 0.5; /* Brighter */
+    animation: float 8s ease-in-out infinite alternate;
+    transform: translateZ(0); /* Force Hardware Acceleration */
 }
 
 .circle-2 {
     width: 320px;
     height: 320px;
-    background: #8A5B31; /* More vibrant golden coffee */
+    background: #8A5B31;
     bottom: -50px;
     right: -100px;
-    animation: float 9s ease-in-out infinite alternate-reverse;
-    opacity: 0.55; /* Brighter */
+    animation: float 10s ease-in-out infinite alternate-reverse;
+    transform: translateZ(0); /* Force Hardware Acceleration */
 }
 
 @keyframes float {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(30px) scale(1.1); }
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, 25px, 0); } /* Avoid scaling blurred objects */
 }
 
 /* Typography */
@@ -256,8 +275,8 @@ h1, h2, h3 {
 /* Glassmorphism utility */
 .glass-effect {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255, 255, 255, 0.12); /* Brighter borders to pop */
     border-top: 1px solid rgba(255, 255, 255, 0.25); /* Light catching edge */
     border-radius: 16px;
@@ -326,8 +345,8 @@ h1, h2, h3 {
     position: sticky;
     top: 1rem;
     z-index: 10;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
@@ -807,8 +826,8 @@ input:focus {
     border-radius: 16px;
     margin-bottom: 1rem;
     overflow: hidden;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .accordion-header {
@@ -1152,8 +1171,8 @@ input:focus {
     color: var(--text-light) !important;
     font-family: var(--font-body) !important;
     max-width: 340px !important;
-    backdrop-filter: blur(25px) !important;
-    -webkit-backdrop-filter: blur(25px) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
     z-index: 1000000 !important;
 }
 
