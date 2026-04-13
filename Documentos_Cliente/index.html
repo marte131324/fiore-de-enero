@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo de Entrega | Fiore de Enero</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;700;900&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #050a0f; color:#fff; padding-top: 40px; padding-bottom: 60px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
+        
+        .badge { background: #0e86b0; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; display: inline-block; }
+        .hero { text-align: center; margin-bottom: 40px; }
+        .hero h1 { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; margin-bottom: 5px; color: #fff; }
+        .hero p { font-size: 0.85rem; color: #94a3b8; }
+
+        .btn-live { display: block; background: #22d3ee; color: #050a0f; text-align: center; padding: 18px; border-radius: 12px; font-weight: 800; font-family: 'Outfit'; font-size: 1.1rem; text-transform: uppercase; text-decoration: none; margin-bottom: 30px; letter-spacing: 1px; transition: transform 0.2s; }
+        .btn-live:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(34, 211, 238, 0.2); }
+        .btn-admin { display: block; background: #3A4A38; color: #E5D5C1; text-align: center; padding: 18px; border-radius: 12px; font-weight: 800; font-family: 'Outfit'; font-size: 1.1rem; text-transform: uppercase; text-decoration: none; margin-bottom: 30px; letter-spacing: 1px; transition: transform 0.2s; border: 1px solid #dfb873; }
+        .btn-admin:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(229, 213, 193, 0.1); }
+
+        .qr-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 30px; text-align: center; margin-bottom: 30px; }
+        .qr-card p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 20px; }
+        .qr-card img { width: 180px; height: 180px; border-radius: 10px; border: 4px solid #fff; box-shadow: 0 8px 30px rgba(14,134,176,0.3); }
+
+        h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; margin: 40px 0 20px; color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+
+        .doc-card { display: flex; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; margin-bottom: 15px; align-items: center; gap: 20px; }
+        .doc-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .icon-1 { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .icon-2 { background: rgba(34, 211, 238, 0.1); color: #22d3ee; }
+        .icon-3 { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .doc-text { flex: 1; }
+        .doc-text h3 { font-size: 1rem; margin-bottom: 4px; color: #fff; }
+        .doc-text p { font-size: 0.75rem; color: #94a3b8; }
+        .doc-btn { background: rgba(255,255,255,0.1); color: #fff; padding: 8px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 10px; }
+        .doc-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .timeline { margin-top: 30px; border-radius: 12px; background: rgba(255,255,255,0.02); padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
+        .tl-item { display: flex; gap: 15px; margin-bottom: 25px; position: relative; }
+        .tl-item:not(:last-child)::after { content: ''; position: absolute; left: 6px; top: 20px; bottom: -20px; width: 2px; background: rgba(255,255,255,0.1); }
+        .tl-dot { width: 14px; height: 14px; border-radius: 50%; margin-top: 4px; z-index: 2; position: relative; }
+        .tl-dot.done { background: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+        .tl-dot.pending { background: #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, 0.5); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
+        .tl-text { flex: 1; }
+        .tl-text strong { display: block; font-size: 0.95rem; margin-bottom: 3px; color: #f1f5f9; }
+        .tl-text span { font-size: 0.8rem; color: #cbd5e1; }
+
+        .footer { text-align: center; margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; }
+        .footer p { font-size: 0.7rem; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+        .wa-link { display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: 600; text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="hero">
+            <div class="badge">Bóveda de Entrega Oficial</div>
+            <h1>Fiore de Enero</h1>
+            <p>Ecosistema Gastronómico Digital V 1.0<br>Desarrollado por <strong>Treze Labs & Christian Belmont</strong></p>
+        </div>
+
+        <a href="https://fiore-de-enero.vercel.app/" target="_blank" class="btn-live">🔗 Abrir VCard Pública</a>
+        
+        <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn-admin">⚙️ Acceder a Panel Maestro</a>
+
+        <div class="qr-card">
+            <p><strong>QR Universal</strong><br>Escanea y comparte la VCard con clientes.</p>
+            <!-- Auto gen QR -->
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=042d3d&format=svg" alt="QR Code Fiore">
+        </div>
+
+        <h2>Documentación de Sistema</h2>
+
+        <div class="doc-card">
+            <div class="doc-icon icon-1">📋</div>
+            <div class="doc-text">
+                <h3>01. Requerimientos Base</h3>
+                <p>Lista de materiales gráficos y conectores básicos del local.</p>
+                <a href="01_Requerimientos_Onboarding.html" target="_blank" class="doc-btn">Abrir Documento</a>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-icon icon-2">📖</div>
+            <div class="doc-text">
+                <h3>02. Guía de Operación</h3>
+                <p>Manual definitivo del admin dashboard y manejo de carta sin intermediarios.</p>
+                <a href="02_Guia_de_Uso_Detallada.html" target="_blank" class="doc-btn">Abrir Documento</a>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-icon icon-3">⚙️</div>
+            <div class="doc-text">
+                <h3>03. Infraestructura</h3>
+                <p>Detalles lógicos de arquitectura, webhook, servers y backups.</p>
+                <a href="03_Guia_de_Infraestructura.html" target="_blank" class="doc-btn">Abrir Documento</a>
+            </div>
+        </div>
+
+        <h2>Status del Proyecto</h2>
+        
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-dot done"></div>
+                <div class="tl-text">
+                    <strong>Programación UX/UI</strong>
+                    <span>Construcción de la interfaz "Progressive Web App" en código nativo.</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot done"></div>
+                <div class="tl-text">
+                    <strong>Integración Back-end "Cero Costo"</strong>
+                    <span>Arquitectura Google Apps Script y Panel Maestro funcionando en vivo.</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot done"></div>
+                <div class="tl-text">
+                    <strong>Despliegue General Vercel</strong>
+                    <span>URL pública enlazada a CDN global sin límite mensual de transiciones.</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot done"></div>
+                <div class="tl-text">
+                    <strong>Entrega Oficial de Bóveda</strong>
+                    <span>Transmisión de archivos, manuales y sistema al cliente. Proyecto Concluido.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Christian Belmont — Sistemas Digitales Premium</p>
+            <a href="https://wa.me/522214092478?text=Hola%20Christian%2C%20recib%C3%AD%20la%20entrega%20de%20la%20VCard%20de%20Fiore." class="wa-link">
+                📱 Chat de Soporte Técnico
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

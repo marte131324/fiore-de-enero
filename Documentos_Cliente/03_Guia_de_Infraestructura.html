@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guía de Infraestructura | Fiore de Enero</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        @page { size: letter; margin: 2cm 2.5cm; }
+        body { font-family:'Inter',sans-serif; color:#1e293b; line-height:1.7; padding:40px 50px; max-width:850px; margin:0 auto; }
+        .header { border-bottom:3px solid #0e86b0; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
+        .header h1 { font-size:1.6rem; font-weight:800; color:#042d3d; }
+        .header .sub { font-size:0.8rem; color:#64748b; }
+        .badge { display:inline-block; background:#0e86b0; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom: 5px; }
+        h2 { font-size:1.15rem; font-weight:700; color:#0e86b0; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+        h3 { font-size:0.95rem; font-weight:700; color:#334155; margin:18px 0 8px; }
+        p, li { font-size:0.88rem; color:#475569; }
+        ul, ol { padding-left:22px; margin:8px 0; }
+        li { margin:6px 0; }
+        .section-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px 24px; margin:16px 0; page-break-inside:avoid; }
+        .section-card h3 { margin-top:0; color:#0e86b0; }
+        .tree { font-family:'Courier New', monospace; background:#0f172a; color:#94a3b8; padding:20px 24px; border-radius:12px; font-size:0.82rem; line-height:1.9; margin:16px 0; }
+        .tree .folder { color:#22d3ee; font-weight:700; }
+        .tree .file { color:#a5f3fc; }
+        .tree .desc { color:#64748b; font-style:italic; }
+        .tree .critical { color:#f97316; font-weight:700; }
+        .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
+        .note { background:#eff6ff; border-left:4px solid #0e86b0; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        table { width:100%; border-collapse:collapse; margin:14px 0; font-size:0.84rem; }
+        th { background:#0e86b0; color:white; padding:10px 14px; text-align:left; font-weight:600; }
+        td { padding:10px 14px; border-bottom:1px solid #e2e8f0; }
+        tr:nth-child(even) td { background:#f8fafc; }
+        .footer { margin-top:40px; padding-top:16px; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; }
+        @media print { body { padding:0; } .section-card, .tree { break-inside:avoid; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <span class="badge">Documento 3 de 3</span>
+            <h1>⚙️ Infraestructura y Arquitectura</h1>
+            <div class="sub">Fiore de Enero — Detalles Técnicos del despliegue</div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-size:0.75rem; color:#94a3b8;">Treze Labs - Sistemas Digitales</div>
+            <div style="font-size:0.75rem; color:#94a3b8;">Abril 2026</div>
+        </div>
+    </div>
+
+    <p>La VCard ha pasado de ser un render HTML simple, a una Arquitectura completa "Desacoplada" (Headless Front-end comunicándose con Google Apps Script).</p>
+
+    <div class="section-card">
+        <h3>Estructura del Proyecto Entregable</h3>
+        <p>Tu proyecto cuenta con los siguientes componentes principales compilados y minificados para máximo rendimiento:</p>
+        
+        <div class="tree">
+            <div><span class="folder">fiore-de-enero/</span> <span class="desc"># Proyecto Raíz Desplegado</span></div>
+            <div style="margin-left: 20px;"><span class="file">index.html</span> <span class="desc"># Core principal público</span></div>
+            <div style="margin-left: 20px;"><span class="file">style.css</span> <span class="desc"># Estilos con CSS variables Dark/Gold</span></div>
+            <div style="margin-left: 20px;"><span class="file">script.js</span> <span class="desc"># Motor de UX e iterador del catálogo</span></div>
+            <div style="margin-left: 20px;"><span class="folder">admin/</span> <span class="critical"># Panel Privado (NO SE DEBE RENOMBRAR)</span></div>
+            <div style="margin-left: 40px;"><span class="file">index.html</span> <span class="desc"># Dashboard administrativo UI</span></div>
+            <div style="margin-left: 40px;"><span class="file">app.js</span> <span class="desc"># Controlador fetch PUT/POST para sheets</span></div>
+            <div style="margin-left: 20px;"><span class="file">README_DATABASE_SETUP.md</span> <span class="desc"># Backend Source (Script)</span></div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h3>Hosting, Costos Cero y Arquitectura Severless</h3>
+        <ul>
+            <li><strong>Frontend CND:</strong> Desplegado mediante Github y la arquitectura Global Edge de Vercel. <em>(Sin mantenimiento de Hosting, optimización inmediata 99.9% up-time)</em>.</li>
+            <li><strong>Base de Datos y Webhook (Backend):</strong> El catálogo, descripciones de platillos y configuración es orquestada en Google Apps Script a través de Google Sheets, la conexión se realiza gracias a una petición <code>HTTP(S) async-fetch no-cors</code>. Coste y límite mensual de despliegues en servidores back-end convencionales eludidos estratégicamente.</li>
+            <li><strong>Alojamiento Multimedia:</strong> Gráficos estáticos integrados; banners de promoción interactivos o Canva iframes optimizados.</li>
+        </ul>
+    </div>
+
+    <div class="note">
+        El panel administrativo en la carpeta <code>/admin</code> permite editar productos en la VCard. La Bóveda Google Sheet funge solo como receptor.
+    </div>
+
+    <div class="footer">
+        FIORE DE ENERO — Documentación de Infraestructura &copy; 2026 Treze Labs & Christian Belmont<br>
+        Este documento es confidencial y exclusivo para el cliente.
+    </div>
+
+</body>
+</html>
