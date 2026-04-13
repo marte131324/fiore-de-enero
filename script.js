@@ -487,6 +487,10 @@ async function loadDynamicData() {
                     document.getElementById('promo-title-display').innerText = data.config.promoTitle || '¡Promoción Especial!';
                     document.getElementById('promo-desc-display').innerText = data.config.promoDesc || '';
                     promoModal.style.display = 'flex';
+                    // Trigger reflow for animation
+                    void promoModal.offsetWidth;
+                    promoModal.style.opacity = '1';
+                    promoModal.querySelector('.modal-content').style.transform = 'scale(1)';
                 }
             }
 
