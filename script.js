@@ -442,6 +442,7 @@ let menuData = {
                 { id: "d4", name: "Postre de temporada", price: 0, desc: "Pregunta por nuestro postre semanal." }
             ]
         }
+    ]
 };
 
 async function loadDynamicData() {
