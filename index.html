@@ -55,12 +55,7 @@
 
     <main class="vcard-container">
         <!-- Global Banner (Dynamic) -->
-        <div id="global-banner" style="display:none; position: relative; background: linear-gradient(90deg, #bfa054, #DFD18D, #bfa054); background-size: 200% auto; animation: shineGold 3s linear infinite; color: #1a251c; text-align: center; padding: 12px 20px; font-weight: 700; font-family: var(--font-heading); text-transform: uppercase; font-size: 0.95rem; letter-spacing: 2px; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.4); border-top-left-radius: 20px; border-top-right-radius: 20px;"></div>
-        <style>
-            @keyframes shineGold {
-                to { background-position: 200% center; }
-            }
-        </style>
+        <div id="global-banner" style="display:none; position: relative; background: rgba(10, 15, 12, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--secondary-color); text-align: center; padding: 10px 20px; font-weight: 500; font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 1.5px; z-index: 100; border-bottom: 1px solid rgba(209, 202, 131, 0.15);"></div>
 
         <!-- Portada -->
         <div class="cover-photo fade-in"></div>
@@ -75,6 +70,12 @@
                 <div class="brand-logo">
                     <h1>Fiore de Enero</h1>
                     <p class="subtitle">Cucina Tradizionale Italiana</p>
+                    
+                    <!-- Status Badge -->
+                    <div id="store-status-badge" style="display:inline-flex; align-items:center; gap:6px; margin-top:8px; padding: 4px 10px; border-radius: 20px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-family: var(--font-body); text-transform: uppercase; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+                        <div id="store-status-dot" style="width:6px; height:6px; border-radius:50%; background:#4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);"></div>
+                        <span id="store-status-text">Abierto Hoy</span>
+                    </div>
                 </div>
             
             <div class="social-links">
@@ -324,20 +325,20 @@
 </div>
 
 <!-- Promo Modal -->
-<div id="promo-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(10, 15, 12, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 999999; align-items: center; justify-content: center; padding: 20px; opacity: 0;">
-    <div class="modal-content glass-effect" style="max-width: 380px; width: 100%; text-align: center; position: relative; padding: 2.5rem 2rem; border-top: 1px solid rgba(223, 209, 141, 0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.6); transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+<div id="promo-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(5, 8, 6, 0.92); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 999999; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.4s ease;">
+    <div class="modal-content" style="max-width: 340px; width: 100%; text-align: center; position: relative; padding: 2.5rem 1.8rem; border-radius: 12px; background: rgba(26, 37, 28, 0.8); border: 1px solid rgba(209, 202, 131, 0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.8); transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         
-        <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--card-bg), var(--primary-color)); display: flex; align-items: center; justify-content: center; border: 1px solid var(--secondary-color); box-shadow: 0 0 15px rgba(209, 202, 131, 0.3);">
-            <i class="fas fa-gift" style="color: var(--secondary-color); font-size: 1.2rem;"></i>
+        <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); padding: 8px 15px; border-radius: 20px; background: var(--secondary-color); color: #1a251c; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <i class="fas fa-star" style="margin-right:4px;"></i> Especial
         </div>
 
-        <button onclick="closePromoModal()" style="position: absolute; right: 15px; top: 15px; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; padding: 5px;"><i class="fas fa-times"></i></button>
+        <button onclick="closePromoModal()" style="position: absolute; right: 10px; top: 10px; background: none; border: none; color: rgba(255,255,255,0.4); font-size: 1.2rem; cursor: pointer; padding: 5px;"><i class="fas fa-times"></i></button>
 
-        <h2 id="promo-title-display" style="color: var(--secondary-color); margin-top: 0.5rem; margin-bottom: 1rem; font-family: var(--font-heading); font-size: 1.6rem; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></h2>
+        <h2 id="promo-title-display" style="color: #ffffff; margin-top: 1rem; margin-bottom: 0.8rem; font-family: var(--font-body); font-weight: 600; font-size: 1.2rem; line-height: 1.3; letter-spacing: 0.5px;"></h2>
         
-        <p id="promo-desc-display" style="opacity: 0.85; line-height: 1.6; font-size: 0.95rem; margin-bottom: 2rem; color: #e2e8f0;"></p>
+        <p id="promo-desc-display" style="opacity: 0.7; line-height: 1.5; font-size: 0.9rem; margin-bottom: 2rem; color: #ffffff;"></p>
         
-        <button onclick="closePromoModal()" class="secondary-btn" style="width: 100%; box-shadow: 0 4px 15px rgba(209, 202, 131, 0.2);">¡Aprovechar Ahora!</button>
+        <button onclick="closePromoModal()" class="secondary-btn" style="width: 100%; padding: 12px; font-size: 0.9rem; border-radius: 8px; letter-spacing: 1px;">Entendido</button>
     </div>
 </div>
 
@@ -345,8 +346,8 @@
     function closePromoModal() {
         const modal = document.getElementById('promo-modal');
         modal.style.opacity = '0';
-        modal.querySelector('.modal-content').style.transform = 'scale(0.95)';
-        setTimeout(() => modal.style.display = 'none', 300);
+        modal.querySelector('.modal-content').style.transform = 'translateY(20px)';
+        setTimeout(() => modal.style.display = 'none', 400);
     }
 </script>
 

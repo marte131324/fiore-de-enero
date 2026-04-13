@@ -495,13 +495,19 @@ async function loadDynamicData() {
             }
 
             // Tienda Status
-            if(data.config.tiendaStatus && data.config.tiendaStatus !== 'ACEPTANDO PEDIDOS') {
-                const fabBtn = document.querySelector('.fab-whatsapp');
-                if(fabBtn) {
-                    fabBtn.innerHTML = '<i class="fas fa-lock"></i> CERRADO TEMPORALMENTE';
-                    fabBtn.style.background = '#8F2739'; // Red wine color
-                    fabBtn.style.pointerEvents = 'none';
-                    fabBtn.classList.remove('pulse-animation');
+            if(data.config.tiendaStatus) {
+                const statusText = document.getElementById('store-status-text');
+                const statusDot = document.getElementById('store-status-dot');
+                if(statusText && statusDot) {
+                    if(data.config.tiendaStatus === 'ACEPTANDO PEDIDOS') {
+                        statusText.innerText = 'Abierto Hoy';
+                        statusDot.style.background = '#4ade80';
+                        statusDot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
+                    } else {
+                        statusText.innerText = 'Cerrado Temporalmente';
+                        statusDot.style.background = '#ef4444';
+                        statusDot.style.boxShadow = '0 0 8px rgba(239, 68, 68, 0.6)';
+                    }
                 }
             }
         }
