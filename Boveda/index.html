@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bóveda | Fiore de Enero — Treze Labs</title>
-    <meta name="description" content="Portal de entrega oficial — Fiore de Enero. Ecosistema Digital Gastronómico por Treze Labs.">
+    <meta name="description" content="Portal de entrega oficial — Fiore de Enero por Treze Labs.">
     <link rel="icon" type="image/png" href="../Assets/Logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,93 +14,101 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0a;
-            color: #fafafa;
+            background: #06060a;
+            color: #f0f0f5;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* ===== ANIMATED PARTICLE CANVAS ===== */
-        canvas#particles { position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+        /* ===== 3D PARTICLE MESH ===== */
+        canvas#mesh { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; }
+
+        /* Ambient glow overlays */
+        .glow-top { position:fixed; top:-200px; left:50%; transform:translateX(-50%); width:800px; height:600px; background:radial-gradient(ellipse, rgba(56,189,248,0.07) 0%, transparent 70%); z-index:0; pointer-events:none; }
+        .glow-bottom { position:fixed; bottom:-300px; right:-200px; width:700px; height:700px; background:radial-gradient(ellipse, rgba(139,92,246,0.05) 0%, transparent 70%); z-index:0; pointer-events:none; }
 
         .container { max-width: 520px; margin: 0 auto; padding: 60px 24px 80px; position: relative; z-index: 1; }
 
-        /* ===== TREZE LABS HEADER ===== */
+        /* ===== TREZE HEADER ===== */
         .treze-header { text-align: center; margin-bottom: 40px; }
-        .treze-header img { height: 20px; filter: brightness(0) invert(1); opacity: 0.3; margin-bottom: 6px; }
-        .treze-header span { display: block; font-family: 'Outfit'; font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.25); font-weight: 500; }
+        .treze-header img { height: 20px; filter: brightness(0) invert(1); opacity: 0.35; margin-bottom: 6px; }
+        .treze-header span { display:block; font-family:'Outfit'; font-size:0.55rem; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.2); font-weight:500; }
 
         /* ===== HERO ===== */
-        .hero { text-align: center; margin-bottom: 48px; }
-        .pill { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 6px 18px; border-radius: 100px; font-family: 'Outfit'; font-size: 0.7rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 24px; backdrop-filter: blur(10px); }
-        .hero h1 { font-family: 'Outfit'; font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; line-height: 1.05; background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
-        .hero p { font-size: 0.9rem; color: rgba(255,255,255,0.4); font-weight: 300; }
-        .hero .ver { font-family: 'Outfit'; font-size: 0.6rem; color: rgba(255,255,255,0.2); margin-top: 12px; letter-spacing: 1px; font-weight: 400; }
+        .hero { text-align:center; margin-bottom:48px; }
+        .pill { display:inline-block; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.15); padding:6px 20px; border-radius:100px; font-family:'Outfit'; font-size:0.7rem; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:rgba(56,189,248,0.8); margin-bottom:24px; backdrop-filter:blur(10px); }
+        .hero h1 { font-family:'Outfit'; font-size:2.8rem; font-weight:800; letter-spacing:-1px; line-height:1.05; color:#fff; margin-bottom:8px; text-shadow: 0 0 80px rgba(56,189,248,0.15); }
+        .hero p { font-size:0.9rem; color:rgba(255,255,255,0.45); font-weight:300; }
+        .hero .ver { font-family:'Outfit'; font-size:0.6rem; color:rgba(255,255,255,0.2); margin-top:12px; letter-spacing:1px; }
 
         /* ===== BUTTONS ===== */
-        .btn { display: block; text-align: center; padding: 16px 20px; border-radius: 14px; font-family: 'Outfit'; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: all 0.3s cubic-bezier(.4,0,.2,1); margin-bottom: 10px; letter-spacing: 0.3px; }
-        .btn-primary { background: #fff; color: #0a0a0a; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,255,255,0.12); }
-        .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.08); }
-        .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
-        .btn-canva { background: rgba(138,75,230,0.08); color: rgba(138,75,230,0.9); border: 1px solid rgba(138,75,230,0.15); margin-bottom: 40px; }
-        .btn-canva:hover { background: rgba(138,75,230,0.15); border-color: rgba(138,75,230,0.3); transform: translateY(-1px); }
-        .btn i { margin-right: 6px; }
+        .btn { display:block; text-align:center; padding:16px 20px; border-radius:14px; font-family:'Outfit'; font-size:0.9rem; font-weight:600; text-decoration:none; transition:all 0.3s cubic-bezier(.4,0,.2,1); margin-bottom:10px; letter-spacing:0.3px; position:relative; overflow:hidden; }
+        .btn-primary { background:linear-gradient(135deg, #38bdf8, #818cf8); color:#06060a; box-shadow: 0 0 30px rgba(56,189,248,0.15); }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow: 0 8px 40px rgba(56,189,248,0.25); }
+        .btn-secondary { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.08); }
+        .btn-secondary:hover { background:rgba(255,255,255,0.06); border-color:rgba(56,189,248,0.2); transform:translateY(-1px); box-shadow: 0 0 20px rgba(56,189,248,0.05); }
+        .btn-canva { background:rgba(138,75,230,0.06); color:rgba(167,120,255,0.9); border:1px solid rgba(138,75,230,0.12); margin-bottom:40px; }
+        .btn-canva:hover { background:rgba(138,75,230,0.12); border-color:rgba(138,75,230,0.25); transform:translateY(-1px); }
 
         /* ===== QR ===== */
-        .qr-section { text-align: center; margin-bottom: 48px; padding: 36px 24px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; }
-        .qr-section p { font-family: 'Outfit'; font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-bottom: 20px; font-weight: 400; }
-        .qr-section img { width: 150px; height: 150px; border-radius: 12px; padding: 10px; background: #fff; }
+        .qr-section { text-align:center; margin-bottom:48px; padding:36px 24px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:20px; position:relative; }
+        .qr-section::before { content:''; position:absolute; inset:-1px; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(56,189,248,0.15), transparent 50%, rgba(139,92,246,0.1)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+        .qr-section p { font-family:'Outfit'; font-size:0.8rem; color:rgba(255,255,255,0.35); margin-bottom:20px; }
+        .qr-section img { width:150px; height:150px; border-radius:12px; padding:10px; background:#fff; }
 
         /* ===== SECTION TITLE ===== */
-        .section-title { font-family: 'Outfit'; font-size: 0.7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin: 48px 0 20px; }
+        .section-title { font-family:'Outfit'; font-size:0.7rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:rgba(56,189,248,0.5); margin:48px 0 20px; }
 
         /* ===== DOC CARDS ===== */
-        .doc-card { display: flex; align-items: center; gap: 16px; padding: 18px 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; margin-bottom: 10px; transition: all 0.3s; text-decoration: none; color: inherit; }
-        .doc-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
-        .doc-num { font-family: 'Outfit'; font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.2); letter-spacing: 1px; width: 28px; flex-shrink: 0; }
-        .doc-info h3 { font-family: 'Outfit'; font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
-        .doc-info p { font-size: 0.72rem; color: rgba(255,255,255,0.3); font-weight: 300; }
-        .doc-arrow { margin-left: auto; font-size: 0.8rem; color: rgba(255,255,255,0.15); flex-shrink: 0; }
+        .doc-card { display:flex; align-items:center; gap:16px; padding:18px 20px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:14px; margin-bottom:10px; transition:all 0.3s; text-decoration:none; color:inherit; position:relative; }
+        .doc-card:hover { background:rgba(56,189,248,0.03); border-color:rgba(56,189,248,0.12); transform:translateY(-1px); box-shadow: 0 4px 20px rgba(56,189,248,0.05); }
+        .doc-num { font-family:'Outfit'; font-size:1.1rem; font-weight:800; background:linear-gradient(135deg, rgba(56,189,248,0.6), rgba(129,140,248,0.6)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; width:30px; flex-shrink:0; }
+        .doc-info h3 { font-family:'Outfit'; font-size:0.88rem; font-weight:600; color:rgba(255,255,255,0.9); margin-bottom:2px; }
+        .doc-info p { font-size:0.72rem; color:rgba(255,255,255,0.3); font-weight:300; }
+        .doc-arrow { margin-left:auto; font-size:0.9rem; color:rgba(56,189,248,0.3); flex-shrink:0; transition:all 0.3s; }
+        .doc-card:hover .doc-arrow { color:rgba(56,189,248,0.8); transform:translateX(3px); }
 
         /* ===== SOURCE CODE ===== */
-        .source-card { padding: 28px 24px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; text-align: center; margin-bottom: 10px; }
-        .source-card h3 { font-family: 'Outfit'; font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
-        .source-card p { font-size: 0.78rem; color: rgba(255,255,255,0.35); font-weight: 300; line-height: 1.6; margin-bottom: 18px; }
-        .source-btn { display: inline-block; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); padding: 10px 20px; border-radius: 10px; font-family: 'Outfit'; font-size: 0.8rem; font-weight: 500; text-decoration: none; transition: all 0.3s; }
-        .source-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .guarantee { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit'; font-size: 0.6rem; color: rgba(255,255,255,0.35); font-weight: 500; letter-spacing: 0.5px; margin-top: 16px; }
+        .source-card { padding:28px 24px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:16px; text-align:center; position:relative; }
+        .source-card::before { content:''; position:absolute; inset:-1px; border-radius:16px; padding:1px; background:linear-gradient(180deg, rgba(16,185,129,0.15), transparent 60%); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+        .source-card h3 { font-family:'Outfit'; font-size:0.95rem; font-weight:600; color:rgba(255,255,255,0.9); margin-bottom:6px; }
+        .source-card p { font-size:0.78rem; color:rgba(255,255,255,0.35); font-weight:300; line-height:1.6; margin-bottom:18px; }
+        .source-btn { display:inline-block; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.15); color:rgba(16,185,129,0.9); padding:10px 22px; border-radius:10px; font-family:'Outfit'; font-size:0.8rem; font-weight:500; text-decoration:none; transition:all 0.3s; }
+        .source-btn:hover { background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.3); box-shadow: 0 0 20px rgba(16,185,129,0.08); }
+        .guarantee { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:100px; background:rgba(16,185,129,0.04); border:1px solid rgba(16,185,129,0.1); font-family:'Outfit'; font-size:0.6rem; color:rgba(16,185,129,0.6); font-weight:500; letter-spacing:0.5px; margin-top:16px; }
 
         /* ===== TIMELINE ===== */
-        .timeline { padding: 28px 24px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; }
-        .tl-item { display: flex; gap: 14px; margin-bottom: 20px; position: relative; }
-        .tl-item:last-child { margin-bottom: 0; }
-        .tl-item:not(:last-child)::after { content:''; position:absolute; left:5px; top:18px; bottom:-16px; width:1px; background:rgba(255,255,255,0.06); }
-        .tl-dot { width: 11px; height: 11px; border-radius: 50%; margin-top: 5px; z-index: 2; position: relative; flex-shrink: 0; background: rgba(255,255,255,0.5); box-shadow: 0 0 8px rgba(255,255,255,0.15); animation: dotPulse 3s ease-in-out infinite; }
-        @keyframes dotPulse {
-            0%, 100% { box-shadow: 0 0 4px rgba(255,255,255,0.1); opacity: 0.5; }
-            50% { box-shadow: 0 0 12px rgba(255,255,255,0.3); opacity: 1; }
+        .timeline { padding:28px 24px; background:rgba(255,255,255,0.015); border:1px solid rgba(255,255,255,0.05); border-radius:16px; }
+        .tl-item { display:flex; gap:14px; margin-bottom:22px; position:relative; }
+        .tl-item:last-child { margin-bottom:0; }
+        .tl-item:not(:last-child)::after { content:''; position:absolute; left:5px; top:18px; bottom:-18px; width:1px; background:linear-gradient(180deg, rgba(56,189,248,0.15), rgba(129,140,248,0.08)); }
+        .tl-dot { width:11px; height:11px; border-radius:50%; margin-top:5px; z-index:2; position:relative; flex-shrink:0; background:linear-gradient(135deg, #38bdf8, #818cf8); box-shadow: 0 0 10px rgba(56,189,248,0.3); animation:dotGlow 3s ease-in-out infinite; }
+        @keyframes dotGlow {
+            0%, 100% { box-shadow: 0 0 6px rgba(56,189,248,0.2); transform:scale(0.9); }
+            50% { box-shadow: 0 0 16px rgba(56,189,248,0.5), 0 0 30px rgba(56,189,248,0.1); transform:scale(1.1); }
         }
-        .tl-item:nth-child(2) .tl-dot { animation-delay: 0.5s; }
-        .tl-item:nth-child(3) .tl-dot { animation-delay: 1s; }
-        .tl-item:nth-child(4) .tl-dot { animation-delay: 1.5s; }
-        .tl-item:nth-child(5) .tl-dot { animation-delay: 2s; }
-        .tl-item:nth-child(6) .tl-dot { animation-delay: 2.5s; }
-        .tl-info strong { display: block; font-family: 'Outfit'; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75); margin-bottom: 2px; }
-        .tl-info span { font-size: 0.7rem; color: rgba(255,255,255,0.3); font-weight: 300; }
+        .tl-item:nth-child(2) .tl-dot { animation-delay:0.5s; }
+        .tl-item:nth-child(3) .tl-dot { animation-delay:1s; }
+        .tl-item:nth-child(4) .tl-dot { animation-delay:1.5s; }
+        .tl-item:nth-child(5) .tl-dot { animation-delay:2s; }
+        .tl-item:nth-child(6) .tl-dot { animation-delay:2.5s; }
+        .tl-info strong { display:block; font-family:'Outfit'; font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.8); margin-bottom:2px; }
+        .tl-info span { font-size:0.7rem; color:rgba(255,255,255,0.3); font-weight:300; }
 
         /* ===== FOOTER ===== */
-        .footer { text-align: center; margin-top: 64px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.04); }
-        .footer img { height: 20px; filter: brightness(0) invert(1); opacity: 0.2; margin-bottom: 8px; }
-        .footer .sig { font-family: 'Outfit'; font-size: 0.55rem; color: rgba(255,255,255,0.15); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 24px; }
-        .wa-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); padding: 12px 24px; border-radius: 100px; font-family: 'Outfit'; font-weight: 500; text-decoration: none; font-size: 0.82rem; transition: all 0.3s; }
-        .wa-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); color: #fff; transform: translateY(-1px); }
+        .footer { text-align:center; margin-top:64px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.04); }
+        .footer img { height:20px; filter:brightness(0) invert(1); opacity:0.25; margin-bottom:8px; }
+        .footer .sig { font-family:'Outfit'; font-size:0.55rem; color:rgba(255,255,255,0.15); letter-spacing:3px; text-transform:uppercase; margin-bottom:24px; }
+        .wa-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.1); color:rgba(56,189,248,0.8); padding:12px 24px; border-radius:100px; font-family:'Outfit'; font-weight:500; text-decoration:none; font-size:0.82rem; transition:all 0.3s; }
+        .wa-btn:hover { background:rgba(56,189,248,0.1); border-color:rgba(56,189,248,0.2); box-shadow: 0 0 20px rgba(56,189,248,0.08); transform:translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <!-- Animated Particles -->
-    <canvas id="particles"></canvas>
+    <!-- 3D Particle Mesh -->
+    <canvas id="mesh"></canvas>
+    <div class="glow-top"></div>
+    <div class="glow-bottom"></div>
 
     <div class="container">
 
@@ -122,7 +130,7 @@
 
         <div class="qr-section">
             <p>Código QR para mesas o caja</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=0a0a0a&format=svg" alt="QR Code Fiore de Enero">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=06060a&format=svg" alt="QR">
         </div>
 
         <div class="section-title">Documentación</div>
@@ -163,7 +171,7 @@
             <div class="guarantee">🔒 Propiedad total del cliente · Cero recurrencia</div>
         </div>
 
-        <div class="section-title">Status del Proyecto</div>
+        <div class="section-title">Status</div>
 
         <div class="timeline">
             <div class="tl-item">
@@ -205,7 +213,7 @@
                 <div class="tl-dot"></div>
                 <div class="tl-info">
                     <strong>Bóveda Entregada</strong>
-                    <span>Documentación, código y accesos transferidos</span>
+                    <span>Docs, código y accesos transferidos</span>
                 </div>
             </div>
         </div>
@@ -213,67 +221,102 @@
         <div class="footer">
             <img src="../treze_footer.png" alt="Treze Labs">
             <div class="sig">Bóveda protegida por Treze</div>
-            <a href="https://wa.me/522214092478?text=Hola%20Treze%20Labs%2C%20recibi%20la%20entrega%20de%20Fiore%20de%20Enero." class="wa-btn">Soporte Técnico →</a>
+            <a href="https://wa.me/522214092478?text=Hola%20Treze%20Labs%2C%20recibi%20la%20boveda%20de%20Fiore%20de%20Enero." class="wa-btn">Soporte Técnico →</a>
         </div>
 
     </div>
 
     <script>
-    // === Animated Particle Wave Background ===
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    let w, h, particles = [];
+    // === 3D Perspective Particle Mesh ===
+    const c = document.getElementById('mesh');
+    const ctx = c.getContext('2d');
+    let W, H;
 
-    function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-    }
+    function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
     window.addEventListener('resize', resize);
     resize();
 
-    // Generate grid of particles
-    const cols = Math.floor(w / 18);
-    const rows = Math.floor(h / 18);
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-            particles.push({
-                x: (i / cols) * w,
-                y: (j / rows) * h,
-                baseX: (i / cols) * w,
-                baseY: (j / rows) * h,
-                size: Math.random() * 1 + 0.3,
-                alpha: Math.random() * 0.3 + 0.05
-            });
+    const COLS = 60, ROWS = 40;
+    const points = [];
+    for (let j = 0; j < ROWS; j++) {
+        for (let i = 0; i < COLS; i++) {
+            points.push({ gx: i, gy: j });
         }
     }
 
-    let time = 0;
-    function animate() {
-        ctx.clearRect(0, 0, w, h);
-        time += 0.004;
+    let t = 0;
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        t += 0.008;
 
-        particles.forEach(p => {
-            // Organic wave displacement
-            const wave1 = Math.sin(p.baseX * 0.003 + time * 2) * 8;
-            const wave2 = Math.cos(p.baseY * 0.004 + time * 1.5) * 6;
-            const wave3 = Math.sin((p.baseX + p.baseY) * 0.002 + time) * 4;
+        const cx = W / 2, cy = H / 2;
+        const spX = W / (COLS - 1);
+        const spY = H / (ROWS - 1);
 
-            p.x = p.baseX + wave1 + wave3;
-            p.y = p.baseY + wave2;
+        for (let p of points) {
+            // Base grid position
+            let x = p.gx * spX;
+            let y = p.gy * spY;
 
-            // Pulsing alpha
-            const pulse = Math.sin(time * 1.5 + p.baseX * 0.005 + p.baseY * 0.003) * 0.5 + 0.5;
-            const a = p.alpha * (0.4 + pulse * 0.6);
+            // 3D wave displacement
+            const d = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+            const wave = Math.sin(d * 0.008 - t * 2.5) * 12;
+            const wave2 = Math.cos(x * 0.005 + t * 1.8) * Math.sin(y * 0.006 - t) * 8;
+            const z = wave + wave2;
+
+            // Perspective projection
+            const scale = 1 + z * 0.008;
+            const px = cx + (x - cx) * scale;
+            const py = cy + (y - cy) * scale;
+
+            // Brightness based on height (z) — creates 3D illusion
+            const bright = 0.08 + (z + 20) / 50 * 0.35;
+            const radius = 0.6 + (z + 20) / 50 * 1.0;
+
+            // Color shift: higher = more cyan, lower = more purple
+            const r = Math.floor(40 + z * 0.8);
+            const g = Math.floor(160 + z * 2);
+            const b = Math.floor(230 + z * 0.5);
 
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${a})`;
+            ctx.arc(px, py, Math.max(0.3, radius), 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${r},${g},${b},${Math.max(0.02, bright)})`;
             ctx.fill();
-        });
+        }
 
-        requestAnimationFrame(animate);
+        // Draw some connecting lines for nearby bright dots
+        ctx.strokeStyle = 'rgba(56,189,248,0.015)';
+        ctx.lineWidth = 0.5;
+        for (let j = 0; j < ROWS - 1; j++) {
+            for (let i = 0; i < COLS - 1; i++) {
+                const idx = j * COLS + i;
+                const x1 = points[idx].gx * spX;
+                const y1 = points[idx].gy * spY;
+                const x2 = points[idx + 1].gx * spX;
+                const y2 = points[idx + 1].gy * spY;
+
+                const d1 = Math.sqrt((x1 - cx) ** 2 + (y1 - cy) ** 2);
+                const w1 = Math.sin(d1 * 0.008 - t * 2.5) * 12;
+                const s1 = 1 + w1 * 0.008;
+                const px1 = cx + (x1 - cx) * s1;
+                const py1 = cy + (y1 - cy) * s1;
+
+                const d2 = Math.sqrt((x2 - cx) ** 2 + (y2 - cy) ** 2);
+                const w2 = Math.sin(d2 * 0.008 - t * 2.5) * 12;
+                const s2 = 1 + w2 * 0.008;
+                const px2 = cx + (x2 - cx) * s2;
+                const py2 = cy + (y2 - cy) * s2;
+
+                ctx.beginPath();
+                ctx.moveTo(px1, py1);
+                ctx.lineTo(px2, py2);
+                ctx.stroke();
+            }
+        }
+
+        requestAnimationFrame(draw);
     }
-    animate();
+    draw();
     </script>
 
 </body>
