@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 2. Initialize Menu
     if (typeof renderMenu === 'function') renderMenu();
+    loadDynamicData(); // <-- Inyectar datos en tiempo real
     
     // 3. Initialize Review Carousel
     initReviewCarousel();
@@ -339,7 +340,7 @@ function initLoyaltySystem() {
 /* ========================
    MENU DIGITAL INTERACTIVO (CARRITO)
    ======================== */
-const menuData = {
+let menuData = {
     comida: [
         {
             category: "🥗 Antipasti",
@@ -441,8 +442,52 @@ const menuData = {
                 { id: "d4", name: "Postre de temporada", price: 0, desc: "Pregunta por nuestro postre semanal." }
             ]
         }
-    ]
 };
+
+async function loadDynamicData() {
+    try {
+        const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSfezJEvwiAdwqsSqtUuCE3pctKRNg3zkeGoO-4iTZRjdMBlezOjlBBgrLbGqWMTsA/exec";
+        const res = await fetch(WEBAPP_URL + "?action=get");
+        const data = await res.json();
+        
+        if(data && data.productos && data.productos.length > 0) {
+            let newMenu = { comida: [], bebidas: [] };
+            let cats = {};
+            
+            data.productos.forEach(p => {
+                if(p.status !== 'DISPONIBLE') return;
+                
+                let group = p.categoria;
+                let tab = 'comida';
+                if(!group) group = "Otros";
+                if(group.includes('Bebida') || group.includes('Frappe') || group.includes('Dolci')) {
+                    tab = 'bebidas';
+                }
+                
+                if(!cats[group]) cats[group] = { category: group, items: [], tab: tab };
+                
+                cats[group].items.push({
+                    id: p.id,
+                    name: p.nombre,
+                    price: parseFloat(p.precio) || 0,
+                    desc: p.desc || ""
+                });
+            });
+            
+            for(let k in cats) newMenu[cats[k].tab].push(cats[k]);
+            menuData = newMenu;
+            
+            let comidaHtml = '<div class="cenit-profile glass-effect"><h4>🍕 La Vera Pizza Napoletana</h4><p><em>Tradición napolitana auténtica. Harina italiana de alta calidad, maduración lenta de 48 horas. Cocción a 450° por 90 segundos para un sabor único.</em></p></div>';
+            let bebidaHtml = '<div class="cenit-profile glass-effect"><h4>☕ Perfil: NEGRO Cenit</h4><p><strong>Origen:</strong> Tlaltetela Veracruz | <strong>Altura:</strong> 1500 msnm</p><p><strong>Proceso:</strong> Honey | <strong>Variedad:</strong> Bourbon</p><p style="margin-top: 0.5rem;"><em>Dulzor alto, acidez brillante y balanceada. Cuerpo cremoso con notas afrutadas (cereza, ciruela), achocolatadas y a caramelo.</em></p></div>';
+            
+            document.getElementById('tab-comida').innerHTML = comidaHtml;
+            document.getElementById('tab-bebidas').innerHTML = bebidaHtml;
+            renderMenu();
+        }
+    } catch(e) {
+        console.error("VCard: Using offline menu data.");
+    }
+}
 
 let cart = {};
 

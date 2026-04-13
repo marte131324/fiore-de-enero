@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiore de Enero | Command Center</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Branding Fiore */
+            --bg-deep: #2A3628; /* Verde oscuro elegante */
+            --bg-panel: #3A4A38;
+            --accent: #E5D5C1; /* Tono arena/oro viejo */
+            --accent-hover: #c9b49b;
+            --text-pure: #ffffff;
+            --text-dim: #D1D5DB;
+            --border: rgba(229, 213, 193, 0.2);
+            --danger: #ef4444;
+            --success: #10b981;
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-display: 'Playfair Display', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-deep); color: var(--text-pure); font-family: var(--font-ui); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Overlay */
+        .sidebar { width: 260px; background: rgba(0,0,0,0.2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; backdrop-filter: blur(10px); }
+        .brand { text-align: center; margin-bottom: 40px; }
+        .brand h1 { font-family: var(--font-display); font-size: 24px; color: var(--accent); font-weight: 600; margin-bottom: 5px; }
+        .brand p { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); }
+
+        .nav-item { padding: 12px 16px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-dim); transition: 0.3s; font-size: 13px; font-weight: 500; border: 1px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-pure); }
+        .nav-item.active { background: rgba(229, 213, 193, 0.1); color: var(--accent); border-color: rgba(229, 213, 193, 0.3); }
+
+        /* Workspace */
+        .workspace { flex-grow: 1; padding: 40px; overflow-y: auto; background: linear-gradient(135deg, rgba(42,54,40,1) 0%, rgba(20,25,18,1) 100%); }
+        .view-section { display: none; animation: fadeIn 0.4s ease forwards; max-width: 1000px; margin: 0 auto; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .header h2 { font-family: var(--font-display); font-size: 32px; font-weight: 400; color: var(--accent); }
+        .header p { color: var(--text-dim); font-size: 13px; margin-top: 5px; }
+
+        /* Cards & Forms */
+        .card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; backdrop-filter: blur(5px); }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
+        input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-pure); border-radius: 6px; font-family: var(--font-ui); outline: none; transition: 0.3s; }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+        
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        
+        .btn { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-family: var(--font-ui); font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-primary { background: var(--accent); color: #111; }
+        .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 0 15px rgba(229, 213, 193, 0.4); transform: translateY(-1px); }
+        .btn-secondary { background: transparent; color: var(--text-pure); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* Product List */
+        .product-list { display: grid; gap: 16px; }
+        .product-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; }
+        .product-info { display: flex; align-items: center; gap: 16px; }
+        .product-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #111; border: 1px solid var(--accent); }
+        .product-title { font-size: 15px; font-weight: 600; font-family: var(--font-display); }
+        .product-price { color: var(--accent); font-size: 13px; margin-top: 4px; font-weight: 500; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+        .status-on { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .status-off { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+
+        /* Modals */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 999; }
+        .modal.show { display: flex; }
+        .modal-content { background: var(--bg-panel); border: 1px solid var(--accent); padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: var(--font-display); font-size: 20px; color: var(--accent); }
+        
+        .loader-overlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
+        .loader-spinner { width: 40px; height: 40px; border: 3px solid rgba(229, 213, 193, 0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast Sync */
+        .sync-toast { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: #fff; padding: 12px 24px; border-radius: 6px; font-weight: 600; transform: translateY(100px); opacity: 0; transition: 0.4s; z-index: 1000; box-shadow: 0 10px 20px rgba(16,185,129,0.3); }
+        .sync-toast.show { transform: translateY(0); opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <!-- App Loader -->
+    <div class="loader-overlay" id="app-loader">
+        <div class="loader-spinner"></div>
+        <p style="margin-top: 20px; font-family: var(--font-display); color: var(--accent); font-size: 18px; letter-spacing: 1px;">Sincronizando con Base de Datos...</p>
+    </div>
+
+    <!-- Layout -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h1>Fiore de Enero</h1>
+            <p>Command Center</p>
+        </div>
+        
+        <nav>
+            <div class="nav-item active" onclick="switchView('v-tienda', this)"><i class="ri-store-2-line"></i> Control Tienda</div>
+            <div class="nav-item" onclick="switchView('v-productos', this)"><i class="ri-restaurant-line"></i> Catálogo de Platillos</div>
+            <div class="nav-item" onclick="switchView('v-promo', this)"><i class="ri-megaphone-line"></i> Promociones</div>
+            <div class="nav-item" onclick="window.open('https://fiore-de-enero.vercel.app', '_blank')"><i class="ri-external-link-line"></i> Ver Ecosistema Público</div>
+        </nav>
+    </aside>
+
+    <main class="workspace">
+
+        <!-- STATUS DE LA TIENDA -->
+        <section id="v-tienda" class="view-section active">
+            <div class="header">
+                <div>
+                    <h2>Control Maestro</h2>
+                    <p>Administra el estado general del negocio en tiempo real. Cero necesidad de códigos.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Estado de Recepción de Pedidos</label>
+                        <select id="config-status">
+                            <option value="ABIERTO">🟢 ACEPTANDO PEDIDOS</option>
+                            <option value="CERRADO">🔴 CERRADO TEMPORALMENTE (AGENDA LLENA)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Mensaje de Anuncio Global (Banner Superior)</label>
+                    <input type="text" id="config-banner" placeholder="Ej: Agenda abierta para San Valentín 2026. Cupos limitados.">
+                </div>
+                <button class="btn btn-primary" onclick="salvarConfiguracion()"><i class="ri-save-line"></i> Actualizar Servidores</button>
+            </div>
+        </section>
+
+        <!-- CATALOGO PRODUCTOS -->
+        <section id="v-productos" class="view-section">
+            <div class="header">
+                <div>
+                    <h2>Catálogo Menú</h2>
+                    <p>Agrega, edita o elimina platillos de tu carta digital.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openProductModal()"><i class="ri-add-line"></i> Nuevo Platillo</button>
+            </div>
+
+            <div class="product-list" id="dom-productos">
+                <!-- Se inyectan por JS -->
+            </div>
+        </section>
+
+        <!-- PROMOCIONES -->
+        <section id="v-promo" class="view-section">
+            <div class="header">
+                <div>
+                    <h2>Promoción Activa (Pop-Up)</h2>
+                    <p>Configura la promoción que saltará en pantalla cuando la gente entre al ecosistema.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>¿Activar Pop-up Promocional?</label>
+                        <select id="promo-active">
+                            <option value="SI">SÍ ACTIVAR</option>
+                            <option value="NO">NO (APAGADO)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Título de Promoción (Opcional)</label>
+                    <input type="text" id="promo-title" placeholder="Ej: Especial de San Valentín">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Descripción de Promoción</label>
+                    <input type="text" id="promo-desc" placeholder="Ej: En la compra de una pizza grande, llévate 2 refrescos.">
+                </div>
+            </div>
+            
+            <!-- SECTION REMOVED FOR CANVA INTEGRATION -->
+            
+            <button class="btn btn-primary" style="margin-top:20px;" onclick="salvarConfiguracion()">Guardar Configuración y Promos</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Producto -->
+    <div class="modal" id="modal-product">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title">Agregar Nuevo Platillo</span>
+                <i class="ri-close-line" style="cursor: pointer;" onclick="document.getElementById('modal-product').classList.remove('show')"></i>
+            </div>
+            <input type="hidden" id="p-id">
+            
+            <div class="form-group">
+                <label>Nombre del Platillo</label>
+                <input type="text" id="p-name" placeholder="Ej: Pizza Margherita">
+            </div>
+            
+            <div class="form-group">
+                <label>Categoría</label>
+                <select id="p-category">
+                    <option value="🍕 La Vera Pizza Napoletana">La Vera Pizza Napoletana</option>
+                    <option value="🍝 Pasta Fatta In Casa">Pasta Fatta In Casa</option>
+                    <option value="🥗 Antipasti">Antipasti</option>
+                    <option value="☕ Bebidas Calientes">Bebidas Calientes</option>
+                    <option value="❄️ Frappes">Frappes</option>
+                    <option value="🧊 Bebidas Frías">Bebidas Frías</option>
+                    <option value="🍨 Dolci de Véneto">Dolci de Véneto</option>
+                </select>
+            </div>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Precio ($MXN)</label>
+                    <input type="number" id="p-price" placeholder="850">
+                </div>
+                <div class="form-group">
+                    <label>Disponibilidad</label>
+                    <select id="p-status">
+                        <option value="DISPONIBLE">DISPONIBLE</option>
+                        <option value="AGOTADO">AGOTADO</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Descripción Breve</label>
+                <textarea id="p-desc" placeholder="Ingredientes del platillo..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button class="btn btn-danger" id="btn-delete" style="display:none; margin-right: auto;" onclick="eliminarProducto()">Eliminar Platillo</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('modal-product').classList.remove('show')">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarProducto()">Guardar en Ecosistema</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sync Toast -->
+    <div class="sync-toast" id="toast"><i class="ri-checkbox-circle-fill"></i> Base de Datos Sincronizada</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
