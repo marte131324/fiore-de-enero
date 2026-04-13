@@ -114,6 +114,7 @@
             <div class="nav-item active" onclick="switchView('v-tienda', this)"><i class="ri-store-2-line"></i> Control Tienda</div>
             <div class="nav-item" onclick="switchView('v-productos', this)"><i class="ri-restaurant-line"></i> Catálogo de Platillos</div>
             <div class="nav-item" onclick="switchView('v-promo', this)"><i class="ri-megaphone-line"></i> Promociones</div>
+            <div class="nav-item" onclick="switchView('v-eventos', this)"><i class="ri-calendar-event-line"></i> Eventos</div>
             <div class="nav-item" onclick="window.open('https://fiore-de-enero.vercel.app', '_blank')"><i class="ri-external-link-line"></i> Ver Ecosistema Público</div>
         </nav>
     </aside>
@@ -194,6 +195,38 @@
             <!-- SECTION REMOVED FOR CANVA INTEGRATION -->
             
             <button class="btn btn-primary" style="margin-top:20px;" onclick="salvarConfiguracion()">Guardar Configuración y Promos</button>
+            </div>
+        </section>
+
+        <!-- EVENTOS -->
+        <section id="v-eventos" class="view-section">
+            <div class="header">
+                <div>
+                    <h2>Cartelera de Eventos</h2>
+                    <p>Administra el evento que se muestra en la sección "Cartelera" de la VCard.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label>Título del Evento</label>
+                    <input type="text" id="evento-titulo" placeholder="Ej: Noche de Jazz & Vino">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="evento-desc" placeholder="Ej: Disfruta de una velada romántica con música en vivo..."></textarea>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Fecha / Día</label>
+                        <input type="text" id="evento-fecha" placeholder="Ej: Próximo Viernes">
+                    </div>
+                    <div class="form-group">
+                        <label>Horario</label>
+                        <input type="text" id="evento-hora" placeholder="Ej: 20:30 hrs">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="salvarEvento()"><i class="ri-save-line"></i> Actualizar Cartelera</button>
             </div>
         </section>
 

@@ -451,6 +451,26 @@ async function loadDynamicData() {
         const res = await fetch(WEBAPP_URL + "?action=get");
         const data = await res.json();
         
+        // Render Eventos dinámicos
+        if(data && data.config && data.config.eventoTitulo) {
+            const evCard = document.querySelector('#eventos .event-card');
+            if(evCard) {
+                evCard.innerHTML = `
+                    <div class="event-date">
+                        <span class="day"><i class="far fa-calendar-alt"></i> PRÓXIMO EVENTO</span>
+                    </div>
+                    <div class="event-details" style="text-align: left; margin-top: 1rem;">
+                        <h3 style="color: var(--secondary-color); font-size: 1.4rem; font-family: var(--font-heading); margin-bottom: 0.3rem;">${data.config.eventoTitulo}</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.2rem; line-height: 1.4;">${data.config.eventoDesc || ''}</p>
+                        <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--accent-color);">
+                            <span><i class="far fa-calendar" style="margin-right: 4px;"></i> ${data.config.eventoFecha || 'Próximamente'}</span>
+                            <span><i class="far fa-clock" style="margin-right: 4px;"></i> ${data.config.eventoHora || ''}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         if(data && data.productos && data.productos.length > 0) {
             let newMenu = { comida: [], bebidas: [] };
             let cats = {};

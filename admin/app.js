@@ -50,8 +50,12 @@ async function fetchDatos() {
             document.getElementById('promo-active').value = data.config.promoActive || 'NO';
             document.getElementById('promo-title').value = data.config.promoTitle || '';
             document.getElementById('promo-desc').value = data.config.promoDesc || '';
-            if(document.getElementById('talleres-img')) {
-                document.getElementById('talleres-img').value = data.config.talleresImg || '';
+            // Eventos
+            if(document.getElementById('evento-titulo')) {
+                document.getElementById('evento-titulo').value = data.config.eventoTitulo || '';
+                document.getElementById('evento-desc').value = data.config.eventoDesc || '';
+                document.getElementById('evento-fecha').value = data.config.eventoFecha || '';
+                document.getElementById('evento-hora').value = data.config.eventoHora || '';
             }
         }
 
@@ -205,4 +209,22 @@ function eliminarProducto() {
         action: 'saveProducts',
         productos: catalogoData
     }, "Platillo Eliminado");
+}
+
+function salvarEvento() {
+    const payload = {
+        action: 'saveConfig',
+        data: {
+            tiendaStatus: document.getElementById('config-status').value,
+            banner: document.getElementById('config-banner').value,
+            promoActive: document.getElementById('promo-active').value,
+            promoTitle: document.getElementById('promo-title').value,
+            promoDesc: document.getElementById('promo-desc').value,
+            eventoTitulo: document.getElementById('evento-titulo').value,
+            eventoDesc: document.getElementById('evento-desc').value,
+            eventoFecha: document.getElementById('evento-fecha').value,
+            eventoHora: document.getElementById('evento-hora').value
+        }
+    };
+    saveData(payload, "Cartelera de Eventos Actualizada");
 }
