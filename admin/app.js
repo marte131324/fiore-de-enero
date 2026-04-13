@@ -1,3 +1,18 @@
+// === TREZE LABS ANTI-CLONE & EASTER EGG ===
+(function() {
+    console.log("%c TREZE LABS - Command Center Protegido", "color: #38bdf8; font-weight: bold; font-size: 14px;");
+    
+    // Domain Lock (Anti-Clonación)
+    var allowedDomains = ["fiore-de-enero.vercel.app", "localhost", "127.0.0.1"];
+    var currentDomain = window.location.hostname;
+    if (allowedDomains.indexOf(currentDomain) === -1 && currentDomain !== "") {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.innerHTML = '<div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f172a;color:#f8fafc;font-family:monospace;text-align:center;padding:20px"><h1 style="color:#ef4444;font-size:3rem;margin-bottom:20px">ACCESO IP DENEGADO</h1><p style="font-size:1.2rem;max-width:600px;line-height:1.6;color:#94a3b8">Panel de Administración Bloqueado. Dominio no autorizado.</p><a href="https://wa.me/522214092478" style="margin-top:40px;padding:15px 30px;border:1px solid #38bdf8;color:#38bdf8;text-decoration:none;border-radius:8px">Contactar Treze Labs</a></div>';
+        });
+        throw new Error("Dominio no autorizado.");
+    }
+})();
+
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSfezJEvwiAdwqsSqtUuCE3pctKRNg3zkeGoO-4iTZRjdMBlezOjlBBgrLbGqWMTsA/exec"; 
 
 // Variables locales
@@ -81,7 +96,7 @@ async function saveData(payload, successMsg) {
         const res = await fetch(WEBAPP_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         });
         hideLoader();
@@ -92,29 +107,32 @@ async function saveData(payload, successMsg) {
     }
 }
 
+function getFullConfig() {
+    return {
+        tiendaStatus: document.getElementById('config-status') ? document.getElementById('config-status').value : '',
+        banner: document.getElementById('config-banner') ? document.getElementById('config-banner').value : '',
+        promoActive: document.getElementById('promo-active') ? document.getElementById('promo-active').value : '',
+        promoTitle: document.getElementById('promo-title') ? document.getElementById('promo-title').value : '',
+        promoDesc: document.getElementById('promo-desc') ? document.getElementById('promo-desc').value : '',
+        eventoTitulo: document.getElementById('evento-titulo') ? document.getElementById('evento-titulo').value : '',
+        eventoDesc: document.getElementById('evento-desc') ? document.getElementById('evento-desc').value : '',
+        eventoFecha: document.getElementById('evento-fecha') ? document.getElementById('evento-fecha').value : '',
+        eventoHora: document.getElementById('evento-hora') ? document.getElementById('evento-hora').value : ''
+    };
+}
+
 function salvarConfiguracion() {
     const payload = {
         action: 'saveConfig',
-        data: {
-            tiendaStatus: document.getElementById('config-status').value,
-            banner: document.getElementById('config-banner').value,
-            talleresImg: document.getElementById('talleres-img') ? document.getElementById('talleres-img').value : '',
-            promoActive: document.getElementById('promo-active').value,
-            promoTitle: document.getElementById('promo-title').value,
-            promoDesc: document.getElementById('promo-desc').value
-        }
+        data: getFullConfig()
     };
     saveData(payload, "Configuración del Servidor Guardada");
 }
 
 function salvarPromo() {
     const payload = {
-        action: 'savePromo',
-        data: {
-            promoActive: document.getElementById('promo-active').value,
-            promoTitle: document.getElementById('promo-title').value,
-            promoDesc: document.getElementById('promo-desc').value
-        }
+        action: 'saveConfig',
+        data: getFullConfig()
     };
     saveData(payload, "Promoción Actualizada");
 }
@@ -214,17 +232,7 @@ function eliminarProducto() {
 function salvarEvento() {
     const payload = {
         action: 'saveConfig',
-        data: {
-            tiendaStatus: document.getElementById('config-status').value,
-            banner: document.getElementById('config-banner').value,
-            promoActive: document.getElementById('promo-active').value,
-            promoTitle: document.getElementById('promo-title').value,
-            promoDesc: document.getElementById('promo-desc').value,
-            eventoTitulo: document.getElementById('evento-titulo').value,
-            eventoDesc: document.getElementById('evento-desc').value,
-            eventoFecha: document.getElementById('evento-fecha').value,
-            eventoHora: document.getElementById('evento-hora').value
-        }
+        data: getFullConfig()
     };
     saveData(payload, "Cartelera de Eventos Actualizada");
 }
