@@ -97,6 +97,55 @@
 </head>
 <body>
 
+    <!-- PIN GATE -->
+    <div id="pin-gate" style="position:fixed;inset:0;z-index:999999;background:var(--bg-deep);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;font-family:'Inter',sans-serif;">
+        <div style="text-align:center;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">🔒</div>
+            <h2 style="color:var(--accent);font-family:var(--font-display);font-size:1.8rem;margin-bottom:4px;">Command Center</h2>
+            <p style="color:var(--text);font-size:0.9rem;">Ingresa tu código PIN de acceso</p>
+        </div>
+        <input id="pin-input" type="password" maxlength="6" placeholder="••••" 
+            style="background:rgba(0,0,0,0.2);border:1px solid var(--accent);color:#fff;padding:16px 20px;border-radius:12px;font-size:1.5rem;text-align:center;width:220px;letter-spacing:10px;outline:none;font-family:monospace;"
+            onkeyup="if(event.key==='Enter')checkPin()">
+        <button onclick="checkPin()" 
+            style="background:var(--accent);color:var(--bg-deep);border:none;padding:14px 40px;border-radius:10px;font-family:var(--font-display);font-weight:600;font-size:1.1rem;cursor:pointer;transition:transform 0.2s;">
+            Acceder
+        </button>
+        <p id="pin-error" style="color:#ef4444;font-size:0.9rem;display:none;font-weight:600;">PIN incorrecto</p>
+    </div>
+    <script>
+    // PIN es: 2026
+    const PIN_HASH = '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab';
+
+    async function hashPin(pin) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(pin);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkPin() {
+        const input = document.getElementById('pin-input').value;
+        const hashed = await hashPin(input);
+        if (hashed === PIN_HASH) {
+            document.getElementById('pin-gate').style.display = 'none';
+            sessionStorage.setItem('treze_auth', '1');
+        } else {
+            document.getElementById('pin-error').style.display = 'block';
+            document.getElementById('pin-input').value = '';
+            document.getElementById('pin-input').style.borderColor = '#ef4444';
+            setTimeout(() => {
+                document.getElementById('pin-error').style.display = 'none';
+                document.getElementById('pin-input').style.borderColor = 'var(--accent)';
+            }, 2000);
+        }
+    }
+
+    if (sessionStorage.getItem('treze_auth') === '1') {
+        document.getElementById('pin-gate').style.display = 'none';
+    }
+    </script>
+
     <!-- App Loader -->
     <div class="loader-overlay" id="app-loader">
         <div class="loader-spinner"></div>
