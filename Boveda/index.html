@@ -5,17 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bóveda | Fiore de Enero — Treze Labs</title>
     <meta name="description" content="Portal de entrega oficial — Fiore de Enero por Treze Labs.">
-    <link rel="icon" type="image/png" href="../Assets/Logo.jpg">
+    
+    <!-- Open Graph Metadata para evitar fallos HTTP en scrapers (WhatsApp, FB, LinkedIn) -->
+    <meta property="og:title" content="Bóveda de Entrega | Fiore de Enero">
+    <meta property="og:description" content="Documentación completa, códigos de acceso y manual de marca. Construido por Treze Labs.">
+    <meta property="og:image" itemprop="image" content="https://fiore-de-enero.vercel.app/treze_icon.jpg?v=2">
+    <meta property="og:image:secure_url" itemprop="image" content="https://fiore-de-enero.vercel.app/treze_icon.jpg?v=2">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:url" content="https://fiore-de-enero.vercel.app/Boveda">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon exclusivo de Agencia (Treze Labs Puro Icono) -->
+    <link rel="icon" type="image/jpeg" href="/treze_icon.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #06060a;
-            color: #f0f0f5;
+            background: #020617; /* Slate-950 */
+            color: #f8fafc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -24,82 +35,115 @@
         canvas#mesh { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; }
 
         /* Ambient glow overlays */
-        .glow-top { position:fixed; top:-200px; left:50%; transform:translateX(-50%); width:800px; height:600px; background:radial-gradient(ellipse, rgba(56,189,248,0.07) 0%, transparent 70%); z-index:0; pointer-events:none; }
-        .glow-bottom { position:fixed; bottom:-300px; right:-200px; width:700px; height:700px; background:radial-gradient(ellipse, rgba(139,92,246,0.05) 0%, transparent 70%); z-index:0; pointer-events:none; }
+        .glow-top { position:fixed; top:-200px; left:50%; transform:translateX(-50%); width:800px; height:600px; background:radial-gradient(ellipse, rgba(56,189,248,0.06) 0%, transparent 70%); z-index:0; pointer-events:none; }
+        .glow-bottom { position:fixed; bottom:-300px; right:-200px; width:700px; height:700px; background:radial-gradient(ellipse, rgba(2,132,199,0.08) 0%, transparent 70%); z-index:0; pointer-events:none; }
 
         .container { max-width: 520px; margin: 0 auto; padding: 60px 24px 80px; position: relative; z-index: 1; }
 
         /* ===== TREZE HEADER ===== */
         .treze-header { text-align: center; margin-bottom: 40px; }
         .treze-header img { height: 20px; filter: brightness(0) invert(1); opacity: 0.35; margin-bottom: 6px; }
-        .treze-header span { display:block; font-family:'Outfit'; font-size:0.55rem; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.2); font-weight:500; }
+        .treze-header span { display:block; font-size:0.55rem; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.2); font-weight:500; }
 
         /* ===== HERO ===== */
         .hero { text-align:center; margin-bottom:48px; }
-        .pill { display:inline-block; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.15); padding:6px 20px; border-radius:100px; font-family:'Outfit'; font-size:0.7rem; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:rgba(56,189,248,0.8); margin-bottom:24px; backdrop-filter:blur(10px); }
-        .hero h1 { font-family:'Outfit'; font-size:2.8rem; font-weight:800; letter-spacing:-1px; line-height:1.05; color:#fff; margin-bottom:8px; text-shadow: 0 0 80px rgba(56,189,248,0.15); }
-        .hero p { font-size:0.9rem; color:rgba(255,255,255,0.45); font-weight:300; }
-        .hero .ver { font-family:'Outfit'; font-size:0.6rem; color:rgba(255,255,255,0.2); margin-top:12px; letter-spacing:1px; }
+        .pill { display:inline-block; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.15); padding:6px 20px; border-radius:100px; font-size:0.7rem; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:rgba(56,189,248,0.8); margin-bottom:24px; backdrop-filter:blur(10px); }
+        .hero h1 { font-family:'Playfair Display', serif; font-style:italic; font-size:3.2rem; font-weight:600; letter-spacing:-1px; line-height:1.05; color:#fff; margin-bottom:12px; text-shadow: 0 0 80px rgba(56,189,248,0.15); }
+        .hero p { font-size:0.95rem; color:rgba(255,255,255,0.45); font-weight:300; }
+        .hero .ver { font-size:0.6rem; color:rgba(255,255,255,0.2); margin-top:16px; letter-spacing:1px; }
 
         /* ===== BUTTONS ===== */
-        .btn { display:block; text-align:center; padding:16px 20px; border-radius:14px; font-family:'Outfit'; font-size:0.9rem; font-weight:600; text-decoration:none; transition:all 0.3s cubic-bezier(.4,0,.2,1); margin-bottom:10px; letter-spacing:0.3px; position:relative; overflow:hidden; }
-        .btn-primary { background:linear-gradient(135deg, #38bdf8, #818cf8); color:#06060a; box-shadow: 0 0 30px rgba(56,189,248,0.15); }
+        .btn { display:block; text-align:center; padding:16px 20px; border-radius:14px; font-size:0.9rem; font-weight:500; text-decoration:none; transition:all 0.3s cubic-bezier(.4,0,.2,1); margin-bottom:10px; letter-spacing:0.3px; position:relative; overflow:hidden; }
+        .btn-primary { background:linear-gradient(135deg, #e0f2fe, #bae6fd); color:#020617; box-shadow: 0 0 30px rgba(56,189,248,0.15); font-weight: 600; }
         .btn-primary:hover { transform:translateY(-2px); box-shadow: 0 8px 40px rgba(56,189,248,0.25); }
         .btn-secondary { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.08); }
         .btn-secondary:hover { background:rgba(255,255,255,0.06); border-color:rgba(56,189,248,0.2); transform:translateY(-1px); box-shadow: 0 0 20px rgba(56,189,248,0.05); }
-        .btn-canva { background:rgba(138,75,230,0.06); color:rgba(167,120,255,0.9); border:1px solid rgba(138,75,230,0.12); margin-bottom:40px; }
-        .btn-canva:hover { background:rgba(138,75,230,0.12); border-color:rgba(138,75,230,0.25); transform:translateY(-1px); }
+        .btn-canva { background:rgba(2,132,199,0.06); color:rgba(56,189,248,0.9); border:1px solid rgba(2,132,199,0.15); margin-bottom:40px; }
+        .btn-canva:hover { background:rgba(2,132,199,0.12); border-color:rgba(2,132,199,0.3); transform:translateY(-1px); }
 
-        /* ===== QR ===== */
+        /* ===== QR Carousel ===== */
         .qr-section { text-align:center; margin-bottom:48px; padding:36px 24px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:20px; position:relative; }
-        .qr-section::before { content:''; position:absolute; inset:-1px; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(56,189,248,0.15), transparent 50%, rgba(139,92,246,0.1)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
-        .qr-section p { font-family:'Outfit'; font-size:0.8rem; color:rgba(255,255,255,0.35); margin-bottom:20px; }
-        .qr-section img { width:150px; height:150px; border-radius:12px; padding:10px; background:#fff; }
+        .qr-section::before { content:''; position:absolute; inset:-1px; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(56,189,248,0.15), transparent 50%, rgba(2,132,199,0.1)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+        
+        .qr-carousel { display:flex; overflow-x:auto; gap:20px; scroll-snap-type:x mandatory; padding-bottom:10px; margin-bottom:5px; scrollbar-width:none; }
+        .qr-carousel::-webkit-scrollbar { display:none; }
+        .qr-slide { flex: 0 0 100%; scroll-snap-align:center; }
+        .qr-slide p { font-size:0.8rem; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+        .qr-slide img { width:150px; height:150px; border-radius:12px; padding:10px; background:#fff; margin:0 auto; }
+        
+        .qr-dots { display:flex; justify-content:center; gap:8px; margin-top:10px; }
+        .qr-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.2); transition:0.3s; }
+        .qr-dot.active { background:#38bdf8; box-shadow:0 0 8px rgba(56,189,248,0.5); }
 
         /* ===== SECTION TITLE ===== */
-        .section-title { font-family:'Outfit'; font-size:0.7rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:rgba(56,189,248,0.5); margin:48px 0 20px; }
+        .section-title { font-size:0.7rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:rgba(56,189,248,0.5); margin:48px 0 20px; }
 
         /* ===== DOC CARDS ===== */
-        .doc-card { display:flex; align-items:center; gap:16px; padding:18px 20px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:14px; margin-bottom:10px; transition:all 0.3s; text-decoration:none; color:inherit; position:relative; }
-        .doc-card:hover { background:rgba(56,189,248,0.03); border-color:rgba(56,189,248,0.12); transform:translateY(-1px); box-shadow: 0 4px 20px rgba(56,189,248,0.05); }
-        .doc-num { font-family:'Outfit'; font-size:1.1rem; font-weight:800; background:linear-gradient(135deg, rgba(56,189,248,0.6), rgba(129,140,248,0.6)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; width:30px; flex-shrink:0; }
-        .doc-info h3 { font-family:'Outfit'; font-size:0.88rem; font-weight:600; color:rgba(255,255,255,0.9); margin-bottom:2px; }
-        .doc-info p { font-size:0.72rem; color:rgba(255,255,255,0.3); font-weight:300; }
+        .doc-card { display:flex; align-items:center; gap:16px; padding:18px 20px; border-radius:14px; margin-bottom:10px; transition:all 0.3s; text-decoration:none; color:inherit; position:relative; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); }
+        .doc-card:hover { transform:translateY(-1px); box-shadow: 0 10px 40px rgba(56,189,248,0.1); }
+        .doc-num { font-size:1.1rem; font-weight:800; background:linear-gradient(135deg, rgba(56,189,248,0.6), rgba(2,132,199,0.6)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; width:30px; flex-shrink:0; font-family:monospace; }
+        .doc-info h3 { font-size:0.88rem; font-weight:500; color:rgba(255,255,255,0.9); margin-bottom:2px; }
+        .doc-info p { font-size:0.72rem; color:rgba(255,255,255,0.4); font-weight:300; }
         .doc-arrow { margin-left:auto; font-size:0.9rem; color:rgba(56,189,248,0.3); flex-shrink:0; transition:all 0.3s; }
         .doc-card:hover .doc-arrow { color:rgba(56,189,248,0.8); transform:translateX(3px); }
 
         /* ===== SOURCE CODE ===== */
-        .source-card { padding:28px 24px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:16px; text-align:center; position:relative; }
-        .source-card::before { content:''; position:absolute; inset:-1px; border-radius:16px; padding:1px; background:linear-gradient(180deg, rgba(16,185,129,0.15), transparent 60%); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
-        .source-card h3 { font-family:'Outfit'; font-size:0.95rem; font-weight:600; color:rgba(255,255,255,0.9); margin-bottom:6px; }
-        .source-card p { font-size:0.78rem; color:rgba(255,255,255,0.35); font-weight:300; line-height:1.6; margin-bottom:18px; }
-        .source-btn { display:inline-block; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.15); color:rgba(16,185,129,0.9); padding:10px 22px; border-radius:10px; font-family:'Outfit'; font-size:0.8rem; font-weight:500; text-decoration:none; transition:all 0.3s; }
+        .source-card { padding:28px 24px; border-radius:16px; text-align:center; position:relative; margin-bottom: 20px; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); }
+        .source-card::before { content:''; position:absolute; inset:-1px; border-radius:inherit; padding:1px; background:linear-gradient(180deg, rgba(16,185,129,0.15), transparent 60%); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+        .source-card h3 { font-size:0.95rem; font-weight:500; color:rgba(255,255,255,0.9); margin-bottom:6px; }
+        .source-card p { font-size:0.78rem; color:rgba(255,255,255,0.4); font-weight:300; line-height:1.6; margin-bottom:18px; }
+        .source-btn { display:inline-block; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.15); color:rgba(16,185,129,0.9); padding:10px 22px; border-radius:10px; font-size:0.8rem; font-weight:500; text-decoration:none; transition:all 0.3s; }
         .source-btn:hover { background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.3); box-shadow: 0 0 20px rgba(16,185,129,0.08); }
-        .guarantee { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:100px; background:rgba(16,185,129,0.04); border:1px solid rgba(16,185,129,0.1); font-family:'Outfit'; font-size:0.6rem; color:rgba(16,185,129,0.6); font-weight:500; letter-spacing:0.5px; margin-top:16px; }
+        .guarantee { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:100px; background:rgba(16,185,129,0.04); border:1px solid rgba(16,185,129,0.1); font-size:0.6rem; color:rgba(16,185,129,0.6); font-weight:500; letter-spacing:0.5px; margin-top:16px; }
 
         /* ===== TIMELINE ===== */
-        .timeline { padding:28px 24px; background:rgba(255,255,255,0.015); border:1px solid rgba(255,255,255,0.05); border-radius:16px; }
+        .timeline { padding:28px 24px; border-radius:16px; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); }
         .tl-item { display:flex; gap:14px; margin-bottom:22px; position:relative; }
         .tl-item:last-child { margin-bottom:0; }
-        .tl-item:not(:last-child)::after { content:''; position:absolute; left:5px; top:18px; bottom:-18px; width:1px; background:linear-gradient(180deg, rgba(56,189,248,0.15), rgba(129,140,248,0.08)); }
-        .tl-dot { width:11px; height:11px; border-radius:50%; margin-top:5px; z-index:2; position:relative; flex-shrink:0; background:linear-gradient(135deg, #38bdf8, #818cf8); box-shadow: 0 0 10px rgba(56,189,248,0.3); animation:dotGlow 3s ease-in-out infinite; }
-        @keyframes dotGlow {
-            0%, 100% { box-shadow: 0 0 6px rgba(56,189,248,0.2); transform:scale(0.9); }
-            50% { box-shadow: 0 0 16px rgba(56,189,248,0.5), 0 0 30px rgba(56,189,248,0.1); transform:scale(1.1); }
+        .tl-item:not(:last-child)::after { content:''; position:absolute; left:5px; top:18px; bottom:-18px; width:1px; background:linear-gradient(180deg, rgba(56,189,248,0.15), rgba(2,132,199,0.08)); }
+        .tl-dot { width:11px; height:11px; border-radius:50%; margin-top:5px; z-index:2; position:relative; flex-shrink:0; background:linear-gradient(135deg, #06b6d4, #a855f7); animation: dotPulse 2s infinite alternate; }
+        @keyframes dotPulse {
+            0% { box-shadow: 0 0 5px rgba(6,182,212,0.3); transform:scale(0.85); opacity: 0.8; }
+            100% { box-shadow: 0 0 15px rgba(168,85,247,0.8), 0 0 25px rgba(6,182,212,0.5); transform:scale(1.2); opacity: 1; }
         }
-        .tl-item:nth-child(2) .tl-dot { animation-delay:0.5s; }
-        .tl-item:nth-child(3) .tl-dot { animation-delay:1s; }
-        .tl-item:nth-child(4) .tl-dot { animation-delay:1.5s; }
-        .tl-item:nth-child(5) .tl-dot { animation-delay:2s; }
-        .tl-item:nth-child(6) .tl-dot { animation-delay:2.5s; }
-        .tl-info strong { display:block; font-family:'Outfit'; font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.8); margin-bottom:2px; }
-        .tl-info span { font-size:0.7rem; color:rgba(255,255,255,0.3); font-weight:300; }
+        .tl-item:nth-child(1) .tl-dot { animation-delay: 0s; }
+        .tl-item:nth-child(2) .tl-dot { animation-delay: 0.3s; }
+        .tl-item:nth-child(3) .tl-dot { animation-delay: 0.6s; }
+        .tl-item:nth-child(4) .tl-dot { animation-delay: 0.9s; }
+        .tl-item:nth-child(5) .tl-dot { animation-delay: 1.2s; }
+        .tl-item:last-child .tl-dot { background:#22c55e; box-shadow: 0 0 10px rgba(34,197,94,0.6); animation:none; }
+
+        /* ===== LED HOVER EFFECT ===== */
+        .hover-led { position:relative; overflow:hidden; transition: all 0.3s; }
+        .hover-led::before { content:''; position:absolute; top:0; left:0; width:45%; height:2px; background:linear-gradient(90deg, transparent 0%, #38bdf8 50%, transparent 100%); box-shadow: 0 0 15px rgba(56,189,248,0.8), 0 0 5px rgba(56,189,248,1); opacity:0; transition:opacity 0.4s; pointer-events:none; z-index:10; }
+        .hover-led:hover::before { opacity:1; }
+        .hover-led:hover { border-color: rgba(56,189,248,0.2) !important; background:rgba(56,189,248,0.02); }
+
+        /* ===== FUTURE INTERVENTIONS ===== */
+        .future-interventions { margin-top:30px; padding:16px 20px; transition:all 0.3s; border-radius:12px; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); }
+        .future-interventions summary { font-size:0.85rem; font-weight:600; color:rgba(255,255,255,0.7); cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; outline:none; }
+        .future-interventions summary::-webkit-details-marker { display:none; }
+        .future-interventions summary::after { content:'+'; font-size:1.2rem; font-weight:300; transition:0.3s; }
+        .future-interventions[open] summary::after { transform:rotate(45deg); color:#38bdf8; }
+        .future-interventions[open] { border-color:rgba(56,189,248,0.3) !important; background:rgba(15, 23, 42, 0.6); }
+        .fi-content { padding-top:16px; margin-top:16px; border-top:1px solid rgba(255,255,255,0.05); }
+        .fi-warning { font-size:0.75rem; color:#fca5a5; background:rgba(239,68,68,0.1); padding:10px 14px; border-radius:8px; border-left:3px solid #ef4444; margin-bottom:16px; line-height:1.5; }
+        .fi-content table { width:100%; border-collapse:collapse; margin-bottom:16px; }
+        .fi-content th { font-size:0.7rem; text-transform:uppercase; color:rgba(56,189,248,0.6); text-align:left; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+        .fi-content td { padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.02); vertical-align:top; }
+        .fi-content td strong { display:block; font-size:0.85rem; color:rgba(255,255,255,0.9); }
+        .fi-content td span { display:block; font-size:0.7rem; color:rgba(255,255,255,0.4); margin-top:2px; }
+        .fi-content td:last-child { text-align:right; font-weight:600; color:#38bdf8; font-family:monospace; font-size:0.9rem; }
+        .wa-btn-small { display:inline-flex; align-items:center; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2); color:#4ade80; padding:8px 16px; border-radius:100px; font-size:0.75rem; font-weight:500; text-decoration:none; transition:all 0.3s; }
+        .wa-btn-small:hover { background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.3); transform:translateY(-1px); }
+        .tl-info strong { display:block; font-size:0.82rem; font-weight:500; color:rgba(255,255,255,0.85); margin-bottom:2px; }
+        .tl-info span { font-size:0.7rem; color:rgba(255,255,255,0.4); font-weight:300; }
 
         /* ===== FOOTER ===== */
         .footer { text-align:center; margin-top:64px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.04); }
         .footer img { height:20px; filter:brightness(0) invert(1); opacity:0.25; margin-bottom:8px; }
-        .footer .sig { font-family:'Outfit'; font-size:0.55rem; color:rgba(255,255,255,0.15); letter-spacing:3px; text-transform:uppercase; margin-bottom:24px; }
-        .wa-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.1); color:rgba(56,189,248,0.8); padding:12px 24px; border-radius:100px; font-family:'Outfit'; font-weight:500; text-decoration:none; font-size:0.82rem; transition:all 0.3s; }
+        .footer .sig { font-size:0.55rem; color:rgba(255,255,255,0.15); letter-spacing:3px; text-transform:uppercase; margin-bottom:24px; font-weight: 500; }
+        .wa-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.1); color:rgba(56,189,248,0.8); padding:12px 24px; border-radius:100px; font-weight:500; text-decoration:none; font-size:0.82rem; transition:all 0.3s; }
         .wa-btn:hover { background:rgba(56,189,248,0.1); border-color:rgba(56,189,248,0.2); box-shadow: 0 0 20px rgba(56,189,248,0.08); transform:translateY(-1px); }
     </style>
 </head>
@@ -121,21 +165,33 @@
             <div class="pill">Bóveda de Entrega</div>
             <h1>Fiore de Enero</h1>
             <p>Ecosistema Gastronómico Digital</p>
-            <div class="ver">v1.0 · abril 2026</div>
+            <div class="ver">v1.0.1 · abril 2026</div>
         </div>
 
         <a href="https://fiore-de-enero.vercel.app/" target="_blank" class="btn btn-primary">Abrir VCard Pública →</a>
         <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary">⚙ Command Center</a>
-        <a href="https://www.canva.com/design/DAHEuJvO_n0/ogEJsneQvppjsfG6w6G7IA/edit" target="_blank" class="btn btn-canva">🎨 Editar Talleres en Canva</a>
+        <a href="https://www.canva.com/design/DAHEuJvO_n0/ogEJsneQvppjsfG6w6G7IA/edit" target="_blank" class="btn btn-canva">🎨 Editar Actividades Especiales en Canva</a>
 
         <div class="qr-section">
-            <p>Código QR para mesas o caja</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=06060a&format=svg" alt="QR">
+            <div class="qr-carousel" id="qr-slider">
+                <div class="qr-slide" id="slide0">
+                    <p>QR Menú para Mesas</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=020617&format=svg" alt="QR VCard">
+                </div>
+                <div class="qr-slide" id="slide1">
+                    <p>QR Secreto (Sellar Lealtad)</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/?action=stamp&bgcolor=FFFFFF&color=020617&format=svg" alt="QR Puntos">
+                </div>
+            </div>
+            <div class="qr-dots">
+                <div class="qr-dot active" onclick="document.getElementById('qr-slider').scrollTo({left:0, behavior:'smooth'})"></div>
+                <div class="qr-dot" onclick="document.getElementById('qr-slider').scrollTo({left:500, behavior:'smooth'})"></div>
+            </div>
         </div>
 
         <div class="section-title">Documentación</div>
 
-        <a href="01_Requerimientos_Onboarding.html" target="_blank" class="doc-card">
+        <a href="01_Requerimientos_Onboarding.html" target="_blank" class="doc-card hover-led">
             <div class="doc-num">01</div>
             <div class="doc-info">
                 <h3>Requerimientos</h3>
@@ -144,79 +200,94 @@
             <div class="doc-arrow">→</div>
         </a>
 
-        <a href="02_Guia_de_Uso_Detallada.html" target="_blank" class="doc-card">
+        <a href="02_Guia_de_Uso_Detallada.html" target="_blank" class="doc-card hover-led">
             <div class="doc-num">02</div>
             <div class="doc-info">
-                <h3>Guía de Operación</h3>
-                <p>Command Center, carta digital y talleres</p>
+                <h3>Guía de Usuario VIP</h3>
+                <p>Uso del Panel, PIN, Tarjeta Lealtad y Edición</p>
             </div>
             <div class="doc-arrow">→</div>
         </a>
 
-        <a href="03_Guia_de_Infraestructura.html" target="_blank" class="doc-card">
+        <a href="03_Guia_de_Infraestructura.html" target="_blank" class="doc-card hover-led">
             <div class="doc-num">03</div>
             <div class="doc-info">
-                <h3>Infraestructura</h3>
-                <p>Arquitectura serverless, hosting y backups</p>
+                <h3>Infraestructura de Seguridad</h3>
+                <p>Headers, Tokens, Backups y Bóveda</p>
             </div>
             <div class="doc-arrow">→</div>
         </a>
 
         <div class="section-title">Código Fuente</div>
 
-        <div class="source-card">
+        <div class="source-card hover-led">
             <h3>📦 Repositorio Completo</h3>
-            <p>Todo el código de tu ecosistema digital. Propiedad 100% tuya. Sin pagos recurrentes, sin dependencias, sin letra chica.</p>
-            <a href="https://github.com/marte131324/fiore-de-enero" target="_blank" class="source-btn">Ir al Repositorio →</a>
-            <div class="guarantee">🔒 Propiedad total del cliente · Cero recurrencia</div>
+            <p>Todo el código de tu ecosistema web. Propiedad 100% tuya. Sin pagos recurrentes engañosos, sin letra chica.</p>
+            <a href="https://github.com/marte131324/fiore-de-enero" target="_blank" class="source-btn">Ir al GitHub de Entrega →</a>
+            <div class="guarantee">🔒 Código libre de recurrencia · Tu propiedad</div>
         </div>
 
-        <div class="section-title">Status</div>
+        <div class="section-title">Status del Proyecto</div>
 
-        <div class="timeline">
+        <div class="timeline hover-led">
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
                     <strong>Diseño UX/UI Premium</strong>
-                    <span>PWA con estética Dark Italian Gold</span>
+                    <span>PWA en Dark Italian Gold</span>
                 </div>
             </div>
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
-                    <strong>Menú Digital Interactivo</strong>
-                    <span>63 platillos con carrito y pedido WhatsApp</span>
+                    <strong>Menú Digital y Tarjeta Rewards</strong>
+                    <span>Sistema de cupones y validación QR secreta</span>
                 </div>
             </div>
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
-                    <strong>Command Center</strong>
-                    <span>Dashboard para precios, promos y eventos</span>
+                    <strong>Command Center + PIN Gate</strong>
+                    <span>Admin seguro con PIN SHA-256 para gestionar precios</span>
                 </div>
             </div>
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
-                    <strong>Backend Serverless</strong>
-                    <span>Google Apps Script — Cero costo</span>
+                    <strong>Backend Serverless Blindado</strong>
+                    <span>Google Sheets con Token webhook activo</span>
                 </div>
             </div>
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
-                    <strong>CDN Global + SSL</strong>
-                    <span>99.9% uptime, dominio personalizable</span>
+                    <strong>CDN Global + SSL + Headers</strong>
+                    <span>Despliegue protegido contra clickjacking y XSS</span>
                 </div>
             </div>
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
                     <strong>Bóveda Entregada</strong>
-                    <span>Docs, código y accesos transferidos</span>
+                    <span>Proyecto formalmente cerrado y blindado</span>
                 </div>
             </div>
         </div>
+
+        <details class="future-interventions hover-led">
+            <summary>Modificaciones Futuras (Post-Entrega)</summary>
+            <div class="fi-content">
+                <p class="fi-warning">⚠️ <strong>ESTABILIDAD DEL CÓDIGO:</strong> El ecosistema actual es estable y ha sido sellado criptográficamente. Cualquier intervención directa en la infraestructura por personal no autorizado puede quebrar la seguridad. Solicite ajustes solo por este canal.</p>
+                <table>
+                    <tr><th>Tipo de Modificación</th><th>Costo de Agencia</th></tr>
+                    <tr><td><strong>Sencilla</strong><br><span>Actualización de textos cortos, cambios de enlaces o ajuste de paleta de colores.</span></td><td>$200 MXN</td></tr>
+                    <tr><td><strong>Avanzada</strong><br><span>Creación de nuevas secciones, actualización/cambio de imágenes, flujos lógicos complejos UX o integración de APIs.</span></td><td>$500 MXN</td></tr>
+                </table>
+                <div style="text-align: right; margin-top: 10px;">
+                    <a href="https://wa.me/522214092478?text=Hola%20Treze%20Labs%2C%20requiero%20una%20intervencion%20en%20el%20sistema..." class="wa-btn-small">Solicitar Intervención Clínica →</a>
+                </div>
+            </div>
+        </details>
 
         <div class="footer">
             <img src="../treze_footer.png" alt="Treze Labs">
@@ -227,7 +298,7 @@
     </div>
 
     <script>
-    // === 3D Perspective Particle Mesh ===
+    // === 3D Perspective Particle Mesh with Mouse Reaction ===
     const c = document.getElementById('mesh');
     const ctx = c.getContext('2d');
     let W, H;
@@ -245,38 +316,61 @@
     }
 
     let t = 0;
+    
+    // Mouse tracking for interaction
+    let mouse = { x: W/2, y: H/2, targetX: W/2, targetY: H/2 };
+    window.addEventListener('mousemove', e => {
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
+    });
+
     function draw() {
         ctx.clearRect(0, 0, W, H);
         t += 0.008;
+        
+        // Smoothly interpolate mouse position
+        mouse.x += (mouse.targetX - mouse.x) * 0.05;
+        mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
-        const cx = W / 2, cy = H / 2;
-        const spX = W / (COLS - 1);
-        const spY = H / (ROWS - 1);
+        // Origin for perspective based on mouse inverted lightly to create parallax
+        const cx = W / 2 + (W/2 - mouse.x) * 0.1;
+        const cy = H / 2 + (H/2 - mouse.y) * 0.1;
+        
+        // Fix mobile stretching by enforcing a minimum grid rendering size, centering the viewport on smaller screens
+        const gridW = Math.max(W, 1200);
+        const gridH = Math.max(H, 800);
+        const offsetX = (W - gridW) / 2;
+        const offsetY = (H - gridH) / 2;
+        
+        const spX = gridW / (COLS - 1);
+        const spY = gridH / (ROWS - 1);
 
         for (let p of points) {
-            // Base grid position
-            let x = p.gx * spX;
-            let y = p.gy * spY;
+            let x = p.gx * spX + offsetX;
+            let y = p.gy * spY + offsetY;
 
-            // 3D wave displacement
-            const d = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+            // Distance to mouse to create a repelling/attracting wave effect
+            const distToMouse = Math.sqrt((x - mouse.x)**2 + (y - mouse.y)**2);
+            const mouseEffect = Math.max(0, 300 - distToMouse) / 300 * 15; // Raised area near mouse
+
+            const d = Math.sqrt((x - W/2) ** 2 + (y - H/2) ** 2);
             const wave = Math.sin(d * 0.008 - t * 2.5) * 12;
             const wave2 = Math.cos(x * 0.005 + t * 1.8) * Math.sin(y * 0.006 - t) * 8;
-            const z = wave + wave2;
+            
+            // Total height Z
+            const z = wave + wave2 + mouseEffect;
 
-            // Perspective projection
             const scale = 1 + z * 0.008;
             const px = cx + (x - cx) * scale;
             const py = cy + (y - cy) * scale;
 
-            // Brightness based on height (z) — creates 3D illusion
-            const bright = 0.08 + (z + 20) / 50 * 0.35;
-            const radius = 0.6 + (z + 20) / 50 * 1.0;
+            const bright = 0.08 + (z + 20) / 50 * 0.4;
+            const radius = 0.6 + (z + 20) / 50 * 1.2;
 
-            // Color shift: higher = more cyan, lower = more purple
-            const r = Math.floor(40 + z * 0.8);
-            const g = Math.floor(160 + z * 2);
-            const b = Math.floor(230 + z * 0.5);
+            // Blue monochromatic color shift: cyan to deep blue
+            const r = Math.floor(10 + z * 0.5);   // very low red
+            const g = Math.floor(120 + z * 4);    // medium green/cyan
+            const b = Math.floor(200 + z * 2);    // high blue
 
             ctx.beginPath();
             ctx.arc(px, py, Math.max(0.3, radius), 0, Math.PI * 2);
@@ -284,28 +378,26 @@
             ctx.fill();
         }
 
-        // Draw some connecting lines for nearby bright dots
         ctx.strokeStyle = 'rgba(56,189,248,0.015)';
         ctx.lineWidth = 0.5;
         for (let j = 0; j < ROWS - 1; j++) {
             for (let i = 0; i < COLS - 1; i++) {
                 const idx = j * COLS + i;
-                const x1 = points[idx].gx * spX;
-                const y1 = points[idx].gy * spY;
-                const x2 = points[idx + 1].gx * spX;
-                const y2 = points[idx + 1].gy * spY;
+                const p1 = points[idx];
+                const p2 = points[idx + 1];
 
-                const d1 = Math.sqrt((x1 - cx) ** 2 + (y1 - cy) ** 2);
-                const w1 = Math.sin(d1 * 0.008 - t * 2.5) * 12;
-                const s1 = 1 + w1 * 0.008;
-                const px1 = cx + (x1 - cx) * s1;
-                const py1 = cy + (y1 - cy) * s1;
+                const calcPoint = (p) => {
+                    let x = p.gx * spX + offsetX, y = p.gy * spY + offsetY;
+                    let distM = Math.sqrt((x - mouse.x)**2 + (y - mouse.y)**2);
+                    let mE = Math.max(0, 300 - distM) / 300 * 15;
+                    let d = Math.sqrt((x - W/2) ** 2 + (y - H/2) ** 2);
+                    let z = Math.sin(d * 0.008 - t * 2.5) * 12 + Math.cos(x * 0.005 + t * 1.8) * Math.sin(y * 0.006 - t) * 8 + mE;
+                    let s = 1 + z * 0.008;
+                    return [cx + (x - cx) * s, cy + (y - cy) * s];
+                };
 
-                const d2 = Math.sqrt((x2 - cx) ** 2 + (y2 - cy) ** 2);
-                const w2 = Math.sin(d2 * 0.008 - t * 2.5) * 12;
-                const s2 = 1 + w2 * 0.008;
-                const px2 = cx + (x2 - cx) * s2;
-                const py2 = cy + (y2 - cy) * s2;
+                const [px1, py1] = calcPoint(p1);
+                const [px2, py2] = calcPoint(p2);
 
                 ctx.beginPath();
                 ctx.moveTo(px1, py1);
@@ -317,6 +409,16 @@
         requestAnimationFrame(draw);
     }
     draw();
+
+    // QR Slider Logic
+    document.getElementById('qr-slider').addEventListener('scroll', function (e) {
+        const dots = document.querySelectorAll('.qr-dot');
+        const scrollIndex = Math.round(this.scrollLeft / this.clientWidth);
+        dots.forEach((dot, index) => {
+            if (index === scrollIndex) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    });
     </script>
 
 </body>

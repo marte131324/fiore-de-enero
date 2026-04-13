@@ -60,16 +60,26 @@
             <div style="margin-left: 20px;"><span class="file">style.css</span> <span class="desc"># Estilos con CSS variables Dark/Gold</span></div>
             <div style="margin-left: 20px;"><span class="file">script.js</span> <span class="desc"># Motor de UX e iterador del catálogo</span></div>
             <div style="margin-left: 20px;"><span class="folder">admin/</span> <span class="critical"># Panel Privado (NO SE DEBE RENOMBRAR)</span></div>
-            <div style="margin-left: 40px;"><span class="file">index.html</span> <span class="desc"># Dashboard administrativo UI</span></div>
-            <div style="margin-left: 40px;"><span class="file">app.js</span> <span class="desc"># Controlador fetch PUT/POST para sheets</span></div>
+            <div style="margin-left: 40px;"><span class="file">index.html</span> <span class="desc"># Dashboard administrativo UI (PIN GATE SHA-256)</span></div>
+            <div style="margin-left: 40px;"><span class="file">app.js</span> <span class="desc"># Controlador fetch PUT/POST para sheets (Token)</span></div>
+            <div style="margin-left: 20px;"><span class="file">vercel.json</span> <span class="desc"># Security Headers (Clickjacking, XSS)</span></div>
             <div style="margin-left: 20px;"><span class="file">README_DATABASE_SETUP.md</span> <span class="desc"># Backend Source (Script)</span></div>
         </div>
     </div>
 
     <div class="section-card">
+        <h3>Infraestructura de Seguridad (Fortaleza Treze)</h3>
+        <ul>
+            <li><strong>Security Headers en Edge:</strong> Vercel inyecta automáticamente cabeceras como <code>X-Frame-Options: SAMEORIGIN</code> y <code>X-XSS-Protection</code> para evitar que bots clonen tu sitio o lo incrusten en otras páginas (Clickjacking).</li>
+            <li><strong>Despacho Seguro (Webhook Token):</strong> Solo tu panel administrativo posee la llave secreta para escribir en Firebase/Google Sheets. Si los hackers intentan enviar peticiones <code>POST</code> directas, serán rechazados.</li>
+            <li><strong>Criptografía en Cliente:</strong> El código PIN (`2026`) está hasheado criptográficamente (SHA-256) en el frontend. Si se inspecciona el código, solo se verá el hash, nunca la contraseña en texto plano.</li>
+        </ul>
+    </div>
+    
+    <div class="section-card">
         <h3>Hosting, Costos Cero y Arquitectura Severless</h3>
         <ul>
-            <li><strong>Frontend CND:</strong> Desplegado mediante Github y la arquitectura Global Edge de Vercel. <em>(Sin mantenimiento de Hosting, optimización inmediata 99.9% up-time)</em>.</li>
+            <li><strong>Frontend CDN:</strong> Desplegado mediante Github y la arquitectura Global Edge de Vercel. <em>(Sin mantenimiento de Hosting, SSL forzado, HSTS, 99.9% up-time)</em>.</li>
             <li><strong>Base de Datos y Webhook (Backend):</strong> El catálogo, descripciones de platillos y configuración es orquestada en Google Apps Script a través de Google Sheets, la conexión se realiza gracias a una petición <code>HTTP(S) async-fetch no-cors</code>. Coste y límite mensual de despliegues en servidores back-end convencionales eludidos estratégicamente.</li>
             <li><strong>Alojamiento Multimedia:</strong> Gráficos estáticos integrados; banners de promoción interactivos o Canva iframes optimizados.</li>
         </ul>

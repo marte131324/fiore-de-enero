@@ -12,6 +12,7 @@
     <meta property="og:image" itemprop="image" content="https://fiore-de-enero.vercel.app/Assets/Portada.png">
     <meta property="og:url" content="https://fiore-de-enero.vercel.app/">
     <meta property="og:type" content="website">
+    <link rel="icon" type="image/jpeg" href="Assets/Logo.jpg">
     <link rel="stylesheet" href="style.css?v=4">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +25,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
 </head>
 <body>
-    <!-- Intro Splash -->
+    <!-- Intro Splash - CSS fallback auto-dismiss after 3.5s even if JS fails -->
+    <style>
+        @keyframes splashAutoDismiss {
+            0%, 85% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
+        }
+        #intro-splash { animation: splashAutoDismiss 3.5s ease forwards; }
+    </style>
     <div id="intro-splash" class="intro-splash">
 
         <!-- TREZE LABS CO-BRANDING SPLASH -->

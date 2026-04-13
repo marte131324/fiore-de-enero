@@ -553,6 +553,7 @@ input:focus {
 .reviews-section {
     text-align: center;
     padding-top: 1rem;
+    margin-bottom: 3rem;
 }
 
 .section-title {

@@ -1,3 +1,22 @@
+// === TREZE LABS ANTI-CLONE & EASTER EGG ===
+(function() {
+    // 1. Console Easter Egg
+    console.log("%c TREZE LABS - Propiedad Intelectual Protegida", "color: #38bdf8; font-weight: bold; font-size: 14px;");
+    console.log("%c⚠️ ALERTA DE PROPIEDAD INTELECTUAL", "color: #ef4444; font-size: 16px; font-weight: bold;");
+    console.log("%cEste ecosistema está protegido bajo arquitectura de Treze Labs. Cualquier intento de clonación, robo de código o ingeniería inversa será detectado. https://wa.me/522214092478", "color: #cbd5e1; font-size: 12px;");
+
+    // 2. Domain Lock (Anti-Clonación)
+    var allowedDomains = ["fiore-de-enero.vercel.app", "localhost", "127.0.0.1"];
+    var currentDomain = window.location.hostname;
+    
+    if (allowedDomains.indexOf(currentDomain) === -1 && currentDomain !== "") {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.innerHTML = '<div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#020617;color:#f8fafc;font-family:monospace;text-align:center;padding:20px;position:fixed;inset:0;z-index:999999"><h1 style="color:#ef4444;font-size:3rem;margin-bottom:20px">ACCESO BLOQUEADO</h1><p style="font-size:1.2rem;max-width:600px;line-height:1.6;color:#94a3b8">Este ecosistema es propiedad de Treze Labs. Dominio no autorizado.</p><a href="https://wa.me/522214092478" style="margin-top:40px;padding:15px 30px;border:1px solid #38bdf8;color:#38bdf8;text-decoration:none;border-radius:8px">Contactar Treze Labs</a></div>';
+        });
+        throw new Error("Dominio no autorizado.");
+    }
+})();
+
 // Global States
 // Audio removed per client request
 

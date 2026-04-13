@@ -2,31 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Guía de Uso Detallada | Fiore de Enero</title>
+    <title>Guía de Uso VIP | Fiore de Enero</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         * { margin:0; padding:0; box-sizing:border-box; }
         @page { size: letter; margin: 2cm 2.5cm; }
         body { font-family:'Inter',sans-serif; color:#1e293b; line-height:1.7; padding:40px 50px; max-width:850px; margin:0 auto; }
-        .header { border-bottom:3px solid #0e86b0; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
-        .header h1 { font-size:1.6rem; font-weight:800; color:#042d3d; }
+        .header { border-bottom:3px solid #0284c7; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
+        .header h1 { font-size:1.6rem; font-weight:800; color:#0f172a; }
         .header .sub { font-size:0.8rem; color:#64748b; }
         .badge { display:inline-block; background:#0e86b0; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom: 5px; }
-        h2 { font-size:1.15rem; font-weight:700; color:#0e86b0; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+        h2 { font-size:1.15rem; font-weight:700; color:#0284c7; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
         h3 { font-size:0.95rem; font-weight:700; color:#334155; margin:18px 0 8px; }
         p, li { font-size:0.88rem; color:#475569; }
         ul, ol { padding-left:22px; margin:8px 0; }
         li { margin:6px 0; }
         .section-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px 24px; margin:16px 0; page-break-inside:avoid; }
-        .section-card h3 { margin-top:0; color:#0e86b0; }
-        .step { display:flex; gap:14px; margin:12px 0; align-items:flex-start; }
-        .step-num { background:#0e86b0; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; flex-shrink:0; margin-top:2px; }
-        .step-text { flex:1; }
+        .section-card h3 { margin-top:0; color:#0284c7; }
         .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
         .warn { background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#92400e; }
-        .note { background:#eff6ff; border-left:4px solid #0e86b0; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        .note { background:#eff6ff; border-left:4px solid #3b82f6; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        .security { background:#fef2f2; border-left:4px solid #ef4444; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#991b1b; }
+        .footer { margin-top:40px; padding-top:16px; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; }
+        
+        /* Dark Mode */
+        body.dark-mode { background:#0f172a; color:#cbd5e1; }
+        body.dark-mode .header { border-bottom-color: #38bdf8; }
+        body.dark-mode .header h1 { color:#f8fafc; }
+        body.dark-mode h2 { color:#38bdf8; border-bottom-color:#334155; }
+        body.dark-mode h3 { color:#e2e8f0; }
+        body.dark-mode p, body.dark-mode li { color:#94a3b8; }
+        body.dark-mode .section-card { background:#1e293b; border-color:#334155; }
+        body.dark-mode .section-card h3 { color:#38bdf8; }
+        body.dark-mode .note { background:rgba(59,130,246,0.1); color:#93c5fd; }
+        body.dark-mode .warn { background:rgba(245,158,11,0.1); color:#fcd34d; }
+        body.dark-mode .security { background:rgba(239,68,68,0.1); color:#fca5a5; }
+        body.dark-mode .tip { background:rgba(34,197,94,0.1); color:#86efac; }
+        body.dark-mode .footer { border-top-color:#334155; color:#64748b; }
+        body.dark-mode code { background:#020617; color:#38bdf8; padding:2px 6px; border-radius:4px; }
+        
+        .theme-btn { background:none; border:none; cursor:pointer; font-size:1.2rem; color:#64748b; margin-left:20px; outline:none; transition:0.3s; }
+        body.dark-mode .theme-btn { color:#fcd34d; }
+        .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
+        .warn { background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#92400e; }
+        .note { background:#eff6ff; border-left:4px solid #3b82f6; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        .security { background:#fef2f2; border-left:4px solid #ef4444; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#991b1b; }
         .footer { margin-top:40px; padding-top:16px; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; }
         @media print { body { padding:0; } .section-card { break-inside:avoid; } }
+        .qr-placeholder { text-align: center; margin: 20px 0; }
+        .qr-placeholder img { width: 140px; height: 140px; border: 1px solid #ccc; padding: 5px; border-radius: 8px; }
+        .qr-placeholder p { font-size: 0.75rem; color: #64748b; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -34,69 +59,94 @@
     <div class="header">
         <div>
             <span class="badge">Documento 2 de 3</span>
-            <h1>📖 Guía de Operación Autónoma</h1>
-            <div class="sub">Fiore de Enero — Entorno Digital Gastronómico</div>
+            <h1>📖 Guía de Uso VIP</h1>
+            <div class="sub">Fiore de Enero — Ecosistema Digital</div>
         </div>
-        <div style="text-align:right;">
-            <div style="font-size:0.75rem; color:#94a3b8;">Treze Labs</div>
-            <div style="font-size:0.75rem; color:#94a3b8;">Laboratorio de Sistemas Digitales · Abril 2026</div>
-        </div>
-    </div>
-
-    <p>Has recibido las llaves de un Ecosistema Digital Premium. Esta guía te indicará puntualmente cómo administrar cada sector de tu VCard para que escale a la par de las necesidades de tu Restaurante, sin depender de intermediarios.</p>
-
-    <div class="section-card">
-        <h3>1. ¿Cómo compartir tu VCard Pública?</h3>
-        <p>Tu tarjeta digital ahora reemplaza los antiguos PDFs de menú. Fue creada con tecnología <strong>Progressive Web App</strong> (app progresiva web). Formas de distribuirla:</p>
-        <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-text"><strong>Por Enlace Universal:</strong> Envíala por WhatsApp a tus clientes, agrégala en la biografía de tu Instagram o en la respuesta automática de Facebook. Mostrará el ícono de tu local y título profesional con fotografía precargada.</div>
-        </div>
-        <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-text"><strong>Por Código QR (En local):</strong> Coloca el código QR de este Ecosistema en la caja o en acrílicos sobre las mesas para que el menú siempre esté disponible.</div>
-        </div>
-        <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-text"><strong>Instalación:</strong> Los comensales verán una notificación de "Instalar la aplicación". Podrán tener el ícono de Fiore de Enero directo en sus celulares.</div>
+        <div style="text-align:right; display:flex; align-items:flex-end; gap:10px;">
+            <div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Treze Labs</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Laboratorio de Sistemas Digitales · Abril 2026</div>
+            </div>
+            <button class="theme-btn" onclick="document.body.classList.toggle('dark-mode')" title="Alternar Modo Oscuro">🌓</button>
         </div>
     </div>
 
+    <p>Has recibido las llaves de tu Ecosistema Digital Premium protegido por Treze. Esta guía detalla cómo administrar y operar cada sector de tu PWA (Progressive Web App).</p>
+
+    <h2>⚙️ 1. Seguridad y Acceso al Admin Panel</h2>
     <div class="section-card">
-        <h3>2. Tu Command Center (Panel Maestro)</h3>
-        <p>Tu sistema está 100% desacoplado. Hemos eliminado cualquier cobro mensual o dependencia tecnológica por concepto de "cambié el menú". Cuentas con un <strong>Admin Dashboard</strong> exclusivo creado a la medida.</p>
+        <p>Tu <strong>Command Center</strong> (Panel Administrativo) ha sido blindado siguiendo los estándares de "Fortaleza Treze" con candados anti-clickjacking y validación de escrituras.</p>
+        <div class="security">
+            <strong>🔐 PIN DE ACCESO:</strong> <code>2026</code>
+        </div>
         <ul>
-            <li><strong>Actualización Instántanea:</strong> Si entras a <code>/admin/index.html</code> (o a tu Hub de agencia treze labs), tendrás el Centro de Control. Cambia un precio de pizza ahí, y se actualizará en vivo en las pantallas de todos tus clientes, instantáneamente.</li>
-            <li><strong>Cierre por Fila:</strong> En la sección de Operaciones, si la agenda está llena, puedes cambiar el status a "Cerrado Temporalmente". Al instante bloquearás los pedidos en el mundo real.</li>
-            <li><strong>Marketing en vivo:</strong> Tienes un "Banner/Anuncio" flotante en lo alto de la página. Puedes poner mensajes importantes temporales ahí desde el panel.</li>
-            <li><strong>Pop-Ups:</strong> Tienes control de encender o apagar un "Pop-up" Promocional, maravilloso para el día de las madres o regalos.</li>
+            <li><strong>¿Dónde ingreso?</strong> Ubica el botón gris "⚙ Command Center" en tu Bóveda de Entrega, o ingresa agregando <code>/admin/index.html</code> a tu enlace.</li>
+            <li><strong>Protección Criptográfica:</strong> Tu PIN se valida mediante hash SHA-256 en tu propio dispositivo. Nadie en internet puede interceptar tu contraseña.</li>
+            <li><strong>Token Webhook:</strong> Tu sistema se comunica con la base de datos Google Sheets mediante un token interno invisible que bloquea que terceros puedan enviar datos falsos.</li>
+        </ul>
+    </div>
+
+    <h2>📱 2. Explorando las Secciones de la VCard Pública</h2>
+    <div class="section-card">
+        <p>La vista principal que ven tus clientes está dividida en módulos de alta conversión:</p>
+        <ul>
+            <li><strong>Splash Screen:</strong> Pantalla de carga animada (logo de Fiore entrando y saliendo) para dar tiempo a que los datos carguen.</li>
+            <li><strong>Hero y Acciones Rápidas:</strong> Visual principal con botones para ir directo a la Carta, Hacer un Pedido y Ubicación Mapas.</li>
+            <li><strong>Sección de Talleres (Iframe):</strong> Muestra las postales que editas en Canva en vivo (detallado en la sección 4).</li>
+            <li><strong>Tarjeta Rewards / Lealtad:</strong> Un sistema gamificado para retener a tus clientes. Requiere escaneo físico (detallado en la sección 5).</li>
+            <li><strong>Sección de Menú/Carta Interactivo:</strong> Menú digital con filtros por categoría (Pizzas, Especialidades, Bebidas), motor de búsqueda en vivo y carrito flotante. Todo se alimenta directo de tu panel.</li>
+            <li><strong>Sección de Eventos (Cartelera):</strong> Shows, música en vivo o activaciones que das de alta en tu Command Center.</li>
+            <li><strong>Reseñas y Ubicación:</strong> Área social para dejar valoraciones y abrir Google Maps directamente al local.</li>
+        </ul>
+    </div>
+
+    <h2>🛒 3. ¿Cómo actualizar Precios y Platillos en Vivo?</h2>
+    <div class="section-card">
+        <p>Entra a tu <strong>Command Center</strong>. Desde ahí tienes control absoluto y en vivo:</p>
+        <ul>
+            <li><strong>Gestión de Menú:</strong> Podrás ver toda tu carta. Al editar un precio y pulsar "Guardar Cambios", se actualizará en los celulares de todos los clientes en ese mismo instante.</li>
+            <li><strong>Platillos Agotados:</strong> Si se acaba un ingrediente en cocina, no elimines el platillo; cambia su status a "Agotado". Así los clientes sabrán que existe pero por ahora no hay.</li>
+            <li><strong>Agenda y Operaciones:</strong> Puedes cambiar el estado de la Pizzería a "Cerrado Temporalmente" cuando haya sobre-pedido, o activar pop-ups de promociones especiales al instante.</li>
+            <li><strong>Cartelera de Eventos:</strong> Agrega nombre del DJ o banda, fecha y horario. Quedará visible automáticamente en la sección Eventos de la VCard.</li>
         </ul>
     </div>
     
+    <h2>🎨 4. Talleres No-Code en Canva</h2>
     <div class="section-card">
-        <h3>3. Publicación Inteligente de Talleres (Canva)</h3>
-        <p>Entendiendo la fluidez del mundo gastronómico, la sección de "Talleres Especiales" fue integrada directo con <strong>Canva</strong> en formato "No-Code" (sin código).</p>
-        <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-text">Entras a tu Canva, abres tu diseño pre-establecido de Talleres y modificas o pones nuevas fechas.</div>
+        <p>Requerimientos estéticos cambiantes se resuelven sin programar:</p>
+        <ul>
+            <li>Usa el botón "🎨 Editar Actividades" en la Bóveda de Entrega para abrir el diseño compartido en tu navegador.</li>
+            <li>Modifica el texto, la fotografía o la fecha. No muevas la estructura principal para que encaje bien en la VCard.</li>
+            <li>A los pocos minutos, tu sitio web mostrará esa postal nueva. (Lo que tú ves en Canva, lo ven en tu web).</li>
+        </ul>
+        <div class="note">
+            El link fue compartido vía Canva Colaborativo. En tus archivos de correo o cuenta ligada estará vigente.
         </div>
-        <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-text">De forma mágica, el iframe alojado en tu VCard actualizará este diseño al instante sin que ingreses a configuraciones complicadas. Lo que tú veas en Canva, verán ellos en tu App.</div>
+    </div>
+
+    <h2>🎁 5. Tarjeta Loyalty Rewards (Puntos)</h2>
+    <div class="section-card">
+        <p>Tus clientes acumulan "sellos" visuales en su celular. Para sellarles de manera segura, el mesero o cajero debe mostrarles un <strong>Código QR Secreto</strong> a sus cámaras.</p>
+        
+        <p style="margin-top: 15px;">Muestra este código exclusivo de staff para sumarles 1 sello en su dispositivo:</p>
+        
+        <div class="qr-placeholder">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/?action=stamp&bgcolor=FFFFFF&color=020617&format=svg" alt="QR Puntos">
+            <p>QR SECRETO (Solo Staff)</p>
+        </div>
+
+        <div class="warn">
+            <strong>Nunca envíes este QR a clientes.</strong> Imprímelo, plastifícalo y déjalo en caja. (También está disponible en el Carrusel de QRs de tu Bóveda web).
         </div>
     </div>
 
     <div class="tip">
-        <strong>Modo Híbrido:</strong> En caso de que se diera de baja internet en el restaurante o el sistema de Google perdiera temporalmente micro-conexión, el Ecosistema viene equipado con una arquitectura de caché de "Firma Estática" que garantiza que el menú aparezca con tu último guardado para no entorpecer operaciones. Nunca dejas de vender.
-    </div>
-
-    <div class="warn">
-        Recuerda siempre limpiar periódicamente elementos eliminados de la Carta en lugar de dejarlos con costo cero. Para aquellos platillos agotados en cocina, símplemente en su status cámbialo a "AGOTADO".
+        <strong>Distribuir tu App:</strong> Envía el Enlace Principal (fiore-de-enero.vercel.app) por WhatsApp o Instagram. Dile a los comensales que toquen el botón de "Compartir" de Apple/Android y seleccionen "Agregar a pantalla de inicio" para tener Fiore como una aplicación instalada.
     </div>
 
     <div class="footer">
         FIORE DE ENERO — Documentación de Entrega &copy; 2026 Treze Labs<br>
-        Este documento es confidencial y exclusivo para el cliente.
+        Este documento es confidencial y contiene PIN / Accesos.
     </div>
 
 </body>
