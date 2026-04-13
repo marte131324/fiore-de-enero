@@ -54,6 +54,9 @@
     <div class="bg-shape circle-2"></div>
 
     <main class="vcard-container">
+        <!-- Global Banner (Dynamic) -->
+        <div id="global-banner" style="display:none; background: var(--secondary-color); color: #1F2820; text-align: center; padding: 10px; font-weight: 600; font-family: var(--font-body); letter-spacing: 0.5px; z-index: 100;"></div>
+
         <!-- Portada -->
         <div class="cover-photo fade-in"></div>
         
@@ -312,6 +315,16 @@
         <a href="https://wa.me/522214092478?text=Hola%20Treze%20Labs%2C%20me%20gustar%C3%ADa%20solicitar%20el%20desarrollo%20de%20un%20sistema%20profesional." target="_blank" style="display: flex; align-items: center; text-decoration: none; -webkit-tap-highlight-color: transparent; outline: none; border: none; transition: transform 0.3s ease, opacity 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.opacity='0.8'" onmouseout="this.style.transform='scale(1)'; this.style.opacity='1'">
             <img src="treze_footer.png" alt="Treze Labs" style="height: 32px; object-fit: contain; filter: brightness(0) invert(1);">
         </a>
+    </div>
+</div>
+
+<!-- Promo Modal -->
+<div id="promo-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
+    <div class="modal-content glass-effect" style="max-width: 400px; width: 100%; text-align: center; position: relative;">
+        <button onclick="document.getElementById('promo-modal').style.display='none'" style="position: absolute; right: 15px; top: 15px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <h2 id="promo-title-display" style="color: var(--secondary-color); margin-bottom: 1rem; font-family: var(--font-heading);"></h2>
+        <p id="promo-desc-display" style="opacity: 0.9; line-height: 1.6; margin-bottom: 1.5rem;"></p>
+        <button onclick="document.getElementById('promo-modal').style.display='none'" class="secondary-btn" style="width: 100%;">¡Entendido!</button>
     </div>
 </div>
 

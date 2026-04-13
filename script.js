@@ -469,6 +469,38 @@ async function loadDynamicData() {
         const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSfezJEvwiAdwqsSqtUuCE3pctKRNg3zkeGoO-4iTZRjdMBlezOjlBBgrLbGqWMTsA/exec";
         const res = await fetch(WEBAPP_URL + "?action=get");
         const data = await res.json();
+        // Configuración General
+        if(data && data.config) {
+            // Global Banner
+            if(data.config.banner && data.config.banner.trim() !== '') {
+                const bannerDiv = document.getElementById('global-banner');
+                if(bannerDiv) {
+                    bannerDiv.innerText = data.config.banner;
+                    bannerDiv.style.display = 'block';
+                }
+            }
+
+            // Promo Pop-up
+            if(data.config.promoActive === 'SI') {
+                const promoModal = document.getElementById('promo-modal');
+                if(promoModal) {
+                    document.getElementById('promo-title-display').innerText = data.config.promoTitle || '¡Promoción Especial!';
+                    document.getElementById('promo-desc-display').innerText = data.config.promoDesc || '';
+                    promoModal.style.display = 'flex';
+                }
+            }
+
+            // Tienda Status
+            if(data.config.tiendaStatus && data.config.tiendaStatus !== 'ACEPTANDO PEDIDOS') {
+                const fabBtn = document.querySelector('.fab-whatsapp');
+                if(fabBtn) {
+                    fabBtn.innerHTML = '<i class="fas fa-lock"></i> CERRADO TEMPORALMENTE';
+                    fabBtn.style.background = '#8F2739'; // Red wine color
+                    fabBtn.style.pointerEvents = 'none';
+                    fabBtn.classList.remove('pulse-animation');
+                }
+            }
+        }
         
         // Render Eventos dinámicos
         if(data && data.config && data.config.eventoTitulo) {
