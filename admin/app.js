@@ -152,9 +152,11 @@ function renderProductos() {
                     <div class="product-price">$${p.precio} MXN</div>
                 </div>
             </div>
-            <div style="display:flex; align-items:center; gap:15px;">
-                <span class="status-badge ${p.status === 'DISPONIBLE' ? 'status-on' : 'status-off'}">${p.status}</span>
-                <button class="btn btn-secondary" onclick="editProduct('${p.id}')">Editar</button>
+            <div class="product-actions">
+                <span class="status-badge ${p.status === 'DISPONIBLE' ? 'status-on' : 'status-off'}">
+                    ${p.status === 'DISPONIBLE' ? '<i class="ri-checkbox-circle-fill"></i>' : '<i class="ri-close-circle-fill"></i>'} ${p.status}
+                </span>
+                <button class="btn btn-secondary" onclick="editProduct('${p.id}')"><i class="ri-pencil-line"></i> Editar</button>
             </div>
         </div>
         `;
