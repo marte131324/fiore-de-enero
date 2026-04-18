@@ -78,6 +78,10 @@ async function fetchDatos() {
         catalogoData = data.productos || [];
         renderProductos();
         hideLoader();
+        // Expose data for POS module
+        window._ventasHoy = data.ventasHoy || [];
+        window._traficoHoy = data.traficoHoy || 0;
+        if(typeof window.initCajaModule === 'function') window.initCajaModule();
     } catch(err) {
         console.error(err);
         hideLoader();
