@@ -91,6 +91,7 @@
         <!-- Navigation Tabs -->
         <nav class="nav-tabs fade-in" style="animation-delay: 0.1s;">
             <button class="tab-btn active" onclick="showSection('menu')">Menú</button>
+            <button class="tab-btn" onclick="showSection('galeria')">Galería</button>
             <button class="tab-btn" onclick="showSection('eventos')">Eventos</button>
             <button class="tab-btn" onclick="showSection('talleres')">Talleres</button>
             <button class="tab-btn" onclick="showSection('recompensas')">Fidelidad <i class="fas fa-gem" style="margin-left:4px; font-size:0.8rem;"></i></button>
@@ -125,6 +126,217 @@
                         <p style="margin-top: 0.5rem;"><em>Dulzor alto, acidez brillante y balanceada. Cuerpo cremoso con notas afrutadas (cereza, ciruela), achocolatadas y a caramelo.</em></p>
                     </div>
                     <!-- Populated by JS -->
+                </div>
+
+                <!-- MINI GALERIA FRONT AFTER MENU -->
+                <div class="gallery-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 2.5rem; margin-bottom: 0;">
+                    <div class="gallery-item" onclick="showSection('galeria')">
+                        <img src="FIORE FOTOS/_MG_9962.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="showSection('galeria')">
+                        <img src="FIORE FOTOS/_MG_8446.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="showSection('galeria')">
+                        <img src="FIORE FOTOS/_MG_8942.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="showSection('galeria')">
+                        <img src="FIORE FOTOS/_MG_9310.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="showSection('galeria')">
+                        <img src="FIORE FOTOS/_MG_8466.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" style="position:relative; overflow:hidden;" onclick="showSection('galeria')">
+                        <img src="FIORE FOTOS/_MG_8885.webp" alt="Fiore de Enero" loading="lazy" style="filter: brightness(0.5);">
+                        <div style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size: 1.2rem; pointer-events:none; z-index: 2;">Ver más</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Galería Section -->
+            <section id="galeria" class="content-section">
+                <div class="section-header">
+                    <h2>Galería</h2>
+                    <p>Momentos y sabores capturados en imagen</p>
+                </div>
+                                <div class="gallery-grid" id="gallery-grid">
+                    <!-- 59 fotos -->
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/2B79BE3D-3EDD-4089-BF2D-449D6B5CDAF2.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/5C1FB938-B735-44A3-B06A-1D28D557BEDD.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/8AD010C6-C8E6-4400-A81E-B6A5137832D3.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/C09FB9B7-F2DA-471D-ABD8-FD70AFD1D53F.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/IMG_7461.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_0086.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_0301.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_0324.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8252.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8418.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8420.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8426.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8433.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8437.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8446.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8466.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8867.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8885.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8909.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8936.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8942.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8945.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8946.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8953.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_8955.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9044.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9048.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9051.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9053.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9064.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9076.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9087.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9285.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9310.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9354.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9394.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9636.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9653.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9654.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9665.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9679.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9694.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9710.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9725.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9747.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9748.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9749.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9769.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9778.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9805.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9872.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9886.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9896.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9910.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9927.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9953.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9960.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9962.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(this)">
+                        <img src="FIORE FOTOS/_MG_9972.webp" alt="Fiore de Enero" loading="lazy">
+                    </div>
                 </div>
             </section>
 
@@ -287,10 +499,7 @@
     <!-- Ambient Audio Removed -->
 
 
-    <!-- Tour Button (floating, discreet) -->
-    <button id="start-tour" class="tour-btn" aria-label="Iniciar Tour">
-        <i class="fas fa-question-circle"></i>
-    </button>
+    <!-- Tour Button removed per client request -->
 
     <script src="script.js?v=5"></script>
 
@@ -349,6 +558,65 @@
         modal.querySelector('.modal-content').style.transform = 'translateY(20px)';
         setTimeout(() => modal.style.display = 'none', 400);
     }
+</script>
+
+<!-- Lightbox Modal for Gallery -->
+<div id="gallery-lightbox" class="gallery-lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
+    <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1, event)"><i class="fas fa-chevron-left"></i></button>
+    <img id="lightbox-img" src="" alt="Foto Fiore de Enero">
+    <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1, event)"><i class="fas fa-chevron-right"></i></button>
+    <div class="lightbox-counter"><span id="lightbox-current">1</span> / <span id="lightbox-total">59</span></div>
+</div>
+
+<script>
+    // Lightbox functionality
+    let lightboxIndex = 0;
+    const galleryItems = () => document.querySelectorAll('.gallery-item img');
+
+    function openLightbox(el) {
+        const imgs = galleryItems();
+        const clickedImg = el.querySelector('img');
+        lightboxIndex = Array.from(imgs).indexOf(clickedImg);
+        const lightbox = document.getElementById('gallery-lightbox');
+        document.getElementById('lightbox-img').src = clickedImg.src;
+        document.getElementById('lightbox-current').textContent = lightboxIndex + 1;
+        document.getElementById('lightbox-total').textContent = imgs.length;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+        if (e.target.classList.contains('lightbox-nav') || e.target.tagName === 'I') return;
+        if (e.target.id === 'lightbox-img') return;
+        document.getElementById('gallery-lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function navigateLightbox(dir, e) {
+        e.stopPropagation();
+        const imgs = galleryItems();
+        lightboxIndex = (lightboxIndex + dir + imgs.length) % imgs.length;
+        const lightboxImg = document.getElementById('lightbox-img');
+        lightboxImg.style.opacity = '0';
+        setTimeout(() => {
+            lightboxImg.src = imgs[lightboxIndex].src;
+            lightboxImg.onload = () => { lightboxImg.style.opacity = '1'; };
+            document.getElementById('lightbox-current').textContent = lightboxIndex + 1;
+        }, 150);
+    }
+
+    // Swipe support for mobile
+    let touchStartX = 0;
+    document.getElementById('gallery-lightbox').addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    document.getElementById('gallery-lightbox').addEventListener('touchend', (e) => {
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 50) {
+            navigateLightbox(diff > 0 ? 1 : -1, e);
+        }
+    }, { passive: true });
 </script>
 
 </body>
