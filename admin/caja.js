@@ -738,7 +738,7 @@
         setText('kpi-tickets', numTickets);
         setText('kpi-promedio','$'+promedio.toFixed(2));
         setText('kpi-personas', traficoCount);
-        renderMetodosPago(); renderTopProductos(); renderHourlyChart(); renderConversionGauge();
+        renderMetodosPago(); renderTopProductos(); renderFlopProductos(); renderHourlyChart(); renderConversionGauge();
     }
 
     function renderMetodosPago() {
@@ -760,6 +760,16 @@
         var sorted = Object.entries(prods).sort(function(a,b){ return b[1].qty - a[1].qty; }).slice(0,5);
         if(sorted.length === 0) { el.innerHTML = '<p class="dash-empty">Sin ventas registradas</p>'; return; }
         el.innerHTML = sorted.map(function(e,i) { return '<div class="top-product-row"><span class="top-rank">#'+(i+1)+'</span><span class="top-name">'+e[0]+'</span><span class="top-qty">'+e[1].qty+' uds — $'+e[1].rev.toFixed(2)+'</span></div>'; }).join('');
+    }
+
+    function renderFlopProductos() {
+        var el = document.getElementById('dash-flop-productos');
+        if(!el) return;
+        var prods = {};
+        ventasCache.forEach(function(v) { try { var items = JSON.parse(v.items); items.forEach(function(i) { if(!prods[i.n]) prods[i.n] = {qty:0,rev:0}; prods[i.n].qty += i.q; prods[i.n].rev += i.q*i.p; }); } catch(e) {} });
+        var sorted = Object.entries(prods).sort(function(a,b){ return a[1].qty - b[1].qty; }).slice(0,5);
+        if(sorted.length === 0) { el.innerHTML = '<p class="dash-empty">Sin ventas registradas</p>'; return; }
+        el.innerHTML = sorted.map(function(e,i) { return '<div class="top-product-row" style="opacity:0.8"><span class="top-rank" style="color:var(--danger)">#'+(i+1)+'</span><span class="top-name">'+e[0]+'</span><span class="top-qty">'+e[1].qty+' uds — $'+e[1].rev.toFixed(2)+'</span></div>'; }).join('');
     }
 
     function renderHourlyChart() {
@@ -809,7 +819,7 @@
                 items.map(function(i) { var nota = i.nota ? '<div style="font-size:11px;color:var(--success);font-style:italic">  → '+i.nota+'</div>' : ''; return '<div class="historial-item-row"><span>'+i.n+' × '+i.q+'</span><span style="color:var(--accent)">$'+(i.q*i.p).toFixed(2)+'</span></div>'+nota; }).join('') +
                 extras.map(function(ex) { return '<div class="historial-item-row"><span style="color:var(--success)">⚡ '+ex.concepto+'</span><span style="color:var(--accent)">+$'+parseFloat(ex.monto).toFixed(2)+'</span></div>'; }).join('') +
                 (parseFloat(v.propinaMonto) > 0 ? '<div class="historial-summary"><span>Propina '+v.propina+'%</span><span style="color:var(--accent)">+$'+parseFloat(v.propinaMonto).toFixed(2)+'</span></div>' : '') +
-            '</div></div></div>';
+            '<button class="btn btn-secondary btn-sm" onclick="reimprimirTicket(\''+v.id+'\')" style="width:100%;margin-top:10px;"><i class="ri-whatsapp-line"></i> Compartir Ticket</button></div></div></div>';
         }).join('');
     }
 
@@ -832,6 +842,62 @@
             (t.propina > 0 ? '💝 Propina (' + t.propina + '%): +$' + t.propinaMonto.toFixed(2) + '\n' : '') +
             '━━━━━━━━━━━━━━━\n✅ *TOTAL: $' + t.total.toFixed(2) + '*\n💳 Método: ' + t.metodoPago + '\n\nGracias por tu preferencia 🌸';
         window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    };
+
+    window.reimprimirTicket = function(id) {
+        var v = ventasCache.find(function(x) { return x.id === id; });
+        if(!v) { showToast('Ticket no encontrado'); return; }
+        
+        var items = []; try { items = JSON.parse(v.items); } catch(e) {}
+        var extras = []; try { extras = JSON.parse(v.extras || '[]'); } catch(e) {}
+
+        lastTicketData = {
+            id: v.id,
+            fecha: v.fecha,
+            hora: v.hora,
+            mesa: v.mesa || '',
+            personas: v.personas || 1,
+            items: items,
+            extras: extras,
+            extrasTotal: extras.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0),
+            subtotal: parseFloat(v.subtotal) || 0,
+            descuento: parseFloat(v.descuento) || 0,
+            descMonto: parseFloat(v.descMonto) || 0,
+            propina: parseFloat(v.propina) || 0,
+            propinaMonto: parseFloat(v.propinaMonto) || 0,
+            total: parseFloat(v.total) || 0,
+            metodoPago: v.metodoPago || 'EFECTIVO'
+        };
+        enviarTicketWhatsApp();
+    };
+
+    window.descargarReporteCSV = function() {
+        if(ventasCache.length === 0) { showToast('No hay ventas para exportar'); return; }
+        var headers = ['ID Ticket', 'Fecha', 'Hora', 'Mesa', 'Mesero', 'Personas', 'Metodo Pago', 'Items', 'Cargos Extra', 'Subtotal', 'Descuento %', 'Descuento $', 'Propina %', 'Propina $', 'TOTAL'];
+        var rows = ventasCache.map(function(v) {
+            var itemsStr = '[]';
+            try { itemsStr = JSON.parse(v.items).map(function(i){ return i.q + 'x ' + i.n; }).join(' | '); } catch(e) {}
+            var extrasStr = '[]';
+            try { extrasStr = JSON.parse(v.extras || '[]').map(function(e){ return e.concepto + ' (+$' + e.monto + ')'; }).join(' | '); } catch(e) {}
+            
+            return [
+                v.id, v.fecha, v.hora, v.mesa || '', v.mesero || 'Admin', v.personas || 1, v.metodoPago || 'EFECTIVO',
+                '"' + itemsStr + '"', '"' + extrasStr + '"',
+                parseFloat(v.subtotal||0).toFixed(2),
+                v.descuento||0, parseFloat(v.descMonto||0).toFixed(2),
+                v.propina||0, parseFloat(v.propinaMonto||0).toFixed(2),
+                parseFloat(v.total||0).toFixed(2)
+            ].join(',');
+        });
+        
+        var csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + "\n" + rows.join('\n');
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "reporte_ventas_" + formatDate(new Date()) + ".csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     // ============================================================

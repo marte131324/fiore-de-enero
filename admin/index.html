@@ -188,6 +188,7 @@
         .kpi-value { font-size: 28px; font-weight: 300; font-family: var(--font-display); color: var(--text-pure); margin-bottom: 4px; }
         .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
         .dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .dash-row.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
         .dash-card h3 { font-family: var(--font-display); font-size: 16px; color: var(--accent); font-weight: 400; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
         .dash-empty { color: var(--text-dim); font-size: 13px; opacity: 0.5; text-align: center; padding: 20px; }
         .dash-filters { display: flex; gap: 6px; }
@@ -217,6 +218,7 @@
             .pos-grid { max-height: 40vh; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
             .kpi-grid { grid-template-columns: repeat(2, 1fr); }
             .dash-row { grid-template-columns: 1fr; }
+            .dash-row.grid-3 { grid-template-columns: 1fr; }
             .traffic-number { font-size: 72px; }
             .dash-filters { flex-wrap: wrap; }
             .ticket-line.total-line { font-size: 18px; }
@@ -678,7 +680,7 @@
                     <div class="kpi-label">Personas</div>
                 </div>
             </div>
-            <div class="dash-row">
+            <div class="dash-row grid-3">
                 <div class="card dash-card">
                     <h3><i class="ri-bank-card-line"></i> Métodos de Pago</h3>
                     <div id="dash-metodos"><p class="dash-empty">Sin ventas registradas</p></div>
@@ -686,6 +688,10 @@
                 <div class="card dash-card">
                     <h3><i class="ri-trophy-line"></i> Top Productos</h3>
                     <div id="dash-top-productos"><p class="dash-empty">Sin ventas registradas</p></div>
+                </div>
+                <div class="card dash-card">
+                    <h3><i class="ri-arrow-down-circle-line"></i> Menos Vendidos</h3>
+                    <div id="dash-flop-productos"><p class="dash-empty">Sin ventas registradas</p></div>
                 </div>
             </div>
             <div class="chart-section">
@@ -719,7 +725,10 @@
                     <h2>Historial de Ventas</h2>
                     <p>Registro de tickets cobrados. Toca un ticket para ver el detalle.</p>
                 </div>
-                <span id="historial-count" style="color:var(--text-dim);font-size:13px;">0 tickets</span>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span id="historial-count" style="color:var(--text-dim);font-size:13px;">0 tickets</span>
+                    <button class="btn btn-secondary btn-sm" onclick="descargarReporteCSV()"><i class="ri-file-download-line"></i> Descargar CSV</button>
+                </div>
             </div>
             <div class="historial-list" id="historial-list">
                 <div class="historial-empty"><i class="ri-file-list-3-line"></i><p>No hay ventas registradas hoy</p></div>
