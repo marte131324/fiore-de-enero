@@ -282,7 +282,7 @@
         var prod = productos.find(function(p) { return p.id === id; });
         if(!prod) return;
 
-        var existing = comandaActual.find(function(c) { return c.id === id; });
+        var existing = comandaActual.find(function(c) { return c.id === id && !c.enviado; });
         if(existing) {
             existing.q++;
         } else {
@@ -291,7 +291,8 @@
                 n: prod.nombre,
                 p: parseFloat(prod.precio),
                 q: 1,
-                nota: ''
+                nota: '',
+                enviado: false
             });
         }
         renderCmdItems();
@@ -388,21 +389,26 @@
             for(var i=0; i<comandaActual.length; i++) {
                 var item = comandaActual[i];
                 var notaHtml = item.nota ? '<div class="cmd-nota">Nota: ' + item.nota + '</div>' : '';
-                html += '<div class="cmd-item">' +
+                
+                var opacityStyle = item.enviado ? 'opacity: 0.6; pointer-events: none;' : '';
+                var lockIcon = item.enviado ? '<i class="ri-check-double-line" style="color:var(--success); margin-left:6px;"></i>' : '';
+                var controlsHtml = item.enviado ? 
+                    '<span style="font-size:12px; color:var(--success); font-weight: 500;">Enviado a cocina</span>' :
+                    '<button class="cmd-btn note" onclick="abrirNotaModal(' + i + ')" style="pointer-events: auto;"><i class="ri-pencil-line"></i></button>' +
+                    '<div style="flex:1"></div>' +
+                    '<div class="cmd-stepper" style="pointer-events: auto;">' +
+                        '<button class="cmd-step-btn" onclick="cmdSub(' + i + ')"><i class="ri-subtract-line"></i></button>' +
+                        '<div class="cmd-qty">' + item.q + '</div>' +
+                        '<button class="cmd-step-btn" onclick="cmdAdd(' + i + ')"><i class="ri-add-line"></i></button>' +
+                    '</div>' +
+                    '<button class="cmd-btn del" style="margin-left:8px; pointer-events: auto;" onclick="cmdDel(' + i + ')"><i class="ri-delete-bin-line"></i></button>';
+
+                html += '<div class="cmd-item" style="' + opacityStyle + '">' +
                     '<div class="cmd-item-top">' +
-                        '<div class="cmd-item-name">' + item.n + '</div>' +
+                        '<div class="cmd-item-name">' + item.n + lockIcon + '</div>' +
                         '<div class="cmd-item-price">$' + (item.p * item.q).toFixed(2) + '</div>' +
                     '</div>' +
-                    '<div class="cmd-item-controls">' +
-                        '<button class="cmd-btn note" onclick="abrirNotaModal(' + i + ')"><i class="ri-pencil-line"></i></button>' +
-                        '<div style="flex:1"></div>' +
-                        '<div class="cmd-stepper">' +
-                            '<button class="cmd-step-btn" onclick="cmdSub(' + i + ')"><i class="ri-subtract-line"></i></button>' +
-                            '<div class="cmd-qty">' + item.q + '</div>' +
-                            '<button class="cmd-step-btn" onclick="cmdAdd(' + i + ')"><i class="ri-add-line"></i></button>' +
-                        '</div>' +
-                        '<button class="cmd-btn del" style="margin-left:8px" onclick="cmdDel(' + i + ')"><i class="ri-delete-bin-line"></i></button>' +
-                    '</div>' + notaHtml +
+                    '<div class="cmd-item-controls">' + controlsHtml + '</div>' + notaHtml +
                 '</div>';
             }
 
@@ -450,6 +456,15 @@
         var extrasTotal = extrasActual.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0);
         var total = subtotal + extrasTotal;
 
+        // KDS DELTA EXTRACTION
+        var nuevosItems = [];
+        comandaActual.forEach(function(i) { 
+            if(!i.enviado) {
+                nuevosItems.push(i);
+                i.enviado = true;
+            }
+        });
+
         // BUG 3 FIX: Preserve existing mesa owner
         var existingMesa = mesasData[String(mesaAbierta)];
         var meseroCode = meseroActual.codigo;
@@ -466,12 +481,20 @@
             personas: cmdPersonas,
             items: JSON.stringify(comandaActual),
             extras: JSON.stringify(extrasActual),
-            descuento: 0,
+            descuento: existingMesa ? existingMesa.descuento : 0,
             total: total,
             pideCuenta: pideCuentaFlag
         };
 
         try {
+            // FIRE AND FORGET KDS DELTA (If there are new items)
+            if(nuevosItems.length > 0) {
+                fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems })
+                }).catch(function(){}); // Ignore failures to purely Kitchen
+            }
             var res = await fetch(WEBAPP_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },

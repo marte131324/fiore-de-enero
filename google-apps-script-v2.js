@@ -174,7 +174,58 @@ function doPost(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet();
   
   // --- Config (original) ---
-  if(action === 'saveConfig' || action === 'savePromo') {
+  if(action === 'getCocina') {
+    var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
+    if(!sheetCocina) {
+      return ContentService.createTextOutput(JSON.stringify({ tickets: [] })).setMimeType(ContentService.MimeType.JSON);
+    }
+    var cData = sheetCocina.getDataRange().getValues();
+    var tickets = [];
+    for(var i=1; i<cData.length; i++) {
+      if(cData[i][5] === 'PENDIENTE') {
+        tickets.push({
+          id: cData[i][0],
+          mesaNum: cData[i][1],
+          mesero: cData[i][2],
+          hora: cData[i][3],
+          items: cData[i][4]
+        });
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({ tickets: tickets })).setMimeType(ContentService.MimeType.JSON);
+  } else if(action === 'sendToCocina') {
+    var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
+    if(!sheetCocina) {
+      sheetCocina = sheet.insertSheet("Cocina_Tickets");
+      sheetCocina.appendRow(['TicketID','MesaNum','Mesero','Hora','ItemsJSON','Estado', 'TerminadoHora']);
+    }
+    var tID = Date.now().toString(36) + Math.random().toString(36).substring(2,5);
+    var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm");
+    sheetCocina.appendRow([
+      tID, 
+      postData.mesaNum, 
+      postData.mesero, 
+      timeStr, 
+      JSON.stringify(postData.nuevosItems), 
+      'PENDIENTE',
+      ''
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
+  } else if(action === 'markCocinaReady') {
+    var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
+    if(sheetCocina) {
+      var cData = sheetCocina.getDataRange().getValues();
+      var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm");
+      for(var i=1; i<cData.length; i++) {
+        if(String(cData[i][0]) === String(postData.ticketID)) {
+          sheetCocina.getRange(i+1, 6).setValue('LISTO');
+          sheetCocina.getRange(i+1, 7).setValue(timeStr);
+          break;
+        }
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
+  } else if(action === 'saveConfig' || action === 'savePromo') {
     var sheetConfig = sheet.getSheetByName("Config");
     sheetConfig.clear();
     var keys = Object.keys(postData.data);

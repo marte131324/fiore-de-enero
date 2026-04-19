@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flujo Operativo - Fiore de Enero</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        @page { size: letter; margin: 2cm 2.5cm; }
+        body { font-family:'Inter',sans-serif; color:#1e293b; line-height:1.7; padding:40px 50px; max-width:850px; margin:0 auto; }
+        .header { border-bottom:3px solid #0e86b0; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
+        .header h1 { font-size:1.6rem; font-weight:800; color:#042d3d; }
+        .header .sub { font-size:0.8rem; color:#64748b; }
+        .badge { display:inline-block; background:#0e86b0; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom: 5px; }
+        h2 { font-size:1.15rem; font-weight:700; color:#0e86b0; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+        h3 { font-size:0.95rem; font-weight:700; color:#334155; margin:18px 0 8px; }
+        p, li { font-size:0.88rem; color:#475569; }
+        ul, ol { padding-left:22px; margin:8px 0; }
+        li { margin:6px 0; }
+        .section-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px 24px; margin:16px 0; page-break-inside:avoid; }
+        .section-card h3 { margin-top:0; color:#0e86b0; font-size: 1.1rem; }
+        .req-tag { display:inline-block; background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:6px; font-size:0.72rem; font-weight:600; margin-left:6px; }
+        .opt-tag { display:inline-block; background:#dbeafe; color:#1e40af; padding:2px 8px; border-radius:6px; font-size:0.72rem; font-weight:600; margin-left:6px; }
+        .step { display:flex; gap:14px; margin:12px 0; align-items:flex-start; }
+        .step-num { background:#0e86b0; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; flex-shrink:0; margin-top:2px; }
+        .step-text { flex:1; }
+        .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
+        .warn { background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#92400e; }
+        .note { background:#eff6ff; border-left:4px solid #0e86b0; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        .security { background:#fef2f2; border-left:4px solid #ef4444; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#991b1b; }
+        .tree { font-family:'Courier New', monospace; background:#0f172a; color:#94a3b8; padding:20px 24px; border-radius:12px; font-size:0.82rem; line-height:1.9; margin:16px 0; }
+        .tree .folder { color:#22d3ee; font-weight:700; }
+        .tree .file { color:#a5f3fc; }
+        .tree .desc { color:#64748b; font-style:italic; }
+        .tree .critical { color:#f97316; font-weight:700; }
+        table { width:100%; border-collapse:collapse; margin:14px 0; font-size:0.84rem; }
+        th { background:#0e86b0; color:white; padding:10px 14px; text-align:left; font-weight:600; }
+        td { padding:10px 14px; border-bottom:1px solid #e2e8f0; }
+        tr:nth-child(even) td { background:#f8fafc; }
+        .footer { margin-top:40px; padding-top:16px; border-bottom:2px solid #e2e8f0; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; padding-bottom:16px; page-break-inside: avoid; }
+        .qr-placeholder { text-align: center; margin: 20px 0; }
+        .qr-placeholder img { width: 140px; height: 140px; border: 1px solid #ccc; padding: 5px; border-radius: 8px; margin-bottom: 5px; }
+        .qr-placeholder p { font-size: 0.75rem; color: #64748b; font-weight: bold; }
+        @media print { body { padding:0; } .section-card, .tree { break-inside:avoid; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <span class="badge">Flujo Operacional</span>
+            <h1>📲 Guía Operativa del Restaurante</h1>
+            <div class="sub">Fiore de Enero — Command Center POS</div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-size:0.75rem; color:#94a3b8;">TREZE LABS — Infraestructura Digital Premium</div>
+            <div style="font-size:0.75rem; color:#94a3b8;">Abril 2026</div>
+        </div>
+    </div>
+
+    <p style="margin-bottom: 20px;">Este es el paso a paso exacto de cómo viaja la información dentro del restaurante usando el nuevo sistema digital, diseñado pormenorizadamente para evitar robos, confusiones y errores humanos.</p>
+
+    <div class="section-card">
+        <h3>Paso 1: Toma de Pedido (El Borrador)</h3>
+        <p><strong>Dónde:</strong> Celular o Tablet del Mesero</p>
+        <p>El cliente llega, se sienta en la <strong>Mesa 4</strong> y solicita un <em>Latte</em> y un <em>Pan Francés</em>.</p>
+        <p>El mesero abre su app, ingresa a la Mesa 4, toca "Latte" y toca "Pan Francés".</p>
+        <div class="note">
+            <strong>¿Qué pasa en el sistema?</strong> En este momento <strong>NADA</strong>. El pedido vive únicamente en la pantalla del mesero, similar a escribir en una libreta. Si se equivoca, lo borra gratis. Ningún pedido se registra oficialmente como venta.
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h3>Paso 2: Botón "ENVIAR ORDEN" (Mandar comandar)</h3>
+        <p><strong>Dónde:</strong> Celular del Mesero</p>
+        <p>El mesero confirma el pedido con los comensales y presiona el botón verde de <strong>Enviar Orden</strong>.</p>
+        <div class="tip">
+            <strong>¿Qué pasa en el sistema?</strong> Es el equivalente a arrancar la hojita de la libreta y mandarla a cocina. La orden se registra en vivo en la nube. <strong>Aún no se cobra nada</strong>, pero el ticket ya existe oficialmente. La cajera ahora lo ve en su iPad y cocina puede empezar a marchar.
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h3>Paso 3: Botón "PEDIR CUENTA" (Alerta visual)</h3>
+        <p><strong>Dónde:</strong> Celular del Mesero</p>
+        <p>El comensal solicita la cuenta. El mesero no necesita caminar hasta la barra; simplemente ingresa a la Mesa 4 y presiona <strong>Pedir Cuenta</strong>.</p>
+        <div class="warn">
+            <strong>¿Qué pasa en el sistema?</strong> Se dispara una alerta silenciosa. En el panel de la cajera, la Mesa 4 comenzará a destellar en color púrpura intenso. La cajera sabe instantáneamente qué mesa imprimir.
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h3>Paso 4: El Cobro Oficial</h3>
+        <p><strong>Dónde:</strong> Terminal de Caja (Cajera)</p>
+        <p>La cajera recibe el efectivo o tarjeta, y procede a oprimir el botón de cobrar, seleccionando el método de pago e indicando si hay propina.</p>
+        <div class="security">
+            <strong>Cierre Financiero:</strong> En este punto preciso el dinero inyecta al Corte Diario, el saldo impacta el Dashboard de la Dueña, y la Mesa 4 desaparece de todas las pantallas de meseros quedando libre para nuevos clientes.
+        </div>
+    </div>
+
+    <h2>Protocolo de Seguridad Adicional</h2>
+    <ul>
+        <li><strong>Fallas de Internet:</strong> Si el WiFi colapsa cuando el mesero presiona "Enviar", el sistema lo bloquea con una pantalla roja para evitar comandas fantasma no entregadas.</li>
+        <li><strong>Control Anti-Robos:</strong> Ningún mesero ni cajera tiene capacidad de borrar o "Cancelar" productos ingresados para desviar el dinero. Cualquier cancelación de consumo exige inmediatamente un PIN numérico Gerencial (exclusivo de la dueña).</li>
+        <li><strong>Protección de Información Sensible:</strong> La Cajera visualiza únicamente las comandas activas para facturarlas; NO cuenta con acceso histórico a las utilidades diarias, mensuales o bases de datos sin el PIN Administrativo pertinente.</li>
+    </ul>
+
+    <div class="footer">
+        FIORE DE ENERO — Documentación Operativa &copy; 2026 TREZE LABS — Infraestructura Digital Premium<br>
+        Este documento es para distribución interna.
+    </div>
+
+</body>
+</html>
