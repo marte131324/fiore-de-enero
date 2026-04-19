@@ -201,7 +201,7 @@
             extrasActual = [];
             cmdPersonas = 1;
         }
-        document.getElementById('cmd-personas').value = cmdPersonas;
+        document.getElementById('cmd-personas-val').textContent = cmdPersonas;
 
         renderCategories();
         renderCmdItems();
@@ -212,6 +212,13 @@
         mesaAbierta = null;
         showView('view-mesas');
         renderMesaGrid();
+    };
+
+    window.updatePersonas = function(delta) {
+        cmdPersonas += delta;
+        if(cmdPersonas < 1) cmdPersonas = 1;
+        if(cmdPersonas > 50) cmdPersonas = 50;
+        document.getElementById('cmd-personas-val').textContent = cmdPersonas;
     };
 
     // ============================================================
@@ -360,23 +367,27 @@
         if(comandaActual.length === 0 && extrasActual.length === 0) {
             container.innerHTML = '<p style="text-align:center;color:var(--text-dim);font-size:13px;padding:20px 0;">Toca un producto para agregar</p>';
         } else {
-            var html = comandaActual.map(function(item, idx) {
-                var notaHtml = item.nota ? '<div class="cmd-nota">📝 ' + item.nota + '</div>' : '';
-                return '<div class="cmd-item">' +
+            var html = '';
+            for(var i=0; i<comandaActual.length; i++) {
+                var item = comandaActual[i];
+                var notaHtml = item.nota ? '<div class="cmd-nota">Nota: ' + item.nota + '</div>' : '';
+                html += '<div class="cmd-item">' +
                     '<div class="cmd-item-top">' +
-                        '<span class="cmd-item-name">' + item.n + '</span>' +
-                        '<span class="cmd-item-price">$' + (item.p * item.q).toFixed(2) + '</span>' +
-                        '<div class="cmd-item-controls">' +
-                            '<button class="cmd-btn note" onclick="abrirNotaModal(' + idx + ')"><i class="ri-edit-line"></i></button>' +
-                            '<button class="cmd-btn" onclick="cmdSub(' + idx + ')">−</button>' +
-                            '<span class="cmd-qty">' + item.q + '</span>' +
-                            '<button class="cmd-btn" onclick="cmdAdd(' + idx + ')">+</button>' +
-                            '<button class="cmd-btn del" onclick="cmdDel(' + idx + ')">×</button>' +
-                        '</div>' +
+                        '<div class="cmd-item-name">' + item.n + '</div>' +
+                        '<div class="cmd-item-price">$' + (item.p * item.q).toFixed(2) + '</div>' +
                     '</div>' +
-                    notaHtml +
+                    '<div class="cmd-item-controls-row">' +
+                        '<button class="cmd-btn note" onclick="abrirNotaModal(' + i + ')"><i class="ri-pencil-line"></i></button>' +
+                        '<div style="flex:1"></div>' +
+                        '<div class="cmd-stepper">' +
+                            '<button class="cmd-step-btn" onclick="cmdSub(' + i + ')"><i class="ri-subtract-line"></i></button>' +
+                            '<div class="cmd-qty">' + item.q + '</div>' +
+                            '<button class="cmd-step-btn" onclick="cmdAdd(' + i + ')"><i class="ri-add-line"></i></button>' +
+                        '</div>' +
+                        '<button class="cmd-btn del" onclick="cmdDel(' + i + ')"><i class="ri-delete-bin-line"></i></button>' +
+                    '</div>' + notaHtml +
                 '</div>';
-            }).join('');
+            }
 
             if(extrasActual.length > 0) {
                 html += '<div class="comanda-section-title" style="margin-top:8px">Cargos extra</div>';
