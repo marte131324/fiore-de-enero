@@ -143,8 +143,7 @@
             var mesa = mesasData[key];
             var cls = 'mesa-card libre';
             var statusText = 'Libre';
-            var infoLine = '';
-            var totalLine = '';
+            var bodyHtml = '';
 
             if(mesa && mesa.estado === 'abierta') {
                 var items = [];
@@ -153,6 +152,7 @@
                 try { extras = JSON.parse(mesa.extras); } catch(e) {}
                 var total = items.reduce(function(s, it) { return s + (it.p * it.q); }, 0);
                 total += extras.reduce(function(s, ex) { return s + (parseFloat(ex.monto) || 0); }, 0);
+                var itemCount = items.reduce(function(s, it) { return s + it.q; }, 0);
 
                 if(mesa.mesero === meseroActual.codigo) {
                     cls = 'mesa-card mia';
@@ -164,16 +164,21 @@
                 }
                 if(mesa.pideCuenta) {
                     cls = 'mesa-card cuenta';
-                    statusText = '💳 Pide cuenta';
+                    statusText = 'Pide cuenta';
                 }
-                infoLine = '<div class="mesa-info-sub">' + (mesa.personas || 1) + 'p · ' + items.length + ' items</div>';
-                totalLine = '<div class="mesa-info-total">$' + total.toFixed(0) + '</div>';
+                bodyHtml = '<div class="mesa-card-body">' +
+                    '<div class="mesa-card-detail"><i class="ri-group-line"></i> ' + (mesa.personas || 1) + ' personas</div>' +
+                    '<div class="mesa-card-detail"><i class="ri-restaurant-line"></i> ' + itemCount + ' productos</div>' +
+                    '<div class="mesa-card-total">$' + total.toFixed(0) + '</div>' +
+                '</div>';
             }
 
             html += '<div class="' + cls + '" onclick="abrirMesa(' + i + ')">' +
-                '<div class="mesa-card-num">' + i + '</div>' +
-                '<div class="mesa-card-state">' + statusText + '</div>' +
-                infoLine + totalLine +
+                '<div class="mesa-card-top">' +
+                    '<div class="mesa-card-num">' + i + '</div>' +
+                    '<div class="mesa-card-state">' + statusText + '</div>' +
+                '</div>' +
+                bodyHtml +
             '</div>';
         }
         grid.innerHTML = html;
@@ -304,13 +309,21 @@
     };
 
     window.cmdDel = function(idx) {
-        comandaActual.splice(idx, 1);
-        renderCmdItems();
+        var itemName = comandaActual[idx] ? comandaActual[idx].n : 'este producto';
+        mostrarConfirmacion(
+            '¿Eliminar producto?',
+            'Se eliminará "' + itemName + '" de la comanda.',
+            function() { comandaActual.splice(idx, 1); renderCmdItems(); }
+        );
     };
 
     window.cmdDelExtra = function(idx) {
-        extrasActual.splice(idx, 1);
-        renderCmdItems();
+        var exName = extrasActual[idx] ? extrasActual[idx].concepto : 'este cargo';
+        mostrarConfirmacion(
+            '¿Eliminar cargo extra?',
+            'Se eliminará "' + exName + '" de la comanda.',
+            function() { extrasActual.splice(idx, 1); renderCmdItems(); }
+        );
     };
 
     // Notes
@@ -463,14 +476,26 @@
     };
 
     // ============================================================
-    // PEDIR CUENTA
+    // CONFIRMAR PEDIR CUENTA
     // ============================================================
-    window.pedirCuenta = async function() {
+    window.confirmarPedirCuenta = function() {
         if(!mesaAbierta) return;
         if(comandaActual.length === 0) {
             showToast('No hay comanda para pedir cuenta');
             return;
         }
+        var subtotal = comandaActual.reduce(function(s, i) { return s + (i.p * i.q); }, 0);
+        var extrasTotal = extrasActual.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0);
+        var total = subtotal + extrasTotal;
+        mostrarConfirmacion(
+            '¿Pedir cuenta para Mesa ' + mesaAbierta + '?',
+            'Se notificará al administrador que el cliente solicita su cuenta por $' + total.toFixed(2) + '. La orden se enviará automáticamente.',
+            function() { pedirCuenta(); }
+        );
+    };
+
+    window.pedirCuenta = async function() {
+        if(!mesaAbierta) return;
 
         // Save comanda first, then flag for checkout
         await window.guardarComanda();
@@ -494,7 +519,7 @@
             mesasData[String(mesaAbierta)].pideCuenta = true;
         }
 
-        showToast('Cuenta solicitada para Mesa ' + mesaAbierta);
+        showToast('Cuenta solicitada — Mesa ' + mesaAbierta + ' ✓');
         volverAMesas();
     };
 
@@ -530,5 +555,27 @@
         t.classList.add('show');
         setTimeout(function() { t.classList.remove('show'); }, 2500);
     }
+
+    // ============================================================
+    // CONFIRM MODAL
+    // ============================================================
+    var pendingConfirmAction = null;
+
+    function mostrarConfirmacion(title, msg, onConfirm) {
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-msg').textContent = msg;
+        pendingConfirmAction = onConfirm;
+        document.getElementById('modal-confirm').classList.add('show');
+    }
+
+    window.cerrarConfirmModal = function() {
+        document.getElementById('modal-confirm').classList.remove('show');
+        pendingConfirmAction = null;
+    };
+
+    window.ejecutarConfirmacion = function() {
+        if(pendingConfirmAction) pendingConfirmAction();
+        cerrarConfirmModal();
+    };
 
 })();

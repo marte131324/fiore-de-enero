@@ -61,36 +61,45 @@
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
-            min-height: 120px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 110px;
+            display: flex; flex-direction: column;
             cursor: pointer;
             font-family: var(--font-ui);
             transition: all 0.2s ease;
-            padding: 16px 10px;
+            padding: 14px;
             backdrop-filter: blur(8px);
+            position: relative;
         }
         .mesa-card:active { transform:scale(0.96); }
 
-        .mesa-card-num { font-family:var(--font-display); font-size:28px; color:var(--text-pure); font-weight:600; margin-bottom:6px; }
-        .mesa-card-state { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:3px 10px; border-radius:6px; background:rgba(255,255,255,0.05); color:var(--text-dim); }
-        .mesa-info-sub { font-size:11px; color:rgba(255,255,255,0.5); margin-top:8px; }
-        .mesa-info-total { font-size:16px; font-weight:700; color:var(--text-pure); margin-top:2px; font-family:var(--font-display); }
+        .mesa-card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:auto; }
+        .mesa-card-num { font-family:var(--font-display); font-size:24px; color:var(--text-pure); font-weight:600; }
+        .mesa-card-state { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:3px 8px; border-radius:6px; background:rgba(255,255,255,0.05); color:var(--text-dim); }
+
+        .mesa-card-body { margin-top:8px; }
+        .mesa-card-detail { font-size:11px; color:rgba(255,255,255,0.5); display:flex; align-items:center; gap:4px; margin-bottom:2px; }
+        .mesa-card-detail i { font-size:12px; }
+        .mesa-card-total { font-size:18px; font-weight:700; color:var(--text-pure); font-family:var(--font-display); margin-top:4px; }
 
         /* Mesa States */
-        .mesa-card.libre .mesa-card-num { color:rgba(255,255,255,0.35); }
-        .mesa-card.libre .mesa-card-state { color:rgba(255,255,255,0.25); }
+        .mesa-card.libre { justify-content:center; align-items:center; }
+        .mesa-card.libre .mesa-card-top { justify-content:center; margin-bottom:4px; }
+        .mesa-card.libre .mesa-card-num { color:rgba(255,255,255,0.3); font-size:28px; }
+        .mesa-card.libre .mesa-card-state { color:rgba(255,255,255,0.2); background:transparent; }
 
         .mesa-card.mia { border-color:rgba(229,213,193,0.35); background:rgba(229,213,193,0.06); }
         .mesa-card.mia .mesa-card-num { color:var(--accent); }
         .mesa-card.mia .mesa-card-state { color:var(--accent); background:rgba(229,213,193,0.12); }
+        .mesa-card.mia .mesa-card-total { color:var(--accent); }
 
         .mesa-card.otro { border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.04); }
         .mesa-card.otro .mesa-card-num { color:var(--success); }
         .mesa-card.otro .mesa-card-state { color:var(--success); background:rgba(16,185,129,0.12); }
 
-        .mesa-card.cuenta { border-color:rgba(167,139,250,0.4); background:rgba(167,139,250,0.06); }
+        .mesa-card.cuenta { border-color:rgba(167,139,250,0.4); background:rgba(167,139,250,0.06); animation:pulse-cuenta 2s infinite; }
         .mesa-card.cuenta .mesa-card-num { color:#a78bfa; }
         .mesa-card.cuenta .mesa-card-state { color:#a78bfa; background:rgba(167,139,250,0.12); }
+        @keyframes pulse-cuenta { 0%,100%{ box-shadow:none; } 50%{ box-shadow:0 0 15px rgba(167,139,250,0.2); } }
 
         /* ===== COMANDA VIEW ===== */
         /* Mobile-first: single column */
@@ -306,9 +315,9 @@
                             <span class="comanda-total-value" id="cmd-total">$0.00</span>
                         </div>
                         <div class="comanda-actions">
-                            <button class="cmd-action-btn cmd-extra-btn" onclick="abrirExtraModal()"><i class="ri-add-circle-line"></i> Extra</button>
-                            <button class="cmd-action-btn cmd-save" onclick="guardarComanda()"><i class="ri-save-line"></i> Guardar</button>
-                            <button class="cmd-action-btn cmd-cuenta" onclick="pedirCuenta()"><i class="ri-bill-line"></i> Cuenta</button>
+                            <button class="cmd-action-btn cmd-extra-btn" onclick="abrirExtraModal()"><i class="ri-add-circle-line"></i> + Cargo</button>
+                            <button class="cmd-action-btn cmd-save" onclick="guardarComanda()"><i class="ri-check-double-line"></i> Enviar Orden</button>
+                            <button class="cmd-action-btn cmd-cuenta" onclick="confirmarPedirCuenta()"><i class="ri-bill-line"></i> Pedir Cuenta</button>
                         </div>
                     </div>
                 </div>
@@ -347,6 +356,18 @@
             <div class="modal-btns">
                 <button class="modal-cancel" onclick="cerrarNotaModal()">Cancelar</button>
                 <button class="modal-confirm" onclick="guardarNota()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIRMACIÓN GENÉRICA -->
+    <div class="modal-overlay" id="modal-confirm">
+        <div class="modal-box">
+            <h3 id="confirm-title">¿Estás seguro?</h3>
+            <p id="confirm-msg" style="font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:4px;"></p>
+            <div class="modal-btns">
+                <button class="modal-cancel" onclick="cerrarConfirmModal()">Cancelar</button>
+                <button class="modal-confirm" id="confirm-ok-btn" onclick="ejecutarConfirmacion()">Confirmar</button>
             </div>
         </div>
     </div>
