@@ -115,10 +115,10 @@
         .cat-pill.active { background:rgba(229,213,193,0.15); color:var(--accent); border-color:var(--accent); }
 
         /* Product Cards */
-        .prod-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:16px; }
-        .prod-card { padding:14px 10px; border-radius:10px; border:1px solid var(--glass-border); background:var(--glass); cursor:pointer; transition:0.15s; text-align:center; }
+        .prod-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:16px; align-content:start; }
+        .prod-card { padding:16px 10px; border-radius:10px; border:1px solid var(--glass-border); background:var(--glass); cursor:pointer; transition:0.15s; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; height:72px; }
         .prod-card:active { transform:scale(0.96); background:rgba(229,213,193,0.06); }
-        .prod-card .pname { font-size:12px; font-weight:500; margin-bottom:4px; color:var(--text-pure); }
+        .prod-card .pname { font-size:11px; font-weight:500; margin-bottom:3px; color:var(--text-pure); line-height:1.3; }
         .prod-card .pprice { font-size:14px; font-weight:600; color:var(--accent); }
 
         /* Comanda Items */
@@ -203,9 +203,9 @@
             .pane-menu { display:flex; flex-direction:column; overflow:hidden; }
             .pane-menu .cat-scroll { flex-wrap:wrap; overflow:visible; gap:10px; padding-bottom:0; margin-bottom:16px; }
             .pane-menu .cat-pill { font-size:13px; padding:9px 16px; }
-            .pane-menu .prod-grid { flex:1; overflow-y:auto; max-height:none; gap:10px; margin-bottom:0; }
-            .pane-menu .prod-card { padding:18px 12px; border-radius:12px; }
-            .pane-menu .prod-card .pname { font-size:13px; }
+            .pane-menu .prod-grid { flex:1; overflow-y:auto; max-height:none; gap:10px; margin-bottom:0; align-content:start; }
+            .pane-menu .prod-card { padding:16px 12px; border-radius:12px; height:76px; }
+            .pane-menu .prod-card .pname { font-size:12px; }
             .pane-menu .prod-card .pprice { font-size:15px; }
 
             .pane-ticket {
