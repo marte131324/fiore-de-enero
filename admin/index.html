@@ -355,8 +355,10 @@
         <p id="pin-error" style="color:#ef4444;font-size:0.9rem;display:none;font-weight:600;">PIN incorrecto</p>
     </div>
     <script>
-    // PIN es: 2026
-    const PIN_HASH = '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab';
+    // PIN ADM es: 2026
+    const PIN_HASH_ADMIN = '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab';
+    // PIN CAJERA es: 1313
+    const PIN_HASH_CAJERA = '1cfafff6d51a03662b85b93dc3417f51687034ba9a46682f5328257eff7133ed';
 
     async function hashPin(pin) {
         const encoder = new TextEncoder();
@@ -368,9 +370,17 @@
     async function checkPin() {
         const input = document.getElementById('pin-input').value;
         const hashed = await hashPin(input);
-        if (hashed === PIN_HASH) {
+        
+        if (hashed === PIN_HASH_ADMIN) {
             document.getElementById('pin-gate').style.display = 'none';
             sessionStorage.setItem('treze_auth', '1');
+            sessionStorage.setItem('treze_role', 'admin');
+            applyRbac();
+        } else if (hashed === PIN_HASH_CAJERA) {
+            document.getElementById('pin-gate').style.display = 'none';
+            sessionStorage.setItem('treze_auth', '1');
+            sessionStorage.setItem('treze_role', 'cajera');
+            applyRbac();
         } else {
             document.getElementById('pin-error').style.display = 'block';
             document.getElementById('pin-input').value = '';
@@ -384,6 +394,27 @@
 
     if (sessionStorage.getItem('treze_auth') === '1') {
         document.getElementById('pin-gate').style.display = 'none';
+        applyRbac();
+    }
+
+    function applyRbac() {
+        const role = sessionStorage.getItem('treze_role');
+        if (role === 'cajera') {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                /* Ocultar botones bloqueados para cajera */
+                [onclick="switchView('v-dashboard', this)"] { display: none !important; }
+                [onclick="switchView('v-historial', this)"] { display: none !important; }
+                [onclick="switchView('v-meseros', this)"] { display: none !important; }
+                #v-dashboard, #v-historial, #v-meseros { display: none !important; }
+            `;
+            document.head.appendChild(style);
+            // Cambiar la vista por defecto a Active Mesas
+            setTimeout(() => {
+                const btn = document.querySelector('[onclick="switchView(\\'v-activos\\', this)"]');
+                if(btn) btn.click();
+            }, 100);
+        }
     }
     </script>
 

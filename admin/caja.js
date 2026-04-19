@@ -615,6 +615,17 @@
         modal.classList.add('show');
     }
 
+    async function authorizeGerente() {
+        if(sessionStorage.getItem('treze_role') !== 'cajera') return true;
+        var p = prompt("Acción restringida. Ingresa PIN Gerencial para autorizar:");
+        if(!p) return false;
+        var encoder = new TextEncoder();
+        var data = encoder.encode(p);
+        var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        var hashed = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashed === '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab';
+    }
+
     window.updateEditItem = function(mesaNum, idx, newQty) {
         var key = String(mesaNum);
         var items = []; try { items = JSON.parse(mesasActivas[key].items); } catch(e) {}
@@ -623,7 +634,8 @@
         mesasActivas[key].items = JSON.stringify(items);
         abrirEditorMesa(mesaNum);
     };
-    window.removeEditItem = function(mesaNum, idx) {
+    window.removeEditItem = async function(mesaNum, idx) {
+        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         var key = String(mesaNum);
         var items = []; try { items = JSON.parse(mesasActivas[key].items); } catch(e) {}
         items.splice(idx, 1);
@@ -631,7 +643,8 @@
         logAudit('MODIFICAR_MESA', 'Mesa ' + mesaNum + ': Item eliminado');
         abrirEditorMesa(mesaNum);
     };
-    window.removeEditExtra = function(mesaNum, idx) {
+    window.removeEditExtra = async function(mesaNum, idx) {
+        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         var key = String(mesaNum);
         var extras = []; try { extras = JSON.parse(mesasActivas[key].extras); } catch(e) {}
         extras.splice(idx, 1);
@@ -640,6 +653,7 @@
     };
 
     window.guardarEdicionMesa = async function() {
+        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         var num = document.getElementById('edit-mesa-num').value;
         var key = String(num);
         var desc = parseInt(document.getElementById('edit-mesa-descuento').value) || 0;
@@ -666,6 +680,7 @@
 
     window.cancelarMesa = async function(num) {
         if(!confirm('¿Cancelar toda la cuenta de Mesa ' + num + '?')) return;
+        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         delete mesasActivas[String(num)];
         try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'cancelMesa', mesaNum:num, usuario:'Gerente', motivo:'Cancelación gerencial'}) }); } catch(e) {}
         logAudit('CANCELAR_MESA', 'Mesa ' + num + ' cancelada por gerente');
