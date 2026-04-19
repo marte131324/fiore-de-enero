@@ -434,11 +434,11 @@
         var overlay = document.getElementById('cobrar-success');
         if(overlay) { setText('cobrar-success-amount', '$' + total.toFixed(2)); overlay.classList.add('show'); setTimeout(function() { overlay.classList.remove('show'); }, 4000); }
 
-        try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveVenta', venta:venta}) }); } catch(e) {}
+        try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveVenta', venta:venta}) }); } catch(e) {}
 
         // Close mesa in GSheets
         if(mesaActual) {
-            try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'closeMesa', mesaNum:mesaActual, usuario:'Admin'}) }); } catch(e) {}
+            try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'closeMesa', mesaNum:mesaActual, usuario:'Admin'}) }); } catch(e) {}
             delete mesasActivas[String(mesaActual)];
         }
 
@@ -649,13 +649,13 @@
 
         if(items.length === 0 && extras.length === 0) {
             delete mesasActivas[key];
-            try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'cancelMesa', mesaNum:num, usuario:'Gerente', motivo:'Sin items'}) }); } catch(e) {}
+            try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'cancelMesa', mesaNum:num, usuario:'Gerente', motivo:'Sin items'}) }); } catch(e) {}
         } else {
             var subtotal = items.reduce(function(s,i){ return s+(i.p*i.q); }, 0);
             var extT = extras.reduce(function(s,e){ return s+(parseFloat(e.monto)||0); }, 0);
             var total = subtotal + extT - (subtotal * desc / 100);
             mesasActivas[key].total = total;
-            try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveMesa', mesa:{ mesaNum:num, mesero:mesasActivas[key].mesero||'Admin', personas:mesasActivas[key].personas||1, items:mesasActivas[key].items, extras:mesasActivas[key].extras, descuento:desc, total:total }}) }); } catch(e) {}
+            try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveMesa', mesa:{ mesaNum:num, mesero:mesasActivas[key].mesero||'Admin', personas:mesasActivas[key].personas||1, items:mesasActivas[key].items, extras:mesasActivas[key].extras, descuento:desc, total:total }}) }); } catch(e) {}
         }
         logAudit('MODIFICAR_MESA', 'Mesa ' + num + ' modificada por gerente. Desc: ' + desc + '%');
         renderMesasActivas();
@@ -667,7 +667,7 @@
     window.cancelarMesa = async function(num) {
         if(!confirm('¿Cancelar toda la cuenta de Mesa ' + num + '?')) return;
         delete mesasActivas[String(num)];
-        try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'cancelMesa', mesaNum:num, usuario:'Gerente', motivo:'Cancelación gerencial'}) }); } catch(e) {}
+        try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'cancelMesa', mesaNum:num, usuario:'Gerente', motivo:'Cancelación gerencial'}) }); } catch(e) {}
         logAudit('CANCELAR_MESA', 'Mesa ' + num + ' cancelada por gerente');
         renderMesasActivas();
         if(mesaActual == num) window.limpiarTicket();
@@ -702,7 +702,7 @@
         var mesero = { codigo: codigo.trim(), nombre: nombre.trim(), activo: 'SI' };
         meserosData.push(mesero);
         renderMeserosAdmin();
-        fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveMesero', mesero:mesero}) });
+        fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveMesero', mesero:mesero}) });
         showToast('Mesero ' + nombre + ' agregado');
     };
 
@@ -715,7 +715,7 @@
         m.nombre = nombre.trim();
         m.activo = activo;
         renderMeserosAdmin();
-        fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveMesero', mesero:m}) });
+        fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'saveMesero', mesero:m}) });
         showToast('Mesero actualizado');
     };
 
@@ -723,7 +723,7 @@
         if(!confirm('¿Eliminar mesero ' + codigo + '?')) return;
         meserosData = meserosData.filter(function(m) { return m.codigo !== codigo; });
         renderMeserosAdmin();
-        fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'deleteMesero', codigo:codigo}) });
+        fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'deleteMesero', codigo:codigo}) });
         showToast('Mesero eliminado');
     };
 
@@ -755,7 +755,7 @@
     }
 
     async function saveTrafico() {
-        try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'updateTrafico', personas:traficoCount}) }); } catch(e) {}
+        try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'updateTrafico', personas:traficoCount}) }); } catch(e) {}
     }
 
     // ============================================================
@@ -937,7 +937,7 @@
     window.refreshPOSAfterCatalog = function() { if(!cajaReady) return; posProducts = {}; renderPOSGrid(); };
 
     async function logAudit(accion, detalles) {
-        try { await fetch(WEBAPP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'logAudit', usuario:'Admin', accion:accion, detalles:detalles}) }); } catch(e) {}
+        try { await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'logAudit', usuario:'Admin', accion:accion, detalles:detalles}) }); } catch(e) {}
     }
 
     // ============================================================

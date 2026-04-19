@@ -245,12 +245,14 @@ function doPost(e) {
     var sheetMesas = sheet.getSheetByName("Mesas");
     if(!sheetMesas) {
       sheetMesas = sheet.insertSheet("Mesas");
-      sheetMesas.appendRow(['MesaNum','Estado','Mesero','Personas','HoraApertura','ItemsJSON','ExtrasJSON','Descuento','Total','UltimaAct']);
+      sheetMesas.appendRow(['MesaNum','Estado','Mesero','Personas','HoraApertura','ItemsJSON','ExtrasJSON','Descuento','Total','UltimaAct', 'PideCuenta']);
     }
     var m = postData.mesa;
+    var isNewReq = postData.isNew === true;
     var mData = sheetMesas.getDataRange().getValues();
     var found = false;
     var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm:ss");
+    var pideCuentaVal = m.pideCuenta ? "SI" : "NO";
     
     for(var i=1; i<mData.length; i++) {
       if(String(mData[i][0]) == String(m.mesaNum) && mData[i][1] === 'abierta') {
@@ -261,15 +263,24 @@ function doPost(e) {
         sheetMesas.getRange(i+1, 8).setValue(m.descuento || 0);
         sheetMesas.getRange(i+1, 9).setValue(m.total || 0);
         sheetMesas.getRange(i+1, 10).setValue(timeStr);
+        sheetMesas.getRange(i+1, 11).setValue(pideCuentaVal);
         found = true;
         break;
       }
     }
+
     if(!found) {
-      sheetMesas.appendRow([
-        m.mesaNum, 'abierta', m.mesero || '', m.personas || 1, timeStr,
-        m.items || '[]', m.extras || '[]', m.descuento || 0, m.total || 0, timeStr
-      ]);
+      // VULNERABILITY FIX: Solo creamos nueva fila si la petición explícitamente pide crear mesa.
+      // Si el mesero está guardando una comanda en una mesa que creía abierta (pero caja ya cerró), isNew será false.
+      if(isNewReq) {
+        sheetMesas.appendRow([
+          m.mesaNum, 'abierta', m.mesero || '', m.personas || 1, timeStr,
+          m.items || '[]', m.extras || '[]', m.descuento || 0, m.total || 0, timeStr, pideCuentaVal
+        ]);
+      } else {
+        // La mesa no está abierta y no era una petición de creación = RACE CONDITION ATCHED.
+        return ContentService.createTextOutput(JSON.stringify({"status":"error", "reason":"CLOSED"})).setMimeType(ContentService.MimeType.JSON);
+      }
     }
   }
 
@@ -374,7 +385,8 @@ function readMesasActivas(sheetMesas) {
         extras: mData[i][6] || '[]',
         descuento: mData[i][7] || 0,
         total: mData[i][8] || 0,
-        ultimaAct: mData[i][9] || ''
+        ultimaAct: mData[i][9] || '',
+        pideCuenta: (mData[i][10] === 'SI' || mData[i][10] === true)
       });
     }
   }

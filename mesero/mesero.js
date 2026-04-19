@@ -472,13 +472,30 @@
         };
 
         try {
-            await fetch(WEBAPP_URL, {
+            var res = await fetch(WEBAPP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'saveMesa', mesa: mesaPayload })
+                body: JSON.stringify({ action: 'saveMesa', isNew: !existingMesa, mesa: mesaPayload })
             });
-        } catch(e) { console.error(e); }
+            if(!res.ok) throw new Error("Network error");
+            var resData = await res.json();
+            
+            if(resData.status === 'error' && resData.reason === 'CLOSED') {
+                // RACE CONDITION MITIGATION
+                guardando = false;
+                if(saveBtn) { saveBtn.innerHTML = saveBtnText; saveBtn.style.opacity = '1'; saveBtn.disabled = false; }
+                alert("⛔ ERROR CRÍTICO: La mesa " + mesaAbierta + " fue cobrada en caja hace unos instantes. Tu orden NO fue guardada porque la mesa está cerrada.");
+                volverAMesas();
+                return;
+            }
+
+        } catch(e) { 
+            console.error(e);
+            guardando = false;
+            if(saveBtn) { saveBtn.innerHTML = saveBtnText; saveBtn.style.opacity = '1'; saveBtn.disabled = false; }
+            alert("📶 ERROR DE CONEXIÓN: Tu orden no se guardó. Por favor acércate a una zona con mejor WiFi e intenta de nuevo.");
+            return;
+        }
 
         // Update local state
         mesasData[String(mesaAbierta)] = {
@@ -533,7 +550,6 @@
         try {
             await fetch(WEBAPP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     action: 'logAudit',
