@@ -313,15 +313,19 @@
         .propina-btn.active { background: rgba(229,213,193,0.15); color: var(--accent); border-color: var(--accent); }
 
         /* === MESAS ACTIVAS VIEW === */
-        .mesa-status-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; transition: 0.3s; }
-        .mesa-status-card:hover { border-color: rgba(229,213,193,0.4); }
-        .mesa-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .mesa-status-left { display: flex; align-items: center; gap: 12px; }
-        .mesa-status-num { font-family: var(--font-display); font-size: 18px; color: var(--accent); font-weight: 600; }
-        .mesa-status-badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
-        .mesa-status-total { font-size: 22px; font-weight: 600; color: var(--text-pure); font-family: var(--font-display); }
-        .mesa-status-items { border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 10px; margin-bottom: 12px; }
-        .mesa-status-actions { display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 12px; }
+        .mesa-status-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(229,213,193,0.15); border-radius: 12px; padding: 20px; margin-bottom: 16px; transition: 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.15); backdrop-filter: blur(10px); }
+        .mesa-status-card:hover { border-color: rgba(229,213,193,0.4); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+        .mesa-status-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .mesa-status-left { display: flex; flex-direction: column; gap: 6px; }
+        .mesa-status-left-top { display: flex; align-items: center; gap: 10px; }
+        .mesa-status-num { font-family: var(--font-display); font-size: 20px; color: var(--accent); font-weight: 600; }
+        .mesa-status-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;}
+        .badge-green { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .badge-gold { background: rgba(229,213,193,0.1); color: var(--accent); border: 1px solid rgba(229,213,193,0.3); }
+        .mesa-status-time { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
+        .mesa-status-total { font-size: 26px; font-weight: 600; color: var(--text-pure); font-family: var(--font-display); }
+        .mesa-status-items { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-bottom: 16px; }
+        .mesa-status-actions { display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; }
 
         /* === EDIT MESA MODAL === */
         .edit-item-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); }

@@ -493,21 +493,45 @@
                 }).join('');
             }
 
+            // Formatear Fecha/Hora
+            var timeStr = mesa.horaApertura || mesa.ultimaAct || '--:--';
+            if (timeStr.indexOf('T') !== -1) {
+                try {
+                    var d = new Date(timeStr);
+                    timeStr = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                } catch(e) {
+                    timeStr = timeStr.split('T')[1].substring(0, 5);
+                }
+            } else if (timeStr.indexOf('1899') !== -1) {
+                var parts = timeStr.split('T');
+                if(parts.length > 1) timeStr = parts[1].substring(0, 5);
+            } else {
+                if(timeStr.length > 15) {
+                    var ds = new Date(timeStr);
+                    if(!isNaN(ds)) timeStr = ds.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                }
+            }
+
             return '<div class="mesa-status-card">' +
                 '<div class="mesa-status-header">' +
                     '<div class="mesa-status-left">' +
-                        '<span class="mesa-status-num">Mesa ' + num + '</span>' +
-                        '<span class="mesa-status-badge">' + (mesa.personas||1) + 'p</span>' +
-                        '<span class="mesa-status-badge" style="background:rgba(229,213,193,0.1);color:var(--accent);border-color:var(--border);">' + meseroName + '</span>' +
-                        '<span style="font-size:11px;color:var(--text-dim)">Desde ' + (mesa.horaApertura||mesa.ultimaAct||'--:--') + '</span>' +
+                        '<div class="mesa-status-left-top">' +
+                            '<span class="mesa-status-num">Mesa ' + num + '</span>' +
+                            '<span class="mesa-status-badge badge-green"><i class="ri-group-line"></i> ' + (mesa.personas||1) + 'p</span>' +
+                            '<span class="mesa-status-badge badge-gold"><i class="ri-user-star-line"></i> ' + meseroName + '</span>' +
+                        '</div>' +
+                        '<span class="mesa-status-time"><i class="ri-time-line"></i> Abierta a las ' + timeStr + '</span>' +
                     '</div>' +
                     '<span class="mesa-status-total">$' + total.toFixed(2) + '</span>' +
                 '</div>' +
                 '<div class="mesa-status-items">' + itemsHtml + '</div>' +
-                '<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">÷ ' + (mesa.personas||1) + ' = <strong style="color:var(--accent)">$' + (total / (mesa.personas||1)).toFixed(2) + '</strong> por persona</div>' +
+                '<div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:12px;background:rgba(0,0,0,0.15);padding:8px 12px;border-radius:6px;display:flex;justify-content:space-between;">' +
+                    '<span>Promedio por persona ('+ (mesa.personas||1) + ')</span>' +
+                    '<strong style="color:var(--accent)">$' + (total / (mesa.personas||1)).toFixed(2) + '</strong>' +
+                '</div>' +
                 '<div class="mesa-status-actions">' +
-                    '<button class="btn btn-secondary btn-sm" onclick="irAMesa(' + num + ')"><i class="ri-shopping-cart-line"></i> Ir a Caja</button>' +
-                    '<button class="btn btn-danger btn-sm" onclick="modificarMesa(' + num + ')"><i class="ri-lock-line"></i> Modificar</button>' +
+                    '<button class="btn btn-secondary btn-sm" onclick="irAMesa(' + num + ')" style="flex:1;justify-content:center;height:42px;"><i class="ri-shopping-cart-line"></i> Pasar a Caja</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="modificarMesa(' + num + ')" style="flex:1;justify-content:center;height:42px;background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.3);"><i class="ri-pencil-line"></i> Modificar Mesa</button>' +
                 '</div>' +
             '</div>';
         }).join('');
