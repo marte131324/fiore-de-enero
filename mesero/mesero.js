@@ -189,7 +189,11 @@
         // Eliminamos el bloqueo para que cualquier mesero pueda ver y editar cualquier mesa
         // (Esto agiliza la operación cuando se cubren turnos o se apoyan entre sí)
         mesaAbierta = num;
-        document.getElementById('comanda-title').textContent = 'Mesa ' + num;
+        var titleText = 'Mesa ' + num;
+        var el1 = document.getElementById('comanda-title');
+        var el2 = document.getElementById('comanda-title-desktop');
+        if(el1) el1.textContent = titleText;
+        if(el2) el2.textContent = titleText;
 
         // Load existing data
         if(mesa && mesa.estado === 'abierta') {
@@ -376,7 +380,7 @@
                         '<div class="cmd-item-name">' + item.n + '</div>' +
                         '<div class="cmd-item-price">$' + (item.p * item.q).toFixed(2) + '</div>' +
                     '</div>' +
-                    '<div class="cmd-item-controls-row">' +
+                    '<div class="cmd-item-controls">' +
                         '<button class="cmd-btn note" onclick="abrirNotaModal(' + i + ')"><i class="ri-pencil-line"></i></button>' +
                         '<div style="flex:1"></div>' +
                         '<div class="cmd-stepper">' +
@@ -384,7 +388,7 @@
                             '<div class="cmd-qty">' + item.q + '</div>' +
                             '<button class="cmd-step-btn" onclick="cmdAdd(' + i + ')"><i class="ri-add-line"></i></button>' +
                         '</div>' +
-                        '<button class="cmd-btn del" onclick="cmdDel(' + i + ')"><i class="ri-delete-bin-line"></i></button>' +
+                        '<button class="cmd-btn del" style="margin-left:8px" onclick="cmdDel(' + i + ')"><i class="ri-delete-bin-line"></i></button>' +
                     '</div>' + notaHtml +
                 '</div>';
             }
