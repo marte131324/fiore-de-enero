@@ -431,24 +431,44 @@
     // ============================================================
     // GUARDAR COMANDA
     // ============================================================
+    var guardando = false;
+
     window.guardarComanda = async function() {
         if(comandaActual.length === 0 && extrasActual.length === 0) {
             showToast('Agrega productos a la comanda');
             return;
         }
+        if(guardando) return; // Prevent double-tap
+        guardando = true;
+
+        // Show loading state on button
+        var saveBtn = document.querySelector('.cmd-save');
+        var saveBtnText = '';
+        if(saveBtn) { saveBtnText = saveBtn.innerHTML; saveBtn.innerHTML = '<i class="ri-loader-4-line"></i> Enviando...'; saveBtn.style.opacity = '0.6'; saveBtn.disabled = true; }
 
         var subtotal = comandaActual.reduce(function(s, i) { return s + (i.p * i.q); }, 0);
         var extrasTotal = extrasActual.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0);
         var total = subtotal + extrasTotal;
 
+        // BUG 3 FIX: Preserve existing mesa owner
+        var existingMesa = mesasData[String(mesaAbierta)];
+        var meseroCode = meseroActual.codigo;
+        if(existingMesa && existingMesa.mesero && existingMesa.mesero !== meseroActual.codigo) {
+            meseroCode = existingMesa.mesero; // Keep original owner
+        }
+
+        // BUG 1 FIX: Include pideCuenta flag
+        var pideCuentaFlag = (existingMesa && existingMesa.pideCuenta) ? true : false;
+
         var mesaPayload = {
             mesaNum: mesaAbierta,
-            mesero: meseroActual.codigo,
+            mesero: meseroCode,
             personas: cmdPersonas,
             items: JSON.stringify(comandaActual),
             extras: JSON.stringify(extrasActual),
             descuento: 0,
-            total: total
+            total: total,
+            pideCuenta: pideCuentaFlag
         };
 
         try {
@@ -464,15 +484,19 @@
         mesasData[String(mesaAbierta)] = {
             mesaNum: mesaAbierta,
             estado: 'abierta',
-            mesero: meseroActual.codigo,
+            mesero: meseroCode,
             personas: cmdPersonas,
             items: JSON.stringify(comandaActual),
             extras: JSON.stringify(extrasActual),
             descuento: 0,
-            total: total
+            total: total,
+            pideCuenta: pideCuentaFlag
         };
 
-        showToast('Comanda guardada ✓');
+        // Restore button
+        if(saveBtn) { saveBtn.innerHTML = saveBtnText; saveBtn.style.opacity = '1'; saveBtn.disabled = false; }
+        guardando = false;
+        showToast('Orden enviada ✓');
     };
 
     // ============================================================
@@ -497,10 +521,15 @@
     window.pedirCuenta = async function() {
         if(!mesaAbierta) return;
 
-        // Save comanda first, then flag for checkout
+        // BUG 1 FIX: Set pideCuenta flag BEFORE saving so it persists to backend
+        if(mesasData[String(mesaAbierta)]) {
+            mesasData[String(mesaAbierta)].pideCuenta = true;
+        }
+
+        // Save comanda with pideCuenta flag included
         await window.guardarComanda();
 
-        // Add pideCuenta flag via audit
+        // Also log audit for traceability
         try {
             await fetch(WEBAPP_URL, {
                 method: 'POST',
@@ -514,10 +543,6 @@
                 })
             });
         } catch(e) {}
-
-        if(mesasData[String(mesaAbierta)]) {
-            mesasData[String(mesaAbierta)].pideCuenta = true;
-        }
 
         showToast('Cuenta solicitada — Mesa ' + mesaAbierta + ' ✓');
         volverAMesas();
@@ -535,10 +560,21 @@
         try {
             var res = await fetch(WEBAPP_URL + '?action=syncMesas');
             var data = await res.json();
+
+            // BUG 4 FIX: Preserve the mesa currently being edited
+            var editingKey = mesaAbierta ? String(mesaAbierta) : null;
+            var editingMesa = editingKey ? mesasData[editingKey] : null;
+
             mesasData = {};
             (data.mesas || []).forEach(function(m) {
                 mesasData[String(m.mesaNum)] = m;
             });
+
+            // Restore the mesa the mesero is currently editing
+            if(editingKey && editingMesa) {
+                mesasData[editingKey] = editingMesa;
+            }
+
             // Only re-render grid if on mesas view
             if(document.getElementById('view-mesas').classList.contains('active')) {
                 renderMesaGrid();

@@ -512,11 +512,18 @@
                 }
             }
 
-            return '<div class="mesa-status-card">' +
+            // pideCuenta badge (BUG 6 FIX)
+            var cuentaBadge = '';
+            if(mesa.pideCuenta) {
+                cuentaBadge = '<span class="mesa-status-badge" style="background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.4);animation:pulse-cuenta-admin 2s infinite;"><i class="ri-bill-line"></i> PIDE CUENTA</span>';
+            }
+
+            return '<div class="mesa-status-card"' + (mesa.pideCuenta ? ' style="border:1px solid rgba(167,139,250,0.4);box-shadow:0 0 20px rgba(167,139,250,0.15);"' : '') + '>' +
                 '<div class="mesa-status-header">' +
                     '<div class="mesa-status-left">' +
                         '<div class="mesa-status-left-top">' +
                             '<span class="mesa-status-num">Mesa ' + num + '</span>' +
+                            cuentaBadge +
                             '<span class="mesa-status-badge badge-green"><i class="ri-group-line"></i> ' + (mesa.personas||1) + 'p</span>' +
                             '<span class="mesa-status-badge badge-gold"><i class="ri-user-star-line"></i> ' + meseroName + '</span>' +
                         '</div>' +
