@@ -186,18 +186,13 @@
         var key = String(num);
         var mesa = mesasData[key];
 
-        // Si es de otro mesero, mostrar aviso
-        if(mesa && mesa.estado === 'abierta' && mesa.mesero !== meseroActual.codigo) {
-            var mesNombre = meseros.find(function(m) { return m.codigo === mesa.mesero; });
-            showToast('Mesa atendida por ' + (mesNombre ? mesNombre.nombre : 'otro mesero'));
-            return;
-        }
-
+        // Eliminamos el bloqueo para que cualquier mesero pueda ver y editar cualquier mesa
+        // (Esto agiliza la operación cuando se cubren turnos o se apoyan entre sí)
         mesaAbierta = num;
         document.getElementById('comanda-title').textContent = 'Mesa ' + num;
 
         // Load existing data
-        if(mesa && mesa.estado === 'abierta' && mesa.mesero === meseroActual.codigo) {
+        if(mesa && mesa.estado === 'abierta') {
             try { comandaActual = JSON.parse(mesa.items); } catch(e) { comandaActual = []; }
             try { extrasActual = JSON.parse(mesa.extras); } catch(e) { extrasActual = []; }
             cmdPersonas = mesa.personas || 1;

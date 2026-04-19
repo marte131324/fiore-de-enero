@@ -402,18 +402,26 @@
         </div>
         
         <nav>
-            <div class="nav-item active" onclick="switchView('v-tienda', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-store-2-line"></i> Control Tienda</div>
-            <div class="nav-item" onclick="switchView('v-productos', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-restaurant-line"></i> Catálogo de Platillos</div>
-            <div class="nav-item" onclick="switchView('v-promo', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-megaphone-line"></i> Promociones</div>
-            <div class="nav-item" onclick="switchView('v-eventos', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-calendar-event-line"></i> Eventos</div>
-            <div class="nav-separator"></div>
+            <!-- Operación Diaria (Nivel 1 - Crítico) -->
+            <div class="nav-item active" onclick="switchView('v-mesas', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-layout-grid-line"></i> Mesas Activas</div>
             <div class="nav-item" onclick="switchView('v-caja', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-shopping-cart-line"></i> Caja POS</div>
-            <div class="nav-item" onclick="switchView('v-mesas', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-layout-grid-line"></i> Mesas Activas</div>
-            <div class="nav-item" onclick="switchView('v-trafico', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-group-line"></i> Tráfico</div>
-            <div class="nav-item" onclick="switchView('v-dashboard', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-bar-chart-box-line"></i> Dashboard</div>
-            <div class="nav-item" onclick="switchView('v-historial', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-history-line"></i> Historial</div>
+            <div class="nav-item" onclick="switchView('v-historial', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-history-line"></i> Historial de Ventas</div>
+            
             <div class="nav-separator"></div>
-            <div class="nav-item" onclick="switchView('v-personal', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-user-settings-line"></i> Personal</div>
+            <!-- Analíticas (Nivel 2) -->
+            <div class="nav-item" onclick="switchView('v-dashboard', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-bar-chart-box-line"></i> Dashboard</div>
+            <div class="nav-item" onclick="switchView('v-trafico', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-group-line"></i> Tráfico del Día</div>
+            
+            <div class="nav-separator"></div>
+            <!-- Configuración (Nivel 3) -->
+            <div class="nav-item" onclick="switchView('v-tienda', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-store-2-line"></i> Control Maestro</div>
+            <div class="nav-item" onclick="switchView('v-productos', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-restaurant-line"></i> Catálogo de Platillos</div>
+            <div class="nav-item" onclick="switchView('v-personal', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-user-settings-line"></i> Personal & PIN</div>
+            <div class="nav-item" onclick="switchView('v-promo', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-megaphone-line"></i> Promociones (VCard)</div>
+            <div class="nav-item" onclick="switchView('v-eventos', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-calendar-event-line"></i> Eventos (VCard)</div>
+            
+            <div class="nav-separator"></div>
+            <!-- Vínculos Externos -->
             <div class="nav-item" onclick="window.open('https://fiore-de-enero.vercel.app', '_blank')"><i class="ri-external-link-line"></i> Ver VCard Pública</div>
         </nav>
     </aside>
@@ -421,7 +429,7 @@
     <main class="workspace">
 
         <!-- STATUS DE LA TIENDA -->
-        <section id="v-tienda" class="view-section active">
+        <section id="v-tienda" class="view-section">
             <div class="header">
                 <div>
                     <h2>Control Maestro</h2>
@@ -612,7 +620,7 @@
         </section>
 
         <!-- MESAS ACTIVAS -->
-        <section id="v-mesas" class="view-section">
+        <section id="v-mesas" class="view-section active">
             <div class="header">
                 <div>
                     <h2>Mesas Activas</h2>
