@@ -166,13 +166,13 @@
                     cls = 'mesa-card cuenta';
                     statusText = '💳 Pide cuenta';
                 }
-                infoLine = '<div class="mesa-info-line">' + (mesa.personas || 1) + 'p · ' + items.length + ' items</div>';
-                totalLine = '<div class="mesa-total">$' + total.toFixed(0) + '</div>';
+                infoLine = '<div class="mesa-info-sub">' + (mesa.personas || 1) + 'p · ' + items.length + ' items</div>';
+                totalLine = '<div class="mesa-info-total">$' + total.toFixed(0) + '</div>';
             }
 
             html += '<div class="' + cls + '" onclick="abrirMesa(' + i + ')">' +
-                '<div class="num">' + i + '</div>' +
-                '<div class="status">' + statusText + '</div>' +
+                '<div class="mesa-card-num">' + i + '</div>' +
+                '<div class="mesa-card-state">' + statusText + '</div>' +
                 infoLine + totalLine +
             '</div>';
         }
