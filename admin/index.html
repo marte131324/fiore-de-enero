@@ -222,6 +222,111 @@
             .ticket-line.total-line { font-size: 18px; }
             .payment-methods { flex-wrap: wrap; }
         }
+
+        /* === HISTORIAL MODULE === */
+        .historial-list { display: flex; flex-direction: column; gap: 12px; max-height: 70vh; overflow-y: auto; padding-right: 5px; }
+        .historial-list::-webkit-scrollbar { width: 4px; }
+        .historial-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .historial-ticket { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: 0.3s; }
+        .historial-ticket:hover { border-color: rgba(229,213,193,0.4); }
+        .historial-ticket-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; }
+        .historial-ticket-left { display: flex; align-items: center; gap: 14px; }
+        .historial-ticket-time { font-size: 14px; font-weight: 600; color: var(--accent); font-family: var(--font-display); }
+        .historial-ticket-method { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; background: rgba(229,213,193,0.1); color: var(--accent); border: 1px solid rgba(229,213,193,0.2); }
+        .historial-ticket-total { font-size: 18px; font-weight: 600; color: var(--text-pure); font-family: var(--font-display); }
+        .historial-detail { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; background: rgba(0,0,0,0.15); }
+        .historial-detail.open { max-height: 400px; }
+        .historial-detail-inner { padding: 12px 18px 16px; }
+        .historial-item-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px dashed rgba(255,255,255,0.05); }
+        .historial-item-row:last-child { border: none; }
+        .historial-summary { display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
+        .historial-empty { text-align: center; padding: 60px 20px; color: var(--text-dim); opacity: 0.5; }
+        .historial-empty i { font-size: 48px; display: block; margin-bottom: 12px; }
+
+        /* === WHATSAPP TICKET === */
+        .wa-share-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-family: var(--font-ui); font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.3s; margin-top: 10px; backdrop-filter: blur(5px); }
+        .wa-share-btn:hover { background: #25D366; border-color: #25D366; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,0.4); }
+        .wa-share-btn i { font-size: 20px; }
+
+        /* === CHARTS / VISUAL === */
+        .chart-section { margin-top: 24px; }
+        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .chart-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 20px; backdrop-filter: blur(5px); }
+        .chart-card h3 { font-family: var(--font-display); font-size: 16px; color: var(--accent); font-weight: 400; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .hour-bars { display: flex; flex-direction: column; gap: 6px; }
+        .hour-bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+        .hour-bar-label { min-width: 44px; color: var(--text-dim); text-align: right; font-family: monospace; }
+        .hour-bar-track { flex: 1; height: 18px; background: rgba(255,255,255,0.03); border-radius: 4px; overflow: hidden; position: relative; }
+        .hour-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, rgba(229,213,193,0.3), var(--accent)); transition: width 0.6s cubic-bezier(.4,0,.2,1); min-width: 0; }
+        .hour-bar-value { min-width: 55px; font-size: 11px; color: var(--text-dim); }
+        .conversion-card { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; }
+        .conversion-card h3 { justify-content: center; }
+        .gauge-ring { position: relative; width: 140px; height: 140px; margin: 0 auto 16px; }
+        .gauge-ring svg { transform: rotate(-90deg); }
+        .gauge-ring circle { fill: none; stroke-width: 8; }
+        .gauge-ring .track { stroke: rgba(255,255,255,0.05); }
+        .gauge-ring .fill { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1); }
+        .gauge-percent { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 32px; font-family: var(--font-display); font-weight: 400; color: var(--text-pure); }
+        .gauge-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+        .gauge-detail { font-size: 13px; color: var(--text-dim); margin-top: 8px; }
+        .gauge-detail strong { color: var(--accent); }
+
+        @media (max-width: 768px) {
+            .chart-row { grid-template-columns: 1fr; }
+            .historial-ticket-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .historial-ticket-total { align-self: flex-end; }
+            .mesa-grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .mesa-status-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .mesa-status-total { align-self: flex-end; }
+            .edit-item-row { flex-wrap: wrap; }
+        }
+
+        /* === ITEM NOTES === */
+        .ticket-item-nota { font-size: 11px; color: var(--success); font-style: italic; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+        .note-btn { border-color: rgba(16,185,129,0.3) !important; color: var(--success) !important; }
+        .note-btn:hover { background: rgba(16,185,129,0.1) !important; }
+
+        /* === MESA SELECTOR === */
+        .mesa-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.15); }
+        .mesa-bar-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: var(--font-ui); font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .mesa-bar-btn:hover { background: rgba(229,213,193,0.1); }
+        .mesa-bar-label { font-size: 13px; color: var(--text-pure); font-weight: 500; flex: 1; }
+        .personas-input { width: 55px; padding: 5px 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-pure); border-radius: 6px; font-family: var(--font-ui); font-size: 12px; text-align: center; outline: none; }
+        .personas-input:focus { border-color: var(--accent); }
+
+        /* === MESA GRID (Selector Modal) === */
+        .mesa-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 10px 0; }
+        .mesa-btn { padding: 20px 10px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text-pure); font-family: var(--font-ui); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .mesa-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .mesa-btn.ocupada { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .mesa-btn.selected { border-color: var(--accent); background: rgba(229,213,193,0.15); box-shadow: 0 0 12px rgba(229,213,193,0.3); }
+        .mesa-num { font-size: 22px; font-weight: 700; font-family: var(--font-display); }
+        .mesa-info { font-size: 10px; color: var(--success); font-weight: 500; }
+
+        /* === PROPINA CONTROLS === */
+        .propina-row { margin: 6px 0; }
+        .propina-row label { font-size: 10px; margin-bottom: 6px; }
+        .propina-btns { display: flex; gap: 6px; }
+        .propina-btn { padding: 5px 12px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: var(--font-ui); font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .propina-btn.active { background: rgba(229,213,193,0.15); color: var(--accent); border-color: var(--accent); }
+
+        /* === MESAS ACTIVAS VIEW === */
+        .mesa-status-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; transition: 0.3s; }
+        .mesa-status-card:hover { border-color: rgba(229,213,193,0.4); }
+        .mesa-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .mesa-status-left { display: flex; align-items: center; gap: 12px; }
+        .mesa-status-num { font-family: var(--font-display); font-size: 18px; color: var(--accent); font-weight: 600; }
+        .mesa-status-badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .mesa-status-total { font-size: 22px; font-weight: 600; color: var(--text-pure); font-family: var(--font-display); }
+        .mesa-status-items { border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 10px; margin-bottom: 12px; }
+        .mesa-status-actions { display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 12px; }
+
+        /* === EDIT MESA MODAL === */
+        .edit-item-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+        .edit-item-name { flex: 1; font-size: 13px; }
+        .edit-item-qty { padding: 6px 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text-pure); border-radius: 6px; font-family: var(--font-ui); outline: none; }
+        .edit-item-qty:focus { border-color: var(--accent); }
+        .edit-item-price { font-size: 13px; color: var(--accent); min-width: 60px; text-align: right; }
     </style>
 </head>
 <body>
@@ -301,9 +406,12 @@
             <div class="nav-item" onclick="switchView('v-eventos', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-calendar-event-line"></i> Eventos</div>
             <div class="nav-separator"></div>
             <div class="nav-item" onclick="switchView('v-caja', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-shopping-cart-line"></i> Caja POS</div>
+            <div class="nav-item" onclick="switchView('v-mesas', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-layout-grid-line"></i> Mesas Activas</div>
             <div class="nav-item" onclick="switchView('v-trafico', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-group-line"></i> Tráfico</div>
             <div class="nav-item" onclick="switchView('v-dashboard', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-bar-chart-box-line"></i> Dashboard</div>
+            <div class="nav-item" onclick="switchView('v-historial', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-history-line"></i> Historial</div>
             <div class="nav-separator"></div>
+            <div class="nav-item" onclick="switchView('v-personal', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-user-settings-line"></i> Personal</div>
             <div class="nav-item" onclick="window.open('https://fiore-de-enero.vercel.app', '_blank')"><i class="ri-external-link-line"></i> Ver VCard Pública</div>
         </nav>
     </aside>
@@ -335,6 +443,7 @@
                 </div>
                 <button class="btn btn-primary" onclick="salvarConfiguracion()"><i class="ri-save-line"></i> Actualizar Servidores</button>
             </div>
+            <!-- Mesa count is saved with config via getFullConfig() -->
         </section>
 
         <!-- CATALOGO PRODUCTOS -->
@@ -433,6 +542,12 @@
                     <div class="pos-grid" id="pos-grid"></div>
                 </div>
                 <div class="pos-ticket">
+                    <div class="mesa-bar">
+                        <button class="mesa-bar-btn" onclick="abrirSelectorMesa()"><i class="ri-layout-grid-line"></i> Mesa</button>
+                        <span class="mesa-bar-label" id="mesa-actual-label">Sin mesa</span>
+                        <label style="font-size:10px;color:var(--text-dim);margin:0">Pers:</label>
+                        <input type="number" class="personas-input" id="personas-mesa" value="1" min="1" max="30" onchange="updatePersonasMesa(this.value)">
+                    </div>
                     <div class="ticket-header">
                         <h3><i class="ri-file-list-3-line"></i> Ticket</h3>
                         <button class="btn btn-danger btn-sm" onclick="limpiarTicket()" title="Limpiar ticket"><i class="ri-delete-bin-line"></i></button>
@@ -444,6 +559,10 @@
                         <div class="ticket-line">
                             <span>Subtotal</span>
                             <span id="ticket-subtotal">$0.00</span>
+                        </div>
+                        <div class="ticket-line" id="extras-line" style="display:none;color:var(--success);">
+                            <span>Extras</span>
+                            <span id="ticket-extras-amount">$0.00</span>
                         </div>
                         <div class="ticket-discount-row">
                             <label>Descuento</label>
@@ -458,10 +577,25 @@
                             <span>Descuento (<span id="discount-pct">0</span>%)</span>
                             <span id="discount-amount">-$0.00</span>
                         </div>
+                        <div class="propina-row">
+                            <label>Propina</label>
+                            <div class="propina-btns">
+                                <button onclick="setPropina(0, this)" class="propina-btn active">0%</button>
+                                <button onclick="setPropina(5, this)" class="propina-btn">5%</button>
+                                <button onclick="setPropina(10, this)" class="propina-btn">10%</button>
+                                <button onclick="setPropina(15, this)" class="propina-btn">15%</button>
+                                <button onclick="setPropina(20, this)" class="propina-btn">20%</button>
+                            </div>
+                        </div>
+                        <div class="ticket-line discount-line" id="propina-line" style="display:none">
+                            <span>Propina (<span id="propina-pct">0</span>%)</span>
+                            <span id="propina-amount">+$0.00</span>
+                        </div>
                         <div class="ticket-line total-line">
                             <span>TOTAL</span>
                             <span id="ticket-total">$0.00</span>
                         </div>
+                        <button class="btn btn-secondary btn-sm" onclick="agregarExtraTicket()" style="width:100%;margin-bottom:8px;justify-content:center;"><i class="ri-add-circle-line"></i> Agregar Cargo Extra ($)</button>
                         <div class="payment-methods">
                             <button onclick="setMetodoPago('EFECTIVO', this)" class="pay-btn active"><i class="ri-money-dollar-circle-line"></i> Efectivo</button>
                             <button onclick="setMetodoPago('TARJETA', this)" class="pay-btn"><i class="ri-bank-card-line"></i> Tarjeta</button>
@@ -472,6 +606,19 @@
                         </button>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- MESAS ACTIVAS -->
+        <section id="v-mesas" class="view-section">
+            <div class="header">
+                <div>
+                    <h2>Mesas Activas</h2>
+                    <p>Consulta el consumo en tiempo real de cada mesa. Modifica cuentas con PIN gerencial.</p>
+                </div>
+            </div>
+            <div id="mesas-grid-view">
+                <div class="historial-empty"><i class="ri-restaurant-line"></i><p>No hay mesas activas</p></div>
             </div>
         </section>
 
@@ -541,6 +688,74 @@
                     <div id="dash-top-productos"><p class="dash-empty">Sin ventas registradas</p></div>
                 </div>
             </div>
+            <div class="chart-section">
+                <div class="chart-row">
+                    <div class="chart-card">
+                        <h3><i class="ri-bar-chart-line"></i> Ventas por Hora</h3>
+                        <div id="chart-hourly"><p class="dash-empty">Sin datos de ventas</p></div>
+                    </div>
+                    <div class="chart-card conversion-card">
+                        <h3><i class="ri-pulse-line"></i> Conversión</h3>
+                        <div id="chart-conversion">
+                            <div class="gauge-ring">
+                                <svg width="140" height="140" viewBox="0 0 140 140">
+                                    <circle class="track" cx="70" cy="70" r="58"></circle>
+                                    <circle class="fill" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="364.42"></circle>
+                                </svg>
+                                <div class="gauge-percent">0%</div>
+                            </div>
+                            <div class="gauge-label">Tasa de Conversión</div>
+                            <div class="gauge-detail"><strong>0</strong> tickets de <strong>0</strong> personas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORIAL DE VENTAS -->
+        <section id="v-historial" class="view-section">
+            <div class="header">
+                <div>
+                    <h2>Historial de Ventas</h2>
+                    <p>Registro de tickets cobrados. Toca un ticket para ver el detalle.</p>
+                </div>
+                <span id="historial-count" style="color:var(--text-dim);font-size:13px;">0 tickets</span>
+            </div>
+            <div class="historial-list" id="historial-list">
+                <div class="historial-empty"><i class="ri-file-list-3-line"></i><p>No hay ventas registradas hoy</p></div>
+            </div>
+        </section>
+
+        <!-- PERSONAL (MESEROS + MESAS CONFIG) -->
+        <section id="v-personal" class="view-section">
+            <div class="header">
+                <div>
+                    <h2>Personal y Mesas</h2>
+                    <p>Administra meseros y configuración de mesas del restaurante.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-family:var(--font-display);color:var(--accent);font-weight:400;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="ri-settings-4-line"></i> Configuración de Mesas</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Numero Total de Mesas</label>
+                        <input type="number" id="config-mesa-count" value="15" min="1" max="50" onchange="updateMesaCount(this.value)">
+                    </div>
+                    <div class="form-group" style="display:flex;align-items:flex-end;">
+                        <button class="btn btn-primary" onclick="salvarConfiguracion()" style="height:45px;"><i class="ri-save-line"></i> Guardar Config</button>
+                    </div>
+                </div>
+                <p style="font-size:11px;color:var(--text-dim);margin-top:8px;"><i class="ri-information-line"></i> Los meseros acceden desde <strong>/mesero/</strong> con su código personal.</p>
+            </div>
+
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <h3 style="font-family:var(--font-display);color:var(--accent);font-weight:400;display:flex;align-items:center;gap:8px;"><i class="ri-group-line"></i> Meseros Registrados</h3>
+                    <button class="btn btn-primary btn-sm" onclick="agregarMesero()"><i class="ri-add-line"></i> Agregar</button>
+                </div>
+                <div id="meseros-list"><p style="color:var(--text-dim);font-size:13px;text-align:center;padding:20px;">Sin meseros registrados</p></div>
+            </div>
         </section>
 
     </main>
@@ -550,6 +765,9 @@
         <i class="ri-checkbox-circle-fill"></i>
         <span>¡Venta Registrada!</span>
         <span class="cobrar-amount" id="cobrar-success-amount">$0.00</span>
+        <button class="wa-share-btn" onclick="enviarTicketWhatsApp()">
+            <i class="ri-whatsapp-line"></i> Compartir Ticket por WhatsApp
+        </button>
     </div>
 
     <!-- Modal Producto -->
@@ -602,6 +820,74 @@
                 <button class="btn btn-danger" id="btn-delete" style="display:none; margin-right: auto;" onclick="eliminarProducto()">Eliminar Platillo</button>
                 <button class="btn btn-secondary" onclick="document.getElementById('modal-product').classList.remove('show')">Cancelar</button>
                 <button class="btn btn-primary" onclick="guardarProducto()">Guardar en Ecosistema</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Selector de Mesa -->
+    <div class="modal" id="modal-mesa">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Seleccionar Mesa</span>
+                <i class="ri-close-line" style="cursor: pointer;" onclick="document.getElementById('modal-mesa').classList.remove('show')"></i>
+            </div>
+            <p style="font-size:12px;color:var(--text-dim);margin-bottom:12px;">🟢 = Mesa ocupada con consumo activo</p>
+            <div class="mesa-grid" id="mesa-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal PIN Gerencial -->
+    <div class="modal" id="modal-gerencial">
+        <div class="modal-content" style="max-width:380px;text-align:center;">
+            <div style="font-size:2.2rem;margin-bottom:10px;">🔐</div>
+            <div class="modal-header" style="justify-content:center;">
+                <span>Autorización Gerencial</span>
+            </div>
+            <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Ingresa el PIN de gerente para modificar esta cuenta.</p>
+            <input id="pin-gerencial-input" type="password" maxlength="6" placeholder="••••" 
+                style="background:rgba(0,0,0,0.2);border:1px solid var(--accent);color:#fff;padding:14px 18px;border-radius:10px;font-size:1.4rem;text-align:center;width:180px;letter-spacing:8px;outline:none;font-family:monospace;margin-bottom:12px;"
+                onkeyup="if(event.key==='Enter')verificarPinGerencial()">
+            <p id="pin-gerencial-error" style="color:#ef4444;font-size:0.85rem;display:none;font-weight:600;margin-bottom:10px;">PIN incorrecto</p>
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('modal-gerencial').classList.remove('show')">Cancelar</button>
+                <button class="btn btn-primary" onclick="verificarPinGerencial()">Verificar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Mesa -->
+    <div class="modal" id="modal-editar-mesa">
+        <div class="modal-content" style="max-width:550px;">
+            <div class="modal-header">
+                <span id="edit-mesa-title">Modificar Mesa</span>
+                <i class="ri-close-line" style="cursor: pointer;" onclick="document.getElementById('modal-editar-mesa').classList.remove('show')"></i>
+            </div>
+            <input type="hidden" id="edit-mesa-num">
+            <div id="edit-mesa-items"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+                <span style="font-size:13px;color:var(--text-dim)">Subtotal:</span>
+                <span id="edit-mesa-subtotal" style="font-size:16px;font-weight:600;color:var(--accent);font-family:var(--font-display)">$0.00</span>
+            </div>
+            <div class="form-group" style="margin-top:12px;">
+                <label>Descuento Gerencial</label>
+                <select id="edit-mesa-descuento" style="width:auto;">
+                    <option value="0">Sin descuento</option>
+                    <option value="5">5%</option>
+                    <option value="10">10%</option>
+                    <option value="15">15%</option>
+                    <option value="20">20%</option>
+                    <option value="25">25%</option>
+                    <option value="30">30%</option>
+                    <option value="50">50%</option>
+                    <option value="100">100% (Cortesía)</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:space-between;margin-top:20px;">
+                <button class="btn btn-danger" onclick="cancelarMesa(document.getElementById('edit-mesa-num').value)"><i class="ri-close-circle-line"></i> Cancelar Cuenta</button>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('modal-editar-mesa').classList.remove('show')">Cerrar</button>
+                    <button class="btn btn-primary" onclick="guardarEdicionMesa()"><i class="ri-save-line"></i> Guardar Cambios</button>
+                </div>
             </div>
         </div>
     </div>

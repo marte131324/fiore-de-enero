@@ -13,7 +13,7 @@
     }
 })();
 
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSfezJEvwiAdwqsSqtUuCE3pctKRNg3zkeGoO-4iTZRjdMBlezOjlBBgrLbGqWMTsA/exec"; 
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwlcIFA2f0p8QZ4-0DPfuwFPhrpcrn7DSSYk_V2cF3kg9d2xJ19IXR3HCFJ8nH8Lmqe/exec"; 
 
 // Variables locales
 let catalogoData = [];
@@ -81,6 +81,12 @@ async function fetchDatos() {
         // Expose data for POS module
         window._ventasHoy = data.ventasHoy || [];
         window._traficoHoy = data.traficoHoy || 0;
+        window._mesasData = data.mesas || [];
+        window._meserosData = data.meseros || [];
+        window._mesaCount = parseInt(data.config && data.config.mesaCount ? data.config.mesaCount : 15) || 15;
+        // Load mesa count into config UI if exists
+        var mesaCountInput = document.getElementById('config-mesa-count');
+        if(mesaCountInput) mesaCountInput.value = window._mesaCount;
         if(typeof window.initCajaModule === 'function') window.initCajaModule();
     } catch(err) {
         console.error(err);
@@ -121,7 +127,8 @@ function getFullConfig() {
         eventoTitulo: document.getElementById('evento-titulo') ? document.getElementById('evento-titulo').value : '',
         eventoDesc: document.getElementById('evento-desc') ? document.getElementById('evento-desc').value : '',
         eventoFecha: document.getElementById('evento-fecha') ? document.getElementById('evento-fecha').value : '',
-        eventoHora: document.getElementById('evento-hora') ? document.getElementById('evento-hora').value : ''
+        eventoHora: document.getElementById('evento-hora') ? document.getElementById('evento-hora').value : '',
+        mesaCount: document.getElementById('config-mesa-count') ? document.getElementById('config-mesa-count').value : '15'
     };
 }
 
@@ -214,6 +221,7 @@ function guardarProducto() {
     }
     
     renderProductos();
+    if(typeof window.refreshPOSAfterCatalog === 'function') window.refreshPOSAfterCatalog();
     document.getElementById('modal-product').classList.remove('show');
 
     saveData({
@@ -227,6 +235,7 @@ function eliminarProducto() {
     const id = document.getElementById('p-id').value;
     catalogoData = catalogoData.filter(x => x.id !== id);
     renderProductos();
+    if(typeof window.refreshPOSAfterCatalog === 'function') window.refreshPOSAfterCatalog();
     document.getElementById('modal-product').classList.remove('show');
 
     saveData({

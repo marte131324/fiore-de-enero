@@ -1,0 +1,524 @@
+// =============================================
+// TREZE LABS // MÓDULO MESERO
+// Cliente: Fiore de Enero
+// v1.0 — Abril 2026
+// =============================================
+
+(function() {
+    'use strict';
+
+    // Domain lock
+    var allowed = ["fiore-de-enero.vercel.app","localhost","127.0.0.1"];
+    if(allowed.indexOf(window.location.hostname) === -1 && window.location.hostname !== "") {
+        document.body.innerHTML = '<div style="height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#f8fafc;font-family:monospace;text-align:center;padding:20px"><h1 style="color:#ef4444">ACCESO DENEGADO</h1></div>';
+        throw new Error("Dominio no autorizado");
+    }
+
+    var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwlcIFA2f0p8QZ4-0DPfuwFPhrpcrn7DSSYk_V2cF3kg9d2xJ19IXR3HCFJ8nH8Lmqe/exec";
+
+    // State
+    var meseroActual = null;
+    var mesaCount = 15;
+    var productos = [];
+    var meseros = [];
+    var mesasData = {};
+    var comandaActual = [];
+    var extrasActual = [];
+    var mesaAbierta = null;
+    var cmdPersonas = 1;
+    var pollTimer = null;
+    var notaItemIdx = -1;
+
+    var CAT_SHORT = {
+        '🍕 La Vera Pizza Napoletana': '🍕 Pizza',
+        '🍝 Pasta Fatta In Casa': '🍝 Pasta',
+        '🥗 Antipasti': '🥗 Entrantes',
+        '☕ Bebidas Calientes': '☕ Café',
+        '❄️ Frappes': '❄️ Frappes',
+        '🧊 Bebidas Frías': '🧊 Bebidas',
+        '🍨 Dolci de Véneto': '🍨 Postres'
+    };
+
+    // Make cmdPersonas accessible to inline onchange
+    window.cmdPersonas = 1;
+    Object.defineProperty(window, 'cmdPersonas', {
+        get: function() { return cmdPersonas; },
+        set: function(v) { cmdPersonas = v; }
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    window.addEventListener('DOMContentLoaded', function() {
+        loadData();
+    });
+
+    async function loadData() {
+        try {
+            var res = await fetch(WEBAPP_URL + '?action=meseroInit');
+            var data = await res.json();
+            productos = data.productos || [];
+            meseros = data.meseros || [];
+            mesaCount = parseInt(data.mesaCount) || 15;
+
+            // Build mesas lookup
+            mesasData = {};
+            (data.mesas || []).forEach(function(m) {
+                mesasData[String(m.mesaNum)] = m;
+            });
+
+            document.getElementById('loader').classList.add('hidden');
+
+            // Check stored session
+            var saved = sessionStorage.getItem('fiore_mesero');
+            if(saved) {
+                var m = meseros.find(function(x) { return x.codigo === saved && x.activo === 'SI'; });
+                if(m) {
+                    meseroActual = m;
+                    showApp();
+                    return;
+                }
+            }
+            document.getElementById('login-screen').classList.remove('hidden');
+        } catch(e) {
+            console.error(e);
+            document.getElementById('loader').innerHTML = '<p style="color:var(--danger);font-family:var(--font-ui);padding:20px;text-align:center">Error de conexión. Recarga la página.</p>';
+        }
+    }
+
+    // ============================================================
+    // LOGIN
+    // ============================================================
+    window.loginMesero = function() {
+        var code = document.getElementById('mesero-code').value.trim();
+        var m = meseros.find(function(x) { return x.codigo === code && x.activo === 'SI'; });
+        if(m) {
+            meseroActual = m;
+            sessionStorage.setItem('fiore_mesero', code);
+            showApp();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('mesero-code').value = '';
+            setTimeout(function() { document.getElementById('login-error').style.display = 'none'; }, 2000);
+        }
+    };
+
+    window.cerrarSesion = function() {
+        sessionStorage.removeItem('fiore_mesero');
+        meseroActual = null;
+        if(pollTimer) clearInterval(pollTimer);
+        document.getElementById('app-header').style.display = 'none';
+        document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+        document.getElementById('login-screen').classList.remove('hidden');
+    };
+
+    function showApp() {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app-header').style.display = '';
+        document.getElementById('header-name').textContent = meseroActual.nombre;
+        document.getElementById('header-avatar').textContent = meseroActual.codigo;
+        showView('view-mesas');
+        renderMesaGrid();
+        startPolling();
+    }
+
+    // ============================================================
+    // VIEWS
+    // ============================================================
+    function showView(id) {
+        document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+        var el = document.getElementById(id);
+        if(el) el.classList.add('active');
+    }
+
+    // ============================================================
+    // MESA GRID
+    // ============================================================
+    function renderMesaGrid() {
+        var grid = document.getElementById('mesa-grid-mesero');
+        if(!grid) return;
+        var html = '';
+        for(var i = 1; i <= mesaCount; i++) {
+            var key = String(i);
+            var mesa = mesasData[key];
+            var cls = 'mesa-card libre';
+            var statusText = 'Libre';
+            var infoLine = '';
+            var totalLine = '';
+
+            if(mesa && mesa.estado === 'abierta') {
+                var items = [];
+                try { items = JSON.parse(mesa.items); } catch(e) {}
+                var extras = [];
+                try { extras = JSON.parse(mesa.extras); } catch(e) {}
+                var total = items.reduce(function(s, it) { return s + (it.p * it.q); }, 0);
+                total += extras.reduce(function(s, ex) { return s + (parseFloat(ex.monto) || 0); }, 0);
+
+                if(mesa.mesero === meseroActual.codigo) {
+                    cls = 'mesa-card mia';
+                    statusText = 'Mi mesa';
+                } else {
+                    cls = 'mesa-card otro';
+                    var mesNombre = meseros.find(function(m) { return m.codigo === mesa.mesero; });
+                    statusText = mesNombre ? mesNombre.nombre : 'Ocupada';
+                }
+                if(mesa.pideCuenta) {
+                    cls = 'mesa-card cuenta';
+                    statusText = '💳 Pide cuenta';
+                }
+                infoLine = '<div class="mesa-info-line">' + (mesa.personas || 1) + 'p · ' + items.length + ' items</div>';
+                totalLine = '<div class="mesa-total">$' + total.toFixed(0) + '</div>';
+            }
+
+            html += '<div class="' + cls + '" onclick="abrirMesa(' + i + ')">' +
+                '<div class="num">' + i + '</div>' +
+                '<div class="status">' + statusText + '</div>' +
+                infoLine + totalLine +
+            '</div>';
+        }
+        grid.innerHTML = html;
+    }
+
+    // ============================================================
+    // ABRIR MESA / COMANDA
+    // ============================================================
+    window.abrirMesa = function(num) {
+        var key = String(num);
+        var mesa = mesasData[key];
+
+        // Si es de otro mesero, mostrar aviso
+        if(mesa && mesa.estado === 'abierta' && mesa.mesero !== meseroActual.codigo) {
+            var mesNombre = meseros.find(function(m) { return m.codigo === mesa.mesero; });
+            showToast('Mesa atendida por ' + (mesNombre ? mesNombre.nombre : 'otro mesero'));
+            return;
+        }
+
+        mesaAbierta = num;
+        document.getElementById('comanda-title').textContent = 'Mesa ' + num;
+
+        // Load existing data
+        if(mesa && mesa.estado === 'abierta' && mesa.mesero === meseroActual.codigo) {
+            try { comandaActual = JSON.parse(mesa.items); } catch(e) { comandaActual = []; }
+            try { extrasActual = JSON.parse(mesa.extras); } catch(e) { extrasActual = []; }
+            cmdPersonas = mesa.personas || 1;
+        } else {
+            comandaActual = [];
+            extrasActual = [];
+            cmdPersonas = 1;
+        }
+        document.getElementById('cmd-personas').value = cmdPersonas;
+
+        renderCategories();
+        renderCmdItems();
+        showView('view-comanda');
+    };
+
+    window.volverAMesas = function() {
+        mesaAbierta = null;
+        showView('view-mesas');
+        renderMesaGrid();
+    };
+
+    // ============================================================
+    // CATEGORIES & PRODUCTS
+    // ============================================================
+    function renderCategories() {
+        var container = document.getElementById('cmd-categories');
+        if(!container) return;
+
+        var available = productos.filter(function(p) { return p.status === 'DISPONIBLE' && parseFloat(p.precio) > 0; });
+        var groups = {};
+        var catOrder = [];
+        available.forEach(function(p) {
+            var cat = p.categoria || 'Otros';
+            if(!groups[cat]) { groups[cat] = []; catOrder.push(cat); }
+            groups[cat].push(p);
+        });
+
+        var html = '<button class="cat-pill active" onclick="filterProducts(\'TODOS\', this)">Todos</button>';
+        catOrder.forEach(function(cat) {
+            html += '<button class="cat-pill" onclick="filterProducts(\'' + cat.replace(/'/g, "\\'") + '\', this)">' + (CAT_SHORT[cat] || cat) + '</button>';
+        });
+        container.innerHTML = html;
+
+        renderProductCards(available);
+    }
+
+    window.filterProducts = function(cat, btn) {
+        document.querySelectorAll('.cat-pill').forEach(function(b) { b.classList.remove('active'); });
+        if(btn) btn.classList.add('active');
+
+        var available = productos.filter(function(p) { return p.status === 'DISPONIBLE' && parseFloat(p.precio) > 0; });
+        if(cat !== 'TODOS') available = available.filter(function(p) { return p.categoria === cat; });
+        renderProductCards(available);
+    };
+
+    function renderProductCards(items) {
+        var grid = document.getElementById('cmd-products');
+        if(!grid) return;
+        grid.innerHTML = items.map(function(p) {
+            return '<div class="prod-card" onclick="addToComanda(\'' + p.id + '\')">' +
+                '<div class="pname">' + p.nombre + '</div>' +
+                '<div class="pprice">$' + parseFloat(p.precio).toFixed(0) + '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    // ============================================================
+    // COMANDA ITEMS
+    // ============================================================
+    window.addToComanda = function(id) {
+        var prod = productos.find(function(p) { return p.id === id; });
+        if(!prod) return;
+
+        var existing = comandaActual.find(function(c) { return c.id === id; });
+        if(existing) {
+            existing.q++;
+        } else {
+            comandaActual.push({
+                id: id,
+                n: prod.nombre,
+                p: parseFloat(prod.precio),
+                q: 1,
+                nota: ''
+            });
+        }
+        renderCmdItems();
+    };
+
+    window.cmdSub = function(idx) {
+        if(comandaActual[idx].q > 1) comandaActual[idx].q--;
+        else comandaActual.splice(idx, 1);
+        renderCmdItems();
+    };
+
+    window.cmdAdd = function(idx) {
+        comandaActual[idx].q++;
+        renderCmdItems();
+    };
+
+    window.cmdDel = function(idx) {
+        comandaActual.splice(idx, 1);
+        renderCmdItems();
+    };
+
+    window.cmdDelExtra = function(idx) {
+        extrasActual.splice(idx, 1);
+        renderCmdItems();
+    };
+
+    // Notes
+    window.abrirNotaModal = function(idx) {
+        notaItemIdx = idx;
+        document.getElementById('nota-item-name').textContent = comandaActual[idx].n;
+        document.getElementById('nota-input').value = comandaActual[idx].nota || '';
+        document.getElementById('modal-nota').classList.add('show');
+        setTimeout(function() { document.getElementById('nota-input').focus(); }, 200);
+    };
+
+    window.insertNotePreset = function(text) {
+        var input = document.getElementById('nota-input');
+        input.value = input.value ? input.value + ', ' + text : text;
+    };
+
+    window.guardarNota = function() {
+        if(notaItemIdx >= 0 && notaItemIdx < comandaActual.length) {
+            comandaActual[notaItemIdx].nota = document.getElementById('nota-input').value.trim();
+        }
+        cerrarNotaModal();
+        renderCmdItems();
+    };
+
+    window.cerrarNotaModal = function() {
+        document.getElementById('modal-nota').classList.remove('show');
+        notaItemIdx = -1;
+    };
+
+    // Extras
+    window.abrirExtraModal = function() {
+        document.getElementById('extra-concepto').value = '';
+        document.getElementById('extra-monto').value = '';
+        document.getElementById('modal-extra').classList.add('show');
+        setTimeout(function() { document.getElementById('extra-concepto').focus(); }, 200);
+    };
+
+    window.cerrarExtraModal = function() {
+        document.getElementById('modal-extra').classList.remove('show');
+    };
+
+    window.agregarExtra = function() {
+        var concepto = document.getElementById('extra-concepto').value.trim();
+        var monto = parseFloat(document.getElementById('extra-monto').value) || 0;
+        if(!concepto || monto <= 0) {
+            showToast('Completa concepto y monto');
+            return;
+        }
+        extrasActual.push({ concepto: concepto, monto: monto });
+        cerrarExtraModal();
+        renderCmdItems();
+    };
+
+    function renderCmdItems() {
+        var container = document.getElementById('cmd-items');
+        if(!container) return;
+
+        if(comandaActual.length === 0 && extrasActual.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:var(--text-dim);font-size:13px;padding:20px 0;">Toca un producto para agregar</p>';
+        } else {
+            var html = comandaActual.map(function(item, idx) {
+                var notaHtml = item.nota ? '<div class="cmd-nota">📝 ' + item.nota + '</div>' : '';
+                return '<div class="cmd-item">' +
+                    '<div class="cmd-item-top">' +
+                        '<span class="cmd-item-name">' + item.n + '</span>' +
+                        '<span class="cmd-item-price">$' + (item.p * item.q).toFixed(2) + '</span>' +
+                        '<div class="cmd-item-controls">' +
+                            '<button class="cmd-btn note" onclick="abrirNotaModal(' + idx + ')"><i class="ri-edit-line"></i></button>' +
+                            '<button class="cmd-btn" onclick="cmdSub(' + idx + ')">−</button>' +
+                            '<span class="cmd-qty">' + item.q + '</span>' +
+                            '<button class="cmd-btn" onclick="cmdAdd(' + idx + ')">+</button>' +
+                            '<button class="cmd-btn del" onclick="cmdDel(' + idx + ')">×</button>' +
+                        '</div>' +
+                    '</div>' +
+                    notaHtml +
+                '</div>';
+            }).join('');
+
+            if(extrasActual.length > 0) {
+                html += '<div class="comanda-section-title" style="margin-top:8px">Cargos extra</div>';
+                html += extrasActual.map(function(ex, idx) {
+                    return '<div class="cmd-extra">' +
+                        '<span class="cmd-extra-name">⚡ ' + ex.concepto + '</span>' +
+                        '<div style="display:flex;align-items:center;gap:8px;">' +
+                            '<span class="cmd-extra-price">+$' + parseFloat(ex.monto).toFixed(2) + '</span>' +
+                            '<button class="cmd-btn del" onclick="cmdDelExtra(' + idx + ')">×</button>' +
+                        '</div>' +
+                    '</div>';
+                }).join('');
+            }
+            container.innerHTML = html;
+        }
+
+        // Update total
+        var subtotal = comandaActual.reduce(function(s, i) { return s + (i.p * i.q); }, 0);
+        var extrasTotal = extrasActual.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0);
+        var total = subtotal + extrasTotal;
+        document.getElementById('cmd-total').textContent = '$' + total.toFixed(2);
+    }
+
+    // ============================================================
+    // GUARDAR COMANDA
+    // ============================================================
+    window.guardarComanda = async function() {
+        if(comandaActual.length === 0 && extrasActual.length === 0) {
+            showToast('Agrega productos a la comanda');
+            return;
+        }
+
+        var subtotal = comandaActual.reduce(function(s, i) { return s + (i.p * i.q); }, 0);
+        var extrasTotal = extrasActual.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0);
+        var total = subtotal + extrasTotal;
+
+        var mesaPayload = {
+            mesaNum: mesaAbierta,
+            mesero: meseroActual.codigo,
+            personas: cmdPersonas,
+            items: JSON.stringify(comandaActual),
+            extras: JSON.stringify(extrasActual),
+            descuento: 0,
+            total: total
+        };
+
+        try {
+            await fetch(WEBAPP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'saveMesa', mesa: mesaPayload })
+            });
+        } catch(e) { console.error(e); }
+
+        // Update local state
+        mesasData[String(mesaAbierta)] = {
+            mesaNum: mesaAbierta,
+            estado: 'abierta',
+            mesero: meseroActual.codigo,
+            personas: cmdPersonas,
+            items: JSON.stringify(comandaActual),
+            extras: JSON.stringify(extrasActual),
+            descuento: 0,
+            total: total
+        };
+
+        showToast('Comanda guardada ✓');
+    };
+
+    // ============================================================
+    // PEDIR CUENTA
+    // ============================================================
+    window.pedirCuenta = async function() {
+        if(!mesaAbierta) return;
+        if(comandaActual.length === 0) {
+            showToast('No hay comanda para pedir cuenta');
+            return;
+        }
+
+        // Save comanda first, then flag for checkout
+        await window.guardarComanda();
+
+        // Add pideCuenta flag via audit
+        try {
+            await fetch(WEBAPP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'logAudit',
+                    usuario: meseroActual.nombre,
+                    accion: 'PIDE_CUENTA',
+                    detalles: 'Mesa ' + mesaAbierta
+                })
+            });
+        } catch(e) {}
+
+        if(mesasData[String(mesaAbierta)]) {
+            mesasData[String(mesaAbierta)].pideCuenta = true;
+        }
+
+        showToast('Cuenta solicitada para Mesa ' + mesaAbierta);
+        volverAMesas();
+    };
+
+    // ============================================================
+    // POLLING
+    // ============================================================
+    function startPolling() {
+        if(pollTimer) clearInterval(pollTimer);
+        pollTimer = setInterval(syncMesas, 30000);
+    }
+
+    async function syncMesas() {
+        try {
+            var res = await fetch(WEBAPP_URL + '?action=syncMesas');
+            var data = await res.json();
+            mesasData = {};
+            (data.mesas || []).forEach(function(m) {
+                mesasData[String(m.mesaNum)] = m;
+            });
+            // Only re-render grid if on mesas view
+            if(document.getElementById('view-mesas').classList.contains('active')) {
+                renderMesaGrid();
+            }
+        } catch(e) { console.error('Sync error:', e); }
+    }
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function showToast(msg) {
+        var t = document.getElementById('toast-mesero');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 2500);
+    }
+
+})();
