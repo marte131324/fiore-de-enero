@@ -1,4 +1,4 @@
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxsPOrZZKMuGG-V2dBIIaM_3X-NvJoH6tMJMKS8ZZupyUV8Tuaa5v3rmw0hm86iLhBo/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzt__3DvYwwqoeaJEduyk-zBBmyx2ZwwXeD0FEJj567oH5LDcTB4Rlfry_6wt6CoeJk/exec";
 
 let actTickets = [];
 let lastCount = 0;

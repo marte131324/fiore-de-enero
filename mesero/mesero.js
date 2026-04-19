@@ -14,7 +14,7 @@
         throw new Error("Dominio no autorizado");
     }
 
-    var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxsPOrZZKMuGG-V2dBIIaM_3X-NvJoH6tMJMKS8ZZupyUV8Tuaa5v3rmw0hm86iLhBo/exec";
+    var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzt__3DvYwwqoeaJEduyk-zBBmyx2ZwwXeD0FEJj567oH5LDcTB4Rlfry_6wt6CoeJk/exec";
 
     // State
     var meseroActual = null;
