@@ -13,7 +13,7 @@
     }
 })();
 
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzt__3DvYwwqoeaJEduyk-zBBmyx2ZwwXeD0FEJj567oH5LDcTB4Rlfry_6wt6CoeJk/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
 
 // Variables locales
 let catalogoData = [];
