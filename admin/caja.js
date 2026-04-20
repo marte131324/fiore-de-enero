@@ -25,8 +25,7 @@
     let mesaCount = 15;
     let pollTimer = null;
 
-    // PIN Gerencial: 1313
-    const PIN_GERENCIAL_HASH = '1cfafff6d51a03662b85b93dc3417f51687034ba9a46682f5328257eff7133ed';
+    // La autorización gerencial usa el hash del PIN Admin (2026) directamente en authorizeGerente()
 
     const CAT_SHORT = {
         '🍕 La Vera Pizza Napoletana': '🍕 Pizza',
