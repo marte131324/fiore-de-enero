@@ -368,27 +368,31 @@
     }
 
     async function checkPin() {
-        const input = document.getElementById('pin-input').value;
-        const hashed = await hashPin(input);
-        
-        if (hashed === PIN_HASH_ADMIN) {
-            document.getElementById('pin-gate').style.display = 'none';
-            sessionStorage.setItem('treze_auth', '1');
-            sessionStorage.setItem('treze_role', 'admin');
-            applyRbac();
-        } else if (hashed === PIN_HASH_CAJERA) {
-            document.getElementById('pin-gate').style.display = 'none';
-            sessionStorage.setItem('treze_auth', '1');
-            sessionStorage.setItem('treze_role', 'cajera');
-            applyRbac();
-        } else {
-            document.getElementById('pin-error').style.display = 'block';
-            document.getElementById('pin-input').value = '';
-            document.getElementById('pin-input').style.borderColor = '#ef4444';
-            setTimeout(() => {
-                document.getElementById('pin-error').style.display = 'none';
-                document.getElementById('pin-input').style.borderColor = 'var(--accent)';
-            }, 2000);
+        try {
+            const input = document.getElementById('pin-input').value.trim();
+            const hashed = await hashPin(input);
+            
+            if (hashed === PIN_HASH_ADMIN) {
+                document.getElementById('pin-gate').style.display = 'none';
+                sessionStorage.setItem('treze_auth', '1');
+                sessionStorage.setItem('treze_role', 'admin');
+                applyRbac();
+            } else if (hashed === PIN_HASH_CAJERA) {
+                document.getElementById('pin-gate').style.display = 'none';
+                sessionStorage.setItem('treze_auth', '1');
+                sessionStorage.setItem('treze_role', 'cajera');
+                applyRbac();
+            } else {
+                document.getElementById('pin-error').style.display = 'block';
+                document.getElementById('pin-input').value = '';
+                document.getElementById('pin-input').style.borderColor = '#ef4444';
+                setTimeout(() => {
+                    document.getElementById('pin-error').style.display = 'none';
+                    document.getElementById('pin-input').style.borderColor = 'var(--accent)';
+                }, 2000);
+            }
+        } catch (err) {
+            alert("Error de validación en tu dispositivo. " + err.message);
         }
     }
 
@@ -403,15 +407,18 @@
             const style = document.createElement('style');
             style.innerHTML = `
                 /* Ocultar botones bloqueados para cajera */
-                [onclick="switchView('v-dashboard', this)"] { display: none !important; }
-                [onclick="switchView('v-historial', this)"] { display: none !important; }
-                [onclick="switchView('v-meseros', this)"] { display: none !important; }
-                #v-dashboard, #v-historial, #v-meseros { display: none !important; }
+                [onclick*="v-dashboard"] { display: none !important; }
+                [onclick*="v-historial"] { display: none !important; }
+                [onclick*="v-meseros"] { display: none !important; }
+                [onclick*="v-tienda"] { display: none !important; }
+                [onclick*="v-productos"] { display: none !important; }
+                [onclick*="v-personal"] { display: none !important; }
+                #v-dashboard, #v-historial, #v-meseros, #v-tienda, #v-productos, #v-personal { display: none !important; }
             `;
             document.head.appendChild(style);
             // Cambiar la vista por defecto a Active Mesas
             setTimeout(() => {
-                const btn = document.querySelector('[onclick="switchView(\\'v-activos\\', this)"]');
+                const btn = document.querySelector('[onclick*="v-mesas"]');
                 if(btn) btn.click();
             }, 100);
         }
