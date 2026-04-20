@@ -15,13 +15,21 @@
 <body>
     <header class="kds-header">
         <div class="kds-brand">
-            <i class="ri-fire-line"></i>
+            <!-- Treze Labs Logo SVG (No wordmark) -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 22h20L12 2z" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M12 10l-4 8h8l-4-8z" fill="var(--accent)"/>
+            </svg>
             <div>
                 <h1>KITCHEN DISPLAY</h1>
                 <span>Fiore de Enero — Powered by Treze</span>
             </div>
         </div>
         <div class="kds-status">
+            <div class="view-toggle">
+                <button id="btn-activos" class="toggle-btn active" onclick="switchView('activos')">Activos</button>
+                <button id="btn-historial" class="toggle-btn" onclick="switchView('historial')">Historial</button>
+            </div>
             <div id="loader" style="display:none;"><i class="ri-loader-4-line spin"></i> Sincronizando...</div>
             <div class="kds-clock" id="kds-clock">00:00</div>
         </div>

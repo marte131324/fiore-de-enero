@@ -395,9 +395,9 @@
                 var notaHtml = item.nota ? '<div class="cmd-nota">Nota: ' + item.nota + '</div>' : '';
                 
                 var opacityStyle = item.enviado ? 'opacity: 0.6; pointer-events: none;' : '';
-                var lockIcon = item.enviado ? '<i class="ri-check-double-line" style="color:var(--success); margin-left:6px;"></i>' : '';
+                var lockIcon = item.enviado ? '<i class="ri-lock-2-line" style="color:var(--warning); margin-left:6px;"></i>' : '';
                 var controlsHtml = item.enviado ? 
-                    '<span style="font-size:12px; color:var(--success); font-weight: 500;">Enviado a cocina</span>' :
+                    '<span style="font-size:12px; color:var(--warning); font-weight: 500;">🔒 En Preparación</span>' :
                     '<button class="cmd-btn note" onclick="abrirNotaModal(' + i + ')" style="pointer-events: auto;"><i class="ri-pencil-line"></i></button>' +
                     '<div style="flex:1"></div>' +
                     '<div class="cmd-stepper" style="pointer-events: auto;">' +

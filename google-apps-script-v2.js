@@ -181,16 +181,37 @@ function doPost(e) {
     }
     var cData = sheetCocina.getDataRange().getValues();
     var tickets = [];
+    // Include historic tickets from today. We can filter by date if needed, but for now we'll just send all LISTO today or recent.
+    var todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
     for(var i=1; i<cData.length; i++) {
-      if(cData[i][5] === 'PENDIENTE') {
-        tickets.push({
-          id: cData[i][0],
-          mesaNum: cData[i][1],
-          mesero: cData[i][2],
-          hora: cData[i][3],
-          items: cData[i][4]
-        });
-      }
+        var estado = cData[i][5];
+        if(estado === 'PENDIENTE' || estado === 'EN PREPARACION' || estado === 'LISTO') {
+            var horaObj = cData[i][3];
+            var horaStr = "";
+            if (horaObj instanceof Date) {
+               horaStr = Utilities.formatDate(horaObj, Session.getScriptTimeZone(), "HH:mm");
+            } else {
+               horaStr = String(horaObj);
+            }
+            
+            var horaTerminadoObj = cData[i][6];
+            var horaTerminadoStr = "";
+            if (horaTerminadoObj instanceof Date) {
+               horaTerminadoStr = Utilities.formatDate(horaTerminadoObj, Session.getScriptTimeZone(), "HH:mm");
+            } else {
+               horaTerminadoStr = String(horaTerminadoObj || "");
+            }
+
+            tickets.push({
+              id: cData[i][0],
+              mesaNum: cData[i][1],
+              mesero: cData[i][2],
+              hora: horaStr,
+              items: cData[i][4],
+              estado: estado,
+              terminadoHora: horaTerminadoStr
+            });
+        }
     }
     return ContentService.createTextOutput(JSON.stringify({ tickets: tickets })).setMimeType(ContentService.MimeType.JSON);
   } else if(action === 'sendToCocina') {
@@ -210,6 +231,18 @@ function doPost(e) {
       'PENDIENTE',
       ''
     ]);
+    return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
+  } else if(action === 'markCocinaPreparing') {
+    var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
+    if(sheetCocina) {
+      var cData = sheetCocina.getDataRange().getValues();
+      for(var i=1; i<cData.length; i++) {
+        if(String(cData[i][0]) === String(postData.ticketID)) {
+          sheetCocina.getRange(i+1, 6).setValue('EN PREPARACION');
+          break;
+        }
+      }
+    }
     return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
   } else if(action === 'markCocinaReady') {
     var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
