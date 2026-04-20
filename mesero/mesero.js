@@ -460,12 +460,11 @@
         var extrasTotal = extrasActual.reduce(function(s, e) { return s + (parseFloat(e.monto) || 0); }, 0);
         var total = subtotal + extrasTotal;
 
-        // KDS DELTA EXTRACTION
+        // KDS DELTA EXTRACTION — collect but do NOT mark enviado yet
         var nuevosItems = [];
         comandaActual.forEach(function(i) { 
             if(!i.enviado) {
                 nuevosItems.push(i);
-                i.enviado = true;
             }
         });
 
@@ -479,41 +478,56 @@
         // BUG 1 FIX: Include pideCuenta flag
         var pideCuentaFlag = (existingMesa && existingMesa.pideCuenta) ? true : false;
 
+        // Prepare items snapshot with enviado=true for the payload
+        var itemsSnapshot = comandaActual.map(function(i) {
+            return { id: i.id, n: i.n, p: i.p, q: i.q, nota: i.nota || '', enviado: true };
+        });
+
         var mesaPayload = {
             mesaNum: mesaAbierta,
             mesero: meseroCode,
             personas: cmdPersonas,
-            items: JSON.stringify(comandaActual),
+            items: JSON.stringify(itemsSnapshot),
             extras: JSON.stringify(extrasActual),
             descuento: existingMesa ? existingMesa.descuento : 0,
             total: total,
             pideCuenta: pideCuentaFlag
         };
 
+        // CONCURRENCY FIX: Determine isNew from server state, not local state.
+        // A mesa is "new" if there's no server-confirmed open mesa for this number.
+        var serverHasMesaOpen = !!(existingMesa && existingMesa.estado === 'abierta' && existingMesa.horaApertura);
+        var isNewMesa = !serverHasMesaOpen;
+
         try {
-            // FIRE AND FORGET KDS DELTA (If there are new items)
-            if(nuevosItems.length > 0) {
-                fetch(WEBAPP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems })
-                }).catch(function(){}); // Ignore failures to purely Kitchen
-            }
+            // STEP 1: Save mesa FIRST (validate mesa state on server)
             var res = await fetch(WEBAPP_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'saveMesa', isNew: !existingMesa, mesa: mesaPayload })
+                body: JSON.stringify({ action: 'saveMesa', isNew: isNewMesa, mesa: mesaPayload })
             });
             if(!res.ok) throw new Error("Network error");
             var resData = await res.json();
             
             if(resData.status === 'error' && resData.reason === 'CLOSED') {
-                // RACE CONDITION MITIGATION
+                // RACE CONDITION MITIGATION — do NOT send to cocina
                 guardando = false;
                 if(saveBtn) { saveBtn.innerHTML = saveBtnText; saveBtn.style.opacity = '1'; saveBtn.disabled = false; }
                 alert("⛔ ERROR CRÍTICO: La mesa " + mesaAbierta + " fue cobrada en caja hace unos instantes. Tu orden NO fue guardada porque la mesa está cerrada.");
                 volverAMesas();
                 return;
+            }
+
+            // STEP 2: Mesa saved OK — NOW mark items as enviado locally
+            comandaActual.forEach(function(i) { i.enviado = true; });
+
+            // STEP 3: Send new items to cocina ONLY after mesa save succeeded
+            if(nuevosItems.length > 0) {
+                fetch(WEBAPP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems })
+                }).catch(function(){}); // Fire and forget
             }
 
         } catch(e) { 
@@ -534,13 +548,15 @@
             extras: JSON.stringify(extrasActual),
             descuento: 0,
             total: total,
-            pideCuenta: pideCuentaFlag
+            pideCuenta: pideCuentaFlag,
+            horaApertura: (existingMesa && existingMesa.horaApertura) || 'local'
         };
 
         // Restore button
         if(saveBtn) { saveBtn.innerHTML = saveBtnText; saveBtn.style.opacity = '1'; saveBtn.disabled = false; }
         guardando = false;
         showToast('Orden enviada ✓');
+        renderCmdItems();
     };
 
     // ============================================================
