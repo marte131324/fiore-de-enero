@@ -165,11 +165,13 @@
             <div class="pill">Bóveda de Entrega</div>
             <h1>Fiore de Enero</h1>
             <p>Ecosistema Gastronómico Digital</p>
-            <div class="ver">v1.0.1 · abril 2026</div>
+            <div class="ver">v2.0.0 · abril 2026</div>
         </div>
 
         <a href="https://fiore-de-enero.vercel.app/" target="_blank" class="btn btn-primary">Abrir VCard Pública →</a>
-        <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary">⚙ Command Center</a>
+        <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary">⚙ Command Center (Admin/Caja)</a>
+        <a href="https://fiore-de-enero.vercel.app/mesero/" target="_blank" class="btn btn-secondary">📝 Panel de Meseros</a>
+        <a href="https://fiore-de-enero.vercel.app/cocina/" target="_blank" class="btn btn-secondary">🍳 Kitchen Display (Cocina)</a>
         <a href="https://www.canva.com/design/DAHEuJvO_n0/ogEJsneQvppjsfG6w6G7IA/edit" target="_blank" class="btn btn-canva">🎨 Editar Actividades Especiales en Canva</a>
 
         <div class="qr-section">
@@ -204,7 +206,7 @@
             <div class="doc-num">02</div>
             <div class="doc-info">
                 <h3>Guía de Usuario VIP</h3>
-                <p>Uso del Panel, PIN, Tarjeta Lealtad y Edición</p>
+                <p>Uso del Panel, PIN Admin/Cajera, Tarjeta Lealtad y Edición</p>
             </div>
             <div class="doc-arrow">→</div>
         </a>
@@ -214,6 +216,33 @@
             <div class="doc-info">
                 <h3>Infraestructura de Seguridad</h3>
                 <p>Headers, Tokens, Backups y Bóveda</p>
+            </div>
+            <div class="doc-arrow">→</div>
+        </a>
+
+        <a href="/Boveda/04_Guia_POS_Roles.html" target="_blank" class="doc-card hover-led">
+            <div class="doc-num">04</div>
+            <div class="doc-info">
+                <h3>Guía POS, Roles y Seguridad</h3>
+                <p>Sistema de Punto de Venta, Control de Acceso RBAC y protocolos</p>
+            </div>
+            <div class="doc-arrow">→</div>
+        </a>
+
+        <a href="/Boveda/05_Guia_KDS_Cocina.html" target="_blank" class="doc-card hover-led">
+            <div class="doc-num">05</div>
+            <div class="doc-info">
+                <h3>Guía Kitchen Display (Cocina)</h3>
+                <p>Panel KDS tipo Kanban, temporizadores y alertas</p>
+            </div>
+            <div class="doc-arrow">→</div>
+        </a>
+
+        <a href="/Boveda/06_Flujo_Operativo.html" target="_blank" class="doc-card hover-led">
+            <div class="doc-num">06</div>
+            <div class="doc-info">
+                <h3>Flujo Operativo Completo</h3>
+                <p>De la mesa a la cocina al cobro — paso a paso por rol</p>
             </div>
             <div class="doc-arrow">→</div>
         </a>
@@ -254,8 +283,29 @@
             <div class="tl-item">
                 <div class="tl-dot"></div>
                 <div class="tl-info">
+                    <strong>POS Punto de Venta + Mesas + Meseros</strong>
+                    <span>Sistema completo de caja registradora, gestor de mesas activas y control de meseros</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-info">
+                    <strong>RBAC — Roles y Seguridad Avanzada</strong>
+                    <span>PIN Admin + PIN Cajera con permisos diferenciados y autorización gerencial SHA-256</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-info">
+                    <strong>Kitchen Display System (KDS)</strong>
+                    <span>Panel independiente de cocina con tickets Kanban, temporizadores y alertas sonoras</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-info">
                     <strong>Backend Serverless Blindado</strong>
-                    <span>Google Sheets con Token webhook activo</span>
+                    <span>Google Sheets con Token webhook activo + hojas Cocina_Tickets y Auditoría</span>
                 </div>
             </div>
             <div class="tl-item">

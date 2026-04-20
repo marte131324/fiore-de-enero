@@ -203,6 +203,10 @@
         // Load existing data
         if(mesa && mesa.estado === 'abierta') {
             try { comandaActual = JSON.parse(mesa.items); } catch(e) { comandaActual = []; }
+            // CRITICAL: Ensure items loaded from server preserve their enviado state
+            comandaActual.forEach(function(item) {
+                if(item.enviado === undefined) item.enviado = true; // Items from server were already sent
+            });
             try { extrasActual = JSON.parse(mesa.extras); } catch(e) { extrasActual = []; }
             cmdPersonas = mesa.personas || 1;
         } else {

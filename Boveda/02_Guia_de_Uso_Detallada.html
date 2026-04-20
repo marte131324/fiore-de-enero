@@ -58,7 +58,7 @@
 
     <div class="header">
         <div>
-            <span class="badge">Documento 2 de 3</span>
+            <span class="badge">Documento 2 de 6</span>
             <h1>📖 Guía de Uso VIP</h1>
             <div class="sub">Fiore de Enero — Ecosistema Digital</div>
         </div>
@@ -77,12 +77,16 @@
     <div class="section-card">
         <p>Tu <strong>Command Center</strong> (Panel Administrativo) ha sido blindado siguiendo los estándares de "Fortaleza Treze" con candados anti-clickjacking y validación de escrituras.</p>
         <div class="security">
-            <strong>🔐 PIN DE ACCESO:</strong> <code>2026</code>
+            <strong>🔐 PIN ADMINISTRADORA:</strong> <code>2026</code> — Acceso total (Dashboard, Historial, POS, Meseros)
+        </div>
+        <div class="security">
+            <strong>🔐 PIN CAJERA:</strong> <code>1313</code> — Acceso restringido (Solo POS y Mesas Activas)
         </div>
         <ul>
             <li><strong>¿Dónde ingreso?</strong> Ubica el botón gris "⚙ Command Center" en tu Bóveda de Entrega, o ingresa agregando <code>/admin/index.html</code> a tu enlace.</li>
-            <li><strong>Protección Criptográfica:</strong> Tu PIN se valida mediante hash SHA-256 en tu propio dispositivo. Nadie en internet puede interceptar tu contraseña.</li>
+            <li><strong>Protección Criptográfica:</strong> Ambos PIN se validan mediante hash SHA-256 en tu propio dispositivo. Nadie en internet puede interceptar tu contraseña.</li>
             <li><strong>Token Webhook:</strong> Tu sistema se comunica con la base de datos Google Sheets mediante un token interno invisible que bloquea que terceros puedan enviar datos falsos.</li>
+            <li><strong>Restricción de Cajera:</strong> La cajera NO puede ver el Dashboard de Ventas, el Historial de Cierre ni la Gestión de Meseros. Para cancelar cuentas o eliminar platillos, el sistema le pedirá el PIN de la Administradora.</li>
         </ul>
     </div>
 

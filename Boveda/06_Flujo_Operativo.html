@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flujo Operativo Completo | Fiore de Enero</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        @page { size: letter; margin: 2cm 2.5cm; }
+        body { font-family:'Inter',sans-serif; color:#1e293b; line-height:1.7; padding:40px 50px; max-width:850px; margin:0 auto; }
+        .header { border-bottom:3px solid #0284c7; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
+        .header h1 { font-size:1.6rem; font-weight:800; color:#0f172a; }
+        .header .sub { font-size:0.8rem; color:#64748b; }
+        .badge { display:inline-block; background:#0e86b0; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom: 5px; }
+        h2 { font-size:1.15rem; font-weight:700; color:#0284c7; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+        h3 { font-size:0.95rem; font-weight:700; color:#334155; margin:18px 0 8px; }
+        p, li { font-size:0.88rem; color:#475569; }
+        ul, ol { padding-left:22px; margin:8px 0; }
+        li { margin:6px 0; }
+        .section-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px 24px; margin:16px 0; page-break-inside:avoid; }
+        .section-card h3 { margin-top:0; color:#0284c7; }
+        .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
+        .warn { background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#92400e; }
+        .note { background:#eff6ff; border-left:4px solid #3b82f6; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        .security { background:#fef2f2; border-left:4px solid #ef4444; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#991b1b; }
+        .footer { margin-top:40px; padding-top:16px; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; }
+        .flow-step { display:flex; gap:16px; margin:16px 0; align-items:flex-start; }
+        .flow-num { background:linear-gradient(135deg,#0284c7, #06b6d4); color:white; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.9rem; flex-shrink:0; }
+        .flow-content { flex:1; }
+        .flow-content strong { font-size:0.9rem; color:#0f172a; display:block; margin-bottom:3px; }
+        .flow-content p { font-size:0.84rem; margin:0; }
+        .role-tag { display:inline-block; padding:2px 10px; border-radius:100px; font-size:0.7rem; font-weight:700; letter-spacing:0.5px; margin-left:4px; }
+        .role-mesero { background:#dbeafe; color:#1e40af; }
+        .role-cocina { background:#fef3c7; color:#92400e; }
+        .role-cajera { background:#fce7f3; color:#9d174d; }
+        .role-admin { background:#dcfce7; color:#166534; }
+
+        body.dark-mode { background:#0f172a; color:#cbd5e1; }
+        body.dark-mode .header { border-bottom-color: #38bdf8; }
+        body.dark-mode .header h1 { color:#f8fafc; }
+        body.dark-mode h2 { color:#38bdf8; border-bottom-color:#334155; }
+        body.dark-mode h3 { color:#e2e8f0; }
+        body.dark-mode p, body.dark-mode li { color:#94a3b8; }
+        body.dark-mode .section-card { background:#1e293b; border-color:#334155; }
+        body.dark-mode .section-card h3 { color:#38bdf8; }
+        body.dark-mode .note { background:rgba(59,130,246,0.1); color:#93c5fd; }
+        body.dark-mode .warn { background:rgba(245,158,11,0.1); color:#fcd34d; }
+        body.dark-mode .security { background:rgba(239,68,68,0.1); color:#fca5a5; }
+        body.dark-mode .tip { background:rgba(34,197,94,0.1); color:#86efac; }
+        body.dark-mode .footer { border-top-color:#334155; color:#64748b; }
+        body.dark-mode .flow-content strong { color:#e2e8f0; }
+        .theme-btn { background:none; border:none; cursor:pointer; font-size:1.2rem; color:#64748b; margin-left:20px; outline:none; }
+        body.dark-mode .theme-btn { color:#fcd34d; }
+        @media print { body { padding:0; } .section-card { break-inside:avoid; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <span class="badge">Documento 6 de 6</span>
+            <h1>🔄 Flujo Operativo Completo</h1>
+            <div class="sub">Fiore de Enero — De la Mesa a la Cocina al Cobro</div>
+        </div>
+        <div style="text-align:right; display:flex; align-items:flex-end; gap:10px;">
+            <div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Treze Labs</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Laboratorio de Sistemas Digitales · Abril 2026</div>
+            </div>
+            <button class="theme-btn" onclick="document.body.classList.toggle('dark-mode')" title="Alternar Modo Oscuro">🌓</button>
+        </div>
+    </div>
+
+    <p>Este documento describe el flujo operativo completo del restaurante, desde que un cliente se sienta hasta que se le cobra, detallando quién hace qué y en qué pantalla.</p>
+
+    <h2>🎯 Flujo Principal: Mesa → Cocina → Cobro</h2>
+    <div class="section-card">
+        <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-content">
+                <strong>El cliente llega y se sienta <span class="role-tag role-mesero">Mesero</span></strong>
+                <p>El mesero abre su celular, entra a la app de Mesero, selecciona su nombre y toca la <strong>Mesa #</strong> correspondiente.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-content">
+                <strong>Tomar el pedido <span class="role-tag role-mesero">Mesero</span></strong>
+                <p>El mesero selecciona la categoría (Pizzas, Bebidas, etc.) y toca cada platillo para agregarlo. Puede agregar <strong>notas especiales</strong> (ej. "sin cebolla") y ajustar cantidades (+/-).</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-content">
+                <strong>Presionar "Enviar" <span class="role-tag role-mesero">Mesero</span></strong>
+                <p>Este es el paso más importante. "Enviar" hace DOS cosas simultáneas:</p>
+                <ul style="margin-top:6px;">
+                    <li>Guarda la comanda en la base de datos central (la cajera ya la ve).</li>
+                    <li>Envía SOLO los platillos nuevos al panel de cocina (KDS).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-content">
+                <strong>Cocina recibe el ticket <span class="role-tag role-cocina">Cocina</span></strong>
+                <p>En la tablet de cocina aparece una tarjeta con el número de mesa, los platillos y las notas. Se activa un sonido de alerta. El temporizador empieza a correr.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-content">
+                <strong>Cocina prepara y despacha <span class="role-tag role-cocina">Cocina</span></strong>
+                <p>Al terminar de preparar, el cocinero presiona <strong>"Entregado"</strong> en su pantalla. La tarjeta desaparece del KDS.</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div class="flow-content">
+                <strong>El cliente solicita la cuenta <span class="role-tag role-mesero">Mesero</span></strong>
+                <p>El mesero puede presionar "Pide Cuenta" desde su app. Esto le avisa a la cajera que esa mesa necesita ser cobrada (aparece una alerta visual en el panel de la cajera).</p>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div class="flow-content">
+                <strong>La cajera cobra la mesa <span class="role-tag role-cajera">Cajera</span></strong>
+                <p>La cajera abre el Command Center (PIN 1313), va a "Mesas Activas", selecciona la mesa, elige método de pago (Efectivo/Tarjeta/Transferencia), propina si aplica, y presiona <strong>"Cobrar"</strong>. La mesa se cierra y la venta se registra.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>🔀 Escenarios Especiales</h2>
+    <div class="section-card">
+        <h3>Pedido Adicional (Segunda Ronda)</h3>
+        <p>Si el cliente pide más platillos después de enviar la 1ª ronda:</p>
+        <ol>
+            <li>El mesero abre la misma mesa (verá los items previos con candado "Enviado a cocina").</li>
+            <li>Agrega los nuevos platillos.</li>
+            <li>Presiona "Enviar". <strong>Solo los nuevos</strong> llegarán a cocina.</li>
+        </ol>
+    </div>
+
+    <div class="section-card">
+        <h3>Cliente Cancela un Platillo</h3>
+        <p>Si el cliente cancela algo que <strong>ya fue enviado a cocina</strong>:</p>
+        <ol>
+            <li>El mesero <strong>NO</strong> puede eliminarlo desde su celular (está bloqueado como medida anti-fraude).</li>
+            <li>El mesero avisa verbalmente a cocina para detener la preparación.</li>
+            <li>La cajera (o la dueña) lo elimina desde el Command Center. Si el usuario es Cajera, el sistema pedirá el <strong>PIN del Admin (2026)</strong> antes de autorizar.</li>
+        </ol>
+        <div class="security">
+            <strong>¿Por qué el mesero no puede borrar?</strong> Para evitar "mermas ficticias": que un mesero elimine un platillo del sistema pero que cocina ya lo haya preparado, creando una pérdida financiera invisible.
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h3>Se cae el Internet</h3>
+        <p>Si el WiFi falla:</p>
+        <ul>
+            <li><strong>Mesero:</strong> Verá un error claro en pantalla: <em>"Error de conexión. Tu orden no se guardó."</em> Debe reintentar cuando haya señal.</li>
+            <li><strong>Cocina:</strong> Los tickets que ya están en pantalla se quedan visibles. Los nuevos no llegarán hasta que se restaure la red.</li>
+            <li><strong>Cajera:</strong> No podrá cobrar hasta que se restaure la red. Puede tomar nota manual y registrar después.</li>
+        </ul>
+    </div>
+
+    <h2>📋 Resumen de Pantallas por Rol</h2>
+    <div class="section-card">
+        <table style="width:100%; border-collapse:collapse; margin:10px 0;">
+            <tr style="background:#f1f5f9;">
+                <th style="padding:10px; text-align:left; font-size:0.8rem; border-bottom:2px solid #e2e8f0;">Rol</th>
+                <th style="padding:10px; text-align:left; font-size:0.8rem; border-bottom:2px solid #e2e8f0;">Pantalla</th>
+                <th style="padding:10px; text-align:left; font-size:0.8rem; border-bottom:2px solid #e2e8f0;">Acceso</th>
+            </tr>
+            <tr>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><strong>Mesero</strong></td>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">/mesero/</td>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">Seleccionar nombre propio</td>
+            </tr>
+            <tr>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><strong>Cocina</strong></td>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">/cocina/</td>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">Sin PIN (solo lectura de tickets)</td>
+            </tr>
+            <tr>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;"><strong>Cajera</strong></td>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">/admin/</td>
+                <td style="padding:10px; border-bottom:1px solid #e2e8f0;">PIN <code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.82rem;">1313</code></td>
+            </tr>
+            <tr>
+                <td style="padding:10px;"><strong>Administradora</strong></td>
+                <td style="padding:10px;">/admin/</td>
+                <td style="padding:10px;">PIN <code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.82rem;">2026</code></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        FIORE DE ENERO — Documentación de Entrega &copy; 2026 Treze Labs<br>
+        Este documento es confidencial y contiene accesos del sistema.
+    </div>
+
+</body>
+</html>
