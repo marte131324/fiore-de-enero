@@ -175,8 +175,29 @@ body {
 .ticket.preparando { border-top-color: var(--success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
 
 /* Table for Historial */
-.historial-table { width: 100%; border-collapse: collapse; text-align: left; }
-.historial-table th, .historial-table td { padding: 12px 16px; border-bottom: 1px solid var(--glass-border); color: var(--text-pure); }
-.historial-table th { color: var(--text-dim); font-size: 13px; text-transform: uppercase; font-weight: 600; }
-.historial-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-.historial-items-list { font-size: 13px; color: var(--text-dim); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.historial-container { width: 100%; max-width: 900px; margin: 0 auto; max-height: 100%; display: flex; flex-direction: column; }
+.historial-header { padding: 16px 20px; border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0; border: 1px solid var(--glass-border); border-bottom: none; }
+.historial-header h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.historial-badge { background: var(--success); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.historial-scroll { overflow-y: auto; max-height: calc(100vh - 180px); display: flex; flex-direction: column; gap: 8px; padding: 12px; background: #18181b; border: 1px solid var(--glass-border); border-top: none; border-radius: 0 0 12px 12px; }
+
+.historial-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 10px; overflow: hidden; transition: 0.2s; }
+.historial-card:hover { border-color: rgba(255,255,255,0.15); }
+.historial-card-header { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.historial-mesa { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--accent); min-width: 60px; }
+.historial-times { flex: 1; }
+.historial-time-row { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 1.6; }
+.time-label { color: var(--text-dim); font-size: 11px; min-width: 55px; }
+.time-value { color: var(--text-pure); font-family: var(--font-display); font-weight: 600; }
+.time-value.success { color: var(--success); }
+.historial-prep-time { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.prep-icon { font-size: 14px; }
+
+.historial-card-body { padding: 10px 16px 14px; }
+.historial-mesero { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+.historial-items { display: flex; flex-direction: column; gap: 4px; }
+.historial-item-row { display: flex; align-items: center; gap: 8px; font-size: 14px; padding: 3px 0; }
+.historial-item-qty { color: var(--accent); font-weight: 700; font-family: var(--font-display); min-width: 28px; }
+.historial-item-name { color: var(--text-pure); font-weight: 500; }
+.historial-item-nota { color: var(--warning); font-size: 12px; font-style: italic; }
+

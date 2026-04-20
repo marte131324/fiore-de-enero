@@ -2,7 +2,7 @@ const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJW
 
 let actTickets = [];
 let hisTickets = [];
-let currentView = 'activos'; // 'activos' or 'historial'
+let currentView = 'activos';
 let lastCount = 0;
 
 function updateClock() {
@@ -12,15 +12,41 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+function parseHora(raw) {
+    if(!raw) return null;
+    var s = String(raw).trim();
+    // Handle "HH:mm" or "HH:mm:ss"
+    var parts = s.split(':');
+    if(parts.length >= 2) {
+        var h = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10);
+        if(!isNaN(h) && !isNaN(m)) return { h: h, m: m };
+    }
+    // Handle Date ISO string from JSON (e.g. "1899-12-30T19:23:00.000Z")
+    if(s.indexOf('T') !== -1) {
+        var d = new Date(s);
+        if(!isNaN(d.getTime())) return { h: d.getHours(), m: d.getMinutes() };
+    }
+    return null;
+}
+
 function getMinutesDiff(timeStr) {
-    if(!timeStr) return 0;
-    const parts = timeStr.split(':');
-    const now = new Date();
-    const t = new Date();
-    t.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
-    let diff = (now - t) / 60000;
-    if(diff < 0) diff += 24 * 60; // Cross midnight
+    var parsed = parseHora(timeStr);
+    if(!parsed) return 0;
+    var now = new Date();
+    var then = new Date();
+    then.setHours(parsed.h, parsed.m, 0, 0);
+    var diff = (now - then) / 60000;
+    if(diff < 0) diff += 24 * 60;
     return Math.floor(diff);
+}
+
+function formatHora(timeStr) {
+    var parsed = parseHora(timeStr);
+    if(!parsed) return timeStr || '--:--';
+    var hh = String(parsed.h).padStart(2, '0');
+    var mm = String(parsed.m).padStart(2, '0');
+    return hh + ':' + mm;
 }
 
 function updateTimers() {
@@ -49,8 +75,11 @@ async function fetchTickets() {
             actTickets = data.tickets.filter(t => t.estado === 'PENDIENTE' || t.estado === 'EN PREPARACION');
             hisTickets = data.tickets.filter(t => t.estado === 'LISTO');
             
-            // Sort history by terminadoHora descending (latest first)
-            hisTickets.sort((a, b) => b.terminadoHora.localeCompare(a.terminadoHora));
+            hisTickets.sort((a, b) => {
+                var ha = formatHora(a.terminadoHora);
+                var hb = formatHora(b.terminadoHora);
+                return hb.localeCompare(ha);
+            });
             
             if (currentView === 'activos') {
                 renderBoard();
@@ -58,7 +87,6 @@ async function fetchTickets() {
                 renderHistorial();
             }
             
-            // Notificar si hay nuevos PENDIENTES
             const pendientesObj = actTickets.filter(t => t.estado === 'PENDIENTE');
             if(pendientesObj.length > lastCount) {
                 const audio = document.getElementById('audio-ding');
@@ -84,7 +112,7 @@ window.switchView = function(view) {
 function renderBoard() {
     const board = document.getElementById('kds-board');
     if(actTickets.length === 0) {
-        board.innerHTML = '<div style="margin:auto; color:var(--text-dim); text-align:center;"><i class="ri-check-all" style="font-size:48px; color:var(--success); margin-bottom:10px; display:block;"></i><h3>Todo Entregado</h3><p>Esperando nuevas comandas...</p></div>';
+        board.innerHTML = '<div style="margin:auto; color:var(--text-dim); text-align:center;"><i class="ri-check-double-line" style="font-size:48px; color:var(--success); margin-bottom:10px; display:block;"></i><h3>Todo Entregado</h3><p>Esperando nuevas comandas...</p></div>';
         return;
     }
 
@@ -94,6 +122,7 @@ function renderBoard() {
         try { items = JSON.parse(t.items); } catch(e) {}
         
         const mins = getMinutesDiff(t.hora);
+        const horaDisplay = formatHora(t.hora);
         const isLate = mins >= 15 ? 'late' : '';
         const isPrep = t.estado === 'EN PREPARACION';
         const prepClass = isPrep ? 'preparando' : '';
@@ -108,6 +137,7 @@ function renderBoard() {
                 <div class="ticket-meta">
                     <div class="ticket-timer"><i class="ri-timer-line"></i> <span>${mins}m</span></div>
                     <div class="ticket-mesero"><i class="ri-user-smile-line"></i> ${t.mesero}</div>
+                    <div style="font-size:11px; color:var(--text-dim); margin-top:2px;">${horaDisplay}</div>
                 </div>
             </div>
             <div class="ticket-body">
@@ -146,42 +176,65 @@ function renderHistorial() {
     }
 
     let html = `
-    <div style="width: 100%; max-width: 900px; margin: 0 auto; background: #18181b; border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; max-height: 100%;">
-        <div style="padding: 16px 20px; border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="font-size: 18px; font-weight: 600;"><i class="ri-history-line"></i> Historial de Hoy</h2>
-            <span style="background: var(--success); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">${hisTickets.length} TICKETS</span>
+    <div class="historial-container">
+        <div class="historial-header">
+            <h2><i class="ri-history-line"></i> Historial de Hoy</h2>
+            <span class="historial-badge">${hisTickets.length} TICKETS</span>
         </div>
-        <div style="overflow-y: auto; max-height: calc(100vh - 200px);">
-            <table class="historial-table">
-                <thead>
-                    <tr>
-                        <th>Hora Pedido</th>
-                        <th>Hora Entrega</th>
-                        <th>Mesa</th>
-                        <th>Mesero</th>
-                        <th>Resumen Ítems</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div class="historial-scroll">
     `;
 
     hisTickets.forEach(t => {
         let items = [];
         try { items = JSON.parse(t.items); } catch(e) {}
-        let itemNames = items.map(i => `${i.q}x ${i.n}`).join(', ');
+
+        const pedidoHora = formatHora(t.hora);
+        const entregaHora = formatHora(t.terminadoHora);
+        const tiempoPrep = (() => {
+            var p1 = parseHora(t.hora);
+            var p2 = parseHora(t.terminadoHora);
+            if(!p1 || !p2) return '--';
+            var diff = (p2.h * 60 + p2.m) - (p1.h * 60 + p1.m);
+            if(diff < 0) diff += 24 * 60;
+            return diff + ' min';
+        })();
 
         html += `
-            <tr>
-                <td>${t.hora}</td>
-                <td style="color:var(--success); font-weight:600;">${t.terminadoHora}</td>
-                <td style="font-family:var(--font-display); font-weight:700; font-size:16px;">M-${t.mesaNum}</td>
-                <td>${t.mesero}</td>
-                <td><span class="historial-items-list" title="${itemNames}">${itemNames}</span></td>
-            </tr>
+            <div class="historial-card">
+                <div class="historial-card-header">
+                    <div class="historial-mesa">M-${t.mesaNum}</div>
+                    <div class="historial-times">
+                        <div class="historial-time-row">
+                            <span class="time-label">Pedido:</span>
+                            <span class="time-value">${pedidoHora}</span>
+                        </div>
+                        <div class="historial-time-row">
+                            <span class="time-label">Entrega:</span>
+                            <span class="time-value success">${entregaHora}</span>
+                        </div>
+                    </div>
+                    <div class="historial-prep-time">
+                        <span class="prep-icon">⏱</span>
+                        <span>${tiempoPrep}</span>
+                    </div>
+                </div>
+                <div class="historial-card-body">
+                    <div class="historial-mesero"><i class="ri-user-smile-line"></i> ${t.mesero}</div>
+                    <div class="historial-items">
+                        ${items.map(item => `
+                            <div class="historial-item-row">
+                                <span class="historial-item-qty">${item.q}x</span>
+                                <span class="historial-item-name">${item.n}</span>
+                                ${item.nota ? `<span class="historial-item-nota">· ${item.nota}</span>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
         `;
     });
 
-    html += `</tbody></table></div></div>`;
+    html += `</div></div>`;
     board.innerHTML = html;
 }
 
@@ -195,11 +248,12 @@ window.markPreparing = async function(id) {
         }
     }
     try {
-        fetch(WEBAPP_URL, {
+        await fetch(WEBAPP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action: 'markCocinaPreparing', ticketID: id })
-        }).then(setTimeout(fetchTickets, 1000));
+        });
+        setTimeout(fetchTickets, 1000);
     } catch(e) {
         console.error(e);
         alert('Error conectando. Verifica conexión de red.');
@@ -215,11 +269,12 @@ window.markReady = async function(id) {
     }
 
     try {
-        fetch(WEBAPP_URL, {
+        await fetch(WEBAPP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action: 'markCocinaReady', ticketID: id })
-        }).then(setTimeout(fetchTickets, 1000));
+        });
+        setTimeout(fetchTickets, 1000);
     } catch(e) {
         console.error(e);
         alert('Error conectando. Verifica conexión de red.');
