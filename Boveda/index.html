@@ -169,9 +169,21 @@
         </div>
 
         <a href="https://fiore-de-enero.vercel.app/" target="_blank" class="btn btn-primary">Abrir VCard Pública →</a>
-        <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary">⚙ Command Center (Admin/Caja)</a>
-        <a href="https://fiore-de-enero.vercel.app/mesero/" target="_blank" class="btn btn-secondary">📝 Panel de Meseros</a>
-        <a href="https://fiore-de-enero.vercel.app/cocina/" target="_blank" class="btn btn-secondary">🍳 Kitchen Display (Cocina)</a>
+        
+        <div style="display:flex; gap:8px;">
+            <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary" style="flex:1;">⚙ Command Center (Admin/Caja)</a>
+            <button class="btn btn-secondary" style="padding:16px 18px; margin-bottom:10px; cursor:pointer; flex-shrink:0" onclick="copyLink('https://fiore-de-enero.vercel.app/admin/index.html', this)" title="Copiar enlace">🔗</button>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+            <a href="https://fiore-de-enero.vercel.app/mesero/" target="_blank" class="btn btn-secondary" style="flex:1;">📝 Panel de Meseros</a>
+            <button class="btn btn-secondary" style="padding:16px 18px; margin-bottom:10px; cursor:pointer; flex-shrink:0" onclick="copyLink('https://fiore-de-enero.vercel.app/mesero/', this)" title="Copiar enlace">🔗</button>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+            <a href="https://fiore-de-enero.vercel.app/cocina/" target="_blank" class="btn btn-secondary" style="flex:1;">🍳 Kitchen Display (Cocina)</a>
+            <button class="btn btn-secondary" style="padding:16px 18px; margin-bottom:10px; cursor:pointer; flex-shrink:0" onclick="copyLink('https://fiore-de-enero.vercel.app/cocina/', this)" title="Copiar enlace">🔗</button>
+        </div>
         <a href="https://www.canva.com/design/DAHEuJvO_n0/ogEJsneQvppjsfG6w6G7IA/edit" target="_blank" class="btn btn-canva">🎨 Editar Actividades Especiales en Canva</a>
 
         <div class="qr-section">
@@ -348,6 +360,21 @@
     </div>
 
     <script>
+    // === Copy Link Helper ===
+    function copyLink(url, btn) {
+        navigator.clipboard.writeText(url).then(function() {
+            var old = btn.innerHTML;
+            btn.innerHTML = '✅';
+            btn.style.color = '#4ade80';
+            btn.style.borderColor = '#4ade80';
+            setTimeout(function() {
+                btn.innerHTML = old;
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 2000);
+        });
+    }
+
     // === 3D Perspective Particle Mesh with Mouse Reaction ===
     const c = document.getElementById('mesh');
     const ctx = c.getContext('2d');
