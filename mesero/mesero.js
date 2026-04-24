@@ -89,12 +89,31 @@
     // ============================================================
     // LOGIN
     // ============================================================
-    window.loginMesero = function() {
+    window.loginMesero = async function() {
+        var btn = document.querySelector('.login-btn');
+        btn.textContent = 'Verificando...';
+        btn.style.opacity = '0.7';
+        
         var code = document.getElementById('mesero-code').value.trim();
-        // Fix: Ignorar ceros a la izquierda ya que Google Sheets los borra si no están en formato texto
         var m = meseros.find(function(x) { 
             return String(x.codigo).replace(/^0+/, '') === code.replace(/^0+/, '') && x.activo === 'SI'; 
         });
+
+        // Double-check: Si no se encuentra, podría haberse agregado hace 1 segundo y no estar en caché local
+        if(!m) {
+            try {
+                var res = await fetch(WEBAPP_URL + '?action=meseroInit&t=' + Date.now());
+                var data = await res.json();
+                meseros = data.meseros || [];
+                m = meseros.find(function(x) { 
+                    return String(x.codigo).replace(/^0+/, '') === code.replace(/^0+/, '') && x.activo === 'SI'; 
+                });
+            } catch(e) {}
+        }
+
+        btn.textContent = 'Entrar';
+        btn.style.opacity = '1';
+
         if(m) {
             meseroActual = m;
             sessionStorage.setItem('fiore_mesero', code);
