@@ -708,8 +708,12 @@
     }
 
     window.agregarMesero = function() {
-        var codigo = prompt('Código del mesero (2-4 dígitos):', '');
+        var codigo = prompt('Código PIN del mesero (SOLO NÚMEROS, ej: 2222):', '');
         if(!codigo) return;
+        if(!/^\d+$/.test(codigo)) {
+            alert('Error: El PIN debe contener únicamente números.');
+            return;
+        }
         if(meserosData.find(function(m) { return m.codigo === codigo; })) { showToast('Código ya existe'); return; }
         var nombre = prompt('Nombre del mesero:', '');
         if(!nombre) return;
