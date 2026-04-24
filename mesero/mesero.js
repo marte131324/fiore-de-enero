@@ -55,7 +55,7 @@
 
     async function loadData() {
         try {
-            var res = await fetch(WEBAPP_URL + '?action=meseroInit');
+            var res = await fetch(WEBAPP_URL + '?action=meseroInit&t=' + Date.now());
             var data = await res.json();
             productos = data.productos || [];
             meseros = data.meseros || [];
@@ -91,7 +91,10 @@
     // ============================================================
     window.loginMesero = function() {
         var code = document.getElementById('mesero-code').value.trim();
-        var m = meseros.find(function(x) { return x.codigo === code && x.activo === 'SI'; });
+        // Fix: Ignorar ceros a la izquierda ya que Google Sheets los borra si no están en formato texto
+        var m = meseros.find(function(x) { 
+            return String(x.codigo).replace(/^0+/, '') === code.replace(/^0+/, '') && x.activo === 'SI'; 
+        });
         if(m) {
             meseroActual = m;
             sessionStorage.setItem('fiore_mesero', code);
