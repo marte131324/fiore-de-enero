@@ -61,6 +61,25 @@
         .btn-canva { background:rgba(2,132,199,0.06); color:rgba(56,189,248,0.9); border:1px solid rgba(2,132,199,0.15); margin-bottom:40px; }
         .btn-canva:hover { background:rgba(2,132,199,0.12); border-color:rgba(2,132,199,0.3); transform:translateY(-1px); }
 
+        /* ===== MODULE ROW ===== */
+        .module-row { display:flex; gap:8px; margin-bottom:10px; }
+        .module-row .btn { flex:1; margin-bottom:0; }
+        .module-actions { display:flex; gap:6px; flex-shrink:0; }
+        .action-btn { display:flex; align-items:center; justify-content:center; width:46px; height:auto; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); cursor:pointer; font-size:1.1rem; transition:all 0.3s; padding:0; }
+        .action-btn:hover { transform:translateY(-1px); }
+        .action-btn.copy-btn:hover { border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.06); }
+        .action-btn.wa-share { border-color:rgba(37,211,102,0.2); background:rgba(37,211,102,0.05); }
+        .action-btn.wa-share:hover { border-color:rgba(37,211,102,0.4); background:rgba(37,211,102,0.12); box-shadow:0 0 15px rgba(37,211,102,0.1); }
+        .action-btn svg { width:20px; height:20px; }
+
+        /* ===== QR LABEL ===== */
+        .qr-slide .qr-label { display:inline-block; font-size:0.65rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; padding:4px 12px; border-radius:100px; margin-bottom:14px; }
+        .qr-label.label-public { background:rgba(56,189,248,0.1); color:rgba(56,189,248,0.7); border:1px solid rgba(56,189,248,0.15); }
+        .qr-label.label-admin { background:rgba(251,191,36,0.1); color:rgba(251,191,36,0.8); border:1px solid rgba(251,191,36,0.15); }
+        .qr-label.label-mesero { background:rgba(168,85,247,0.1); color:rgba(168,85,247,0.8); border:1px solid rgba(168,85,247,0.15); }
+        .qr-label.label-cocina { background:rgba(239,68,68,0.1); color:rgba(239,68,68,0.7); border:1px solid rgba(239,68,68,0.15); }
+        .qr-label.label-lealtad { background:rgba(16,185,129,0.1); color:rgba(16,185,129,0.7); border:1px solid rgba(16,185,129,0.15); }
+
         /* ===== QR Carousel ===== */
         .qr-section { text-align:center; margin-bottom:48px; padding:36px 24px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:20px; position:relative; }
         .qr-section::before { content:''; position:absolute; inset:-1px; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(56,189,248,0.15), transparent 50%, rgba(2,132,199,0.1)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
@@ -169,37 +188,67 @@
         </div>
 
         <a href="https://fiore-de-enero.vercel.app/" target="_blank" class="btn btn-primary">Abrir VCard Pública →</a>
-        
-        <div style="display:flex; gap:8px;">
-            <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary" style="flex:1;">⚙ Command Center (Admin/Caja)</a>
-            <button class="btn btn-secondary" style="padding:16px 18px; margin-bottom:10px; cursor:pointer; flex-shrink:0" onclick="copyLink('https://fiore-de-enero.vercel.app/admin/index.html', this)" title="Copiar enlace">🔗</button>
+
+        <div class="module-row">
+            <a href="https://fiore-de-enero.vercel.app/admin/index.html" target="_blank" class="btn btn-secondary">⚙ Command Center (Admin/Caja)</a>
+            <div class="module-actions">
+                <button class="action-btn copy-btn" onclick="copyLink('https://fiore-de-enero.vercel.app/admin/index.html', this)" title="Copiar enlace">🔗</button>
+                <button class="action-btn wa-share" onclick="shareWA('⚙ Command Center (Admin/Caja)', 'https://fiore-de-enero.vercel.app/admin/index.html')" title="Enviar por WhatsApp"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+            </div>
         </div>
 
-        <div style="display:flex; gap:8px;">
-            <a href="https://fiore-de-enero.vercel.app/mesero/" target="_blank" class="btn btn-secondary" style="flex:1;">📝 Panel de Meseros</a>
-            <button class="btn btn-secondary" style="padding:16px 18px; margin-bottom:10px; cursor:pointer; flex-shrink:0" onclick="copyLink('https://fiore-de-enero.vercel.app/mesero/', this)" title="Copiar enlace">🔗</button>
+        <div class="module-row">
+            <a href="https://fiore-de-enero.vercel.app/mesero/" target="_blank" class="btn btn-secondary">📝 Panel de Meseros</a>
+            <div class="module-actions">
+                <button class="action-btn copy-btn" onclick="copyLink('https://fiore-de-enero.vercel.app/mesero/', this)" title="Copiar enlace">🔗</button>
+                <button class="action-btn wa-share" onclick="shareWA('📝 Panel de Meseros', 'https://fiore-de-enero.vercel.app/mesero/')" title="Enviar por WhatsApp"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+            </div>
         </div>
 
-        <div style="display:flex; gap:8px;">
-            <a href="https://fiore-de-enero.vercel.app/cocina/" target="_blank" class="btn btn-secondary" style="flex:1;">🍳 Kitchen Display (Cocina)</a>
-            <button class="btn btn-secondary" style="padding:16px 18px; margin-bottom:10px; cursor:pointer; flex-shrink:0" onclick="copyLink('https://fiore-de-enero.vercel.app/cocina/', this)" title="Copiar enlace">🔗</button>
+        <div class="module-row">
+            <a href="https://fiore-de-enero.vercel.app/cocina/" target="_blank" class="btn btn-secondary">🍳 Kitchen Display (Cocina)</a>
+            <div class="module-actions">
+                <button class="action-btn copy-btn" onclick="copyLink('https://fiore-de-enero.vercel.app/cocina/', this)" title="Copiar enlace">🔗</button>
+                <button class="action-btn wa-share" onclick="shareWA('🍳 Kitchen Display (Cocina)', 'https://fiore-de-enero.vercel.app/cocina/')" title="Enviar por WhatsApp"><svg viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>
+            </div>
         </div>
+
         <a href="https://www.canva.com/design/DAHEuJvO_n0/ogEJsneQvppjsfG6w6G7IA/edit" target="_blank" class="btn btn-canva">🎨 Editar Actividades Especiales en Canva</a>
 
         <div class="qr-section">
             <div class="qr-carousel" id="qr-slider">
                 <div class="qr-slide" id="slide0">
+                    <div class="qr-label label-public">Clientes</div>
                     <p>QR Menú para Mesas</p>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=020617&format=svg" alt="QR VCard">
                 </div>
                 <div class="qr-slide" id="slide1">
-                    <p>QR Secreto (Sellar Lealtad)</p>
+                    <div class="qr-label label-lealtad">Secreto</div>
+                    <p>QR Sellar Lealtad</p>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/?action=stamp&bgcolor=FFFFFF&color=020617&format=svg" alt="QR Puntos">
                 </div>
+                <div class="qr-slide" id="slide2">
+                    <div class="qr-label label-admin">Gerencia</div>
+                    <p>QR Admin / Caja</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/admin/index.html&bgcolor=FFFFFF&color=78590a&format=svg" alt="QR Admin">
+                </div>
+                <div class="qr-slide" id="slide3">
+                    <div class="qr-label label-mesero">Meseros</div>
+                    <p>QR Panel de Meseros</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/mesero/&bgcolor=FFFFFF&color=6b21a8&format=svg" alt="QR Mesero">
+                </div>
+                <div class="qr-slide" id="slide4">
+                    <div class="qr-label label-cocina">Cocina</div>
+                    <p>QR Kitchen Display</p>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/cocina/&bgcolor=FFFFFF&color=991b1b&format=svg" alt="QR Cocina">
+                </div>
             </div>
-            <div class="qr-dots">
-                <div class="qr-dot active" onclick="document.getElementById('qr-slider').scrollTo({left:0, behavior:'smooth'})"></div>
-                <div class="qr-dot" onclick="document.getElementById('qr-slider').scrollTo({left:500, behavior:'smooth'})"></div>
+            <div class="qr-dots" id="qr-dots">
+                <div class="qr-dot active" onclick="scrollQR(0)"></div>
+                <div class="qr-dot" onclick="scrollQR(1)"></div>
+                <div class="qr-dot" onclick="scrollQR(2)"></div>
+                <div class="qr-dot" onclick="scrollQR(3)"></div>
+                <div class="qr-dot" onclick="scrollQR(4)"></div>
             </div>
         </div>
 
@@ -373,6 +422,19 @@
                 btn.style.borderColor = '';
             }, 2000);
         });
+    }
+
+    // === WhatsApp Share Helper ===
+    function shareWA(label, url) {
+        var msg = '🍕 *Fiore de Enero*%0A' + encodeURIComponent(label) + '%0A%0A👉 ' + encodeURIComponent(url);
+        window.open('https://wa.me/?text=' + msg, '_blank');
+    }
+
+    // === QR Carousel Navigation ===
+    function scrollQR(index) {
+        var slider = document.getElementById('qr-slider');
+        var slideWidth = slider.clientWidth;
+        slider.scrollTo({ left: slideWidth * index, behavior: 'smooth' });
     }
 
     // === 3D Perspective Particle Mesh with Mouse Reaction ===
