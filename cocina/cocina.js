@@ -186,12 +186,12 @@ function renderBoard() {
             if(station === 'barra') {
                 filteredItems = items.filter(i => {
                     const cat = (i.c || '').toLowerCase();
-                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café');
+                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre');
                 });
             } else if(station === 'cocina') {
                 filteredItems = items.filter(i => {
                     const cat = (i.c || '').toLowerCase();
-                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café'));
+                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre'));
                 });
             }
             if(filteredItems.length === 0) return;
@@ -302,6 +302,29 @@ function renderHistorial() {
     filteredHis.forEach(t => {
         let items = [];
         try { items = JSON.parse(t.items); } catch(e) {}
+
+        const station = window._kdsStation;
+        let filteredItems = items;
+        
+        if (t.estacion === 'barra' && station === 'cocina') return;
+        if (t.estacion === 'cocina' && station === 'barra') return;
+        
+        if (t.estacion === 'todas' && station !== 'todas') {
+            if(station === 'barra') {
+                filteredItems = items.filter(i => {
+                    const cat = (i.c || '').toLowerCase();
+                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre');
+                });
+            } else if(station === 'cocina') {
+                filteredItems = items.filter(i => {
+                    const cat = (i.c || '').toLowerCase();
+                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre'));
+                });
+            }
+            if(filteredItems.length === 0) return;
+        }
+
+        const iconStation = t.estacion === 'barra' ? '🍹' : (t.estacion === 'cocina' ? '🍳' : '🎫');
 
         const pedidoHora = formatHora(t.hora);
         const entregaHora = formatHora(t.terminadoHora);
