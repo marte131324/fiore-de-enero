@@ -242,7 +242,7 @@ function doPost(e) {
     
     postData.nuevosItems.forEach(function(i) {
         var cat = String(i.c || '').toLowerCase();
-        if(cat.indexOf('bebida') > -1 || cat.indexOf('frappe') > -1 || cat.indexOf('café') > -1 || cat.indexOf('postre') > -1) {
+        if(cat.indexOf('bebida') > -1 || cat.indexOf('frappe') > -1 || cat.indexOf('café') > -1 || cat.indexOf('postre') > -1 || cat.indexOf('dolci') > -1) {
             barraItems.push(i);
         } else {
             cocinaItems.push(i);
