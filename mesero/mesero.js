@@ -318,6 +318,7 @@
                 n: prod.nombre,
                 p: parseFloat(prod.precio),
                 q: 1,
+                c: prod.categoria || 'Otros',
                 nota: '',
                 enviado: false
             });
@@ -519,7 +520,7 @@
 
         // Prepare items snapshot with enviado=true for the payload
         var itemsSnapshot = comandaActual.map(function(i) {
-            return { id: i.id, n: i.n, p: i.p, q: i.q, nota: i.nota || '', enviado: true };
+            return { id: i.id, n: i.n, p: i.p, q: i.q, c: i.c || 'Otros', nota: i.nota || '', enviado: true };
         });
 
         var extrasSnapshot = extrasActual.map(function(ex) {

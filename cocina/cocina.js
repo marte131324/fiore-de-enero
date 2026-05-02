@@ -116,11 +116,55 @@ function renderBoard() {
         return;
     }
 
+    window.switchStation = function(station) {
+        window._kdsStation = station;
+        localStorage.setItem('kds_station', station);
+        if(currentView === 'activos') renderKDS();
+        else renderHistorial();
+    };
+
+    // Load initial station and checked items
+    window._kdsStation = localStorage.getItem('kds_station') || 'todas';
+    window._kdsChecks = JSON.parse(localStorage.getItem('kds_checks') || '{}');
+    setTimeout(() => {
+        const select = document.getElementById('kds-station');
+        if(select) select.value = window._kdsStation;
+    }, 500);
+
+    window.toggleItemCheck = function(ticketId, idx) {
+        const key = ticketId + '_' + idx;
+        if(window._kdsChecks[key]) delete window._kdsChecks[key];
+        else window._kdsChecks[key] = true;
+        localStorage.setItem('kds_checks', JSON.stringify(window._kdsChecks));
+        
+        // Visual toggle immediately to avoid waiting for render
+        const el = document.getElementById('item-' + key);
+        if(el) el.classList.toggle('item-checked');
+    };
+
     let html = '';
     actTickets.forEach(t => {
         let items = [];
         try { items = JSON.parse(t.items); } catch(e) {}
         
+        // STATION FILTERING
+        const station = window._kdsStation;
+        let filteredItems = items;
+        if(station === 'barra') {
+            filteredItems = items.filter(i => {
+                const cat = (i.c || '').toLowerCase();
+                return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café');
+            });
+        } else if(station === 'cocina') {
+            filteredItems = items.filter(i => {
+                const cat = (i.c || '').toLowerCase();
+                return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café'));
+            });
+        }
+        
+        // If ticket has no items for this station, skip rendering it entirely
+        if(filteredItems.length === 0) return;
+
         const mins = getMinutesDiff(t.hora);
         const horaDisplay = formatHora(t.hora);
         const isLate = mins >= 15 ? 'late' : '';
@@ -142,15 +186,20 @@ function renderBoard() {
                 </div>
             </div>
             <div class="ticket-body">
-                ${items.map(item => `
-                    <div class="ticket-item">
+                ${filteredItems.map((item, idx) => {
+                    const key = t.id + '_' + idx;
+                    const isChecked = window._kdsChecks[key] ? 'item-checked' : '';
+                    return `
+                    <div class="ticket-item ${isChecked}" id="item-${key}" onclick="toggleItemCheck('${t.id}', ${idx})" style="cursor:pointer; transition:0.2s;">
                         <div class="item-qty">${item.q}</div>
                         <div class="item-details">
                             <div class="item-name">${item.n}</div>
                             ${item.nota ? `<div class="item-nota">${item.nota}</div>` : ''}
                         </div>
+                        <div class="item-check-icon"><i class="ri-check-line"></i></div>
                     </div>
-                `).join('')}
+                    `;
+                }).join('')}
             </div>
             <div class="ticket-footer">
                 ${!isPrep ? `
@@ -165,6 +214,11 @@ function renderBoard() {
             </div>
         </div>`;
     });
+
+    if(html === '') {
+        board.innerHTML = '<div style="margin:auto; color:var(--text-dim); text-align:center;"><i class="ri-check-double-line" style="font-size:48px; color:var(--success); margin-bottom:10px; display:block;"></i><h3>Todo Entregado</h3><p>No hay comandas para esta estación...</p></div>';
+        return;
+    }
 
     board.innerHTML = html;
 }

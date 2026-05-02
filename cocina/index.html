@@ -27,6 +27,11 @@
         </div>
         <div class="kds-status">
             <div class="view-toggle">
+                <select id="kds-station" onchange="window.switchStation(this.value)" style="background:transparent; color:var(--accent); border:none; outline:none; font-weight:700; font-size:14px; margin-right:15px; cursor:pointer;">
+                    <option value="todas">🎯 Todas las Estaciones</option>
+                    <option value="cocina">🍳 Solo Cocina</option>
+                    <option value="barra">🍹 Solo Barra</option>
+                </select>
                 <button id="btn-activos" class="toggle-btn active" onclick="switchView('activos')">Activos</button>
                 <button id="btn-historial" class="toggle-btn" onclick="switchView('historial')">Historial</button>
             </div>
@@ -55,6 +60,6 @@
         </div>
     </div>
     
-    <script src="cocina.js?v=6.2"></script>
+    <script src="cocina.js?v=7.0"></script>
 </body>
 </html>
