@@ -84,22 +84,25 @@
                         var totalMatch = det.match(/\$([0-9.]+)/);
                         if(!ticketMatch || !totalMatch) return;
                         
-                        // Parse timestamp to date string
+                        // Parse timestamp to date string safe for Safari
                         var ts = entry.timestamp || '';
                         var entryDate = '';
+                        var horaStr = '';
                         try {
-                            var d = new Date(ts);
-                            entryDate = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+                            var tsISO = String(ts).replace(' ', 'T');
+                            var d = new Date(tsISO);
+                            if(isNaN(d.getTime())) {
+                                // Fallback manual parse "YYYY-MM-DD HH:mm:ss"
+                                var parts = String(ts).split(' ');
+                                if(parts.length===2) { entryDate = parts[0]; horaStr = parts[1].substring(0,5); }
+                            } else {
+                                entryDate = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+                                horaStr = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+                            }
                         } catch(e) { return; }
                         
                         // Only include today's entries
                         if(entryDate !== hoy) return;
-                        
-                        var horaStr = '';
-                        try {
-                            var d2 = new Date(ts);
-                            horaStr = String(d2.getHours()).padStart(2,'0') + ':' + String(d2.getMinutes()).padStart(2,'0');
-                        } catch(e) {}
                         
                         ventasRecovered.push({
                             id: ticketMatch[1],
@@ -242,7 +245,7 @@
         if(!product) return;
         var existing = ticketActual.find(function(t) { return t.id === id; });
         if(existing) { existing.qty++; }
-        else { ticketActual.push({ id:id, nombre:product.nombre, precio:parseFloat(product.precio), qty:1, nota:'' }); }
+        else { ticketActual.push({ id:id, nombre:product.nombre, precio:parseFloat(product.precio), categoria: product.categoria || 'Otros', qty:1, nota:'' }); }
         renderTicket();
         syncMesaLocal();
     }
@@ -479,7 +482,7 @@
         var venta = {
             id: 'V' + Date.now(), fecha: fecha, hora: hora,
             mesa: mesaActual || '', mesero: 'Admin', personas: personasMesa,
-            items: JSON.stringify(ticketActual.map(function(i) { return {n:i.nombre,q:i.qty,p:i.precio,nota:i.nota||''}; })),
+            items: JSON.stringify(ticketActual.map(function(i) { return {n:i.nombre,q:i.qty,p:i.precio,nota:i.nota||'',c:i.categoria||'Otros'}; })),
             subtotal: subtotal, descuento: descuentoActual, total: total,
             metodoPago: metodoPagoActual, propina: propinaActual, propinaMonto: propinaMonto,
             extras: JSON.stringify(extrasTicket)
@@ -487,7 +490,7 @@
 
         lastTicketData = {
             id: venta.id, fecha:fecha, hora:hora, mesa:mesaActual, personas:personasMesa,
-            items: ticketActual.map(function(i) { return {n:i.nombre,q:i.qty,p:i.precio,nota:i.nota||''}; }),
+            items: ticketActual.map(function(i) { return {n:i.nombre,q:i.qty,p:i.precio,nota:i.nota||'',c:i.categoria||'Otros'}; }),
             extras: extrasTicket.slice(),
             subtotal:subtotal, descuento:descuentoActual, descMonto:descMonto,
             propina:propinaActual, propinaMonto:propinaMonto, extrasTotal:extrasTotal,
@@ -1145,6 +1148,8 @@
         var totalDescuentos = 0;
         var tickets = filterVentas.length;
         var metodos = {};
+        var categorias = {};
+        var itemsVendidos = 0;
         var detalleHTML = '';
 
         filterVentas.forEach(function(v) {
@@ -1152,6 +1157,18 @@
             totalDescuentos += parseFloat(v.descMonto) || 0;
             var mPago = (v.metodoPago || 'EFECTIVO').toUpperCase();
             metodos[mPago] = (metodos[mPago] || 0) + (parseFloat(v.total) || 0);
+            
+            // Extract categories
+            var itemsList = [];
+            try { itemsList = JSON.parse(v.items || '[]'); } catch(e){}
+            itemsList.forEach(function(i) {
+                var catName = i.c || 'Otros';
+                var iSub = (parseFloat(i.q)||0) * (parseFloat(i.p)||0);
+                if(!categorias[catName]) categorias[catName] = { qty:0, sum:0 };
+                categorias[catName].qty += (parseFloat(i.q)||0);
+                categorias[catName].sum += iSub;
+                itemsVendidos += (parseFloat(i.q)||0);
+            });
             
             var descStr = (parseFloat(v.descMonto) > 0) ? ' (Desc: $'+parseFloat(v.descMonto).toFixed(2)+')' : '';
             var fechaCorta = (v.fecha || '').slice(5, 10) + ' ' + (v.hora || '');
@@ -1165,6 +1182,10 @@
         var metodosHTML = Object.keys(metodos).map(function(k) {
             return '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><b>' + k + ':</b> <span>$' + metodos[k].toFixed(2) + '</span></div>';
         }).join('');
+        
+        var categoriasHTML = Object.keys(categorias).length > 0 ? Object.keys(categorias).sort((a,b)=>categorias[b].sum - categorias[a].sum).map(function(k) {
+            return '<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;"><span>' + k + ' (' + categorias[k].qty + ')</span> <span>$' + categorias[k].sum.toFixed(2) + '</span></div>';
+        }).join('') : '<div style="font-size:12px; color:#666;">No hay detalle de items en ventas de contingencia.</div>';
 
         var printWindow = window.open('', '_blank', 'width=400,height=600');
         printWindow.document.write(
@@ -1194,6 +1215,11 @@
                 '<div class="section">' +
                     '<b style="display:block; margin-bottom:8px;">Por Método de Pago:</b>' +
                     metodosHTML +
+                '</div>' +
+                
+                '<div class="section">' +
+                    '<b style="display:block; margin-bottom:8px;">Ventas por Categoría:</b>' +
+                    categoriasHTML +
                 '</div>' +
                 
                 '<div class="section">' +
