@@ -134,10 +134,11 @@ function renderBoard() {
                     <span>MESA</span>
                     ${t.mesaNum}
                 </div>
-                <div class="ticket-meta">
+                <div class="ticket-meta" style="position:relative; padding-right: 30px;">
                     <div class="ticket-timer"><i class="ri-timer-line"></i> <span>${mins}m</span></div>
                     <div class="ticket-mesero"><i class="ri-user-smile-line"></i> ${t.mesero}</div>
                     <div style="font-size:11px; color:var(--text-dim); margin-top:2px;">${horaDisplay}</div>
+                    <button onclick="promptDeleteTicket('${t.id}')" style="position:absolute; right:-5px; top:0; background:transparent; border:none; color:var(--text-dim); font-size:20px; cursor:pointer; padding:5px;"><i class="ri-close-circle-fill" style="color:rgba(255,50,50,0.5);"></i></button>
                 </div>
             </div>
             <div class="ticket-body">
@@ -283,3 +284,47 @@ window.markReady = async function(id) {
 
 setInterval(fetchTickets, 15000);
 fetchTickets();
+
+// --- DELETE TICKET LOGIC ---
+let ticketToDelete = null;
+
+window.promptDeleteTicket = function(id) {
+    ticketToDelete = id;
+    document.getElementById('delete-pin').value = '';
+    var modal = document.getElementById('modal-delete');
+    modal.style.display = 'flex';
+    setTimeout(() => document.getElementById('delete-pin').focus(), 100);
+};
+
+window.confirmarDeleteTicket = async function() {
+    var pin = document.getElementById('delete-pin').value;
+    if(pin !== '2026') {
+        alert("PIN Incorrecto.");
+        return;
+    }
+    
+    document.getElementById('modal-delete').style.display = 'none';
+    const loader = document.getElementById('loader');
+    if(loader) loader.style.display = 'inline-block';
+    
+    try {
+        await fetch(WEBAPP_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'deleteCocinaTicket',
+                ticketID: ticketToDelete
+            })
+        });
+        
+        // Remove locally immediately for snappy feel
+        actTickets = actTickets.filter(t => t.id !== ticketToDelete);
+        renderBoard();
+        
+    } catch(e) {
+        console.error("Error al borrar ticket", e);
+        alert("Error de conexión al borrar. Intenta de nuevo.");
+    } finally {
+        if(loader) loader.style.display = 'none';
+        ticketToDelete = null;
+    }
+};

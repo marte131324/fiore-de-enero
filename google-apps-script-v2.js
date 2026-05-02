@@ -258,6 +258,18 @@ function doPost(e) {
       }
     }
     return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
+  } else if(action === 'deleteCocinaTicket') {
+    var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
+    if(sheetCocina) {
+      var cData = sheetCocina.getDataRange().getValues();
+      for(var i=1; i<cData.length; i++) {
+        if(String(cData[i][0]) === String(postData.ticketID)) {
+          sheetCocina.deleteRow(i+1);
+          break;
+        }
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
   } else if(action === 'saveConfig' || action === 'savePromo') {
     var sheetConfig = sheet.getSheetByName("Config");
     sheetConfig.clear();

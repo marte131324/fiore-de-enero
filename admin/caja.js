@@ -970,6 +970,109 @@
         enviarTicketWhatsApp();
     };
 
+    window.imprimirCorteDia = function() {
+        if(ventasCache.length === 0) {
+            alert("No hay ventas para generar el corte.");
+            return;
+        }
+
+        var filterType = currentFilter || 'hoy';
+        var d = new Date();
+        var hoyStr = formatDate(d);
+        var ayer = new Date(d); ayer.setDate(ayer.getDate()-1);
+        var ayerStr = formatDate(ayer);
+        
+        var dStart = new Date(d);
+        var day = dStart.getDay() || 7;
+        dStart.setDate(dStart.getDate() - day + 1);
+        var semStr = formatDate(dStart);
+
+        var titleDate = "Día Completo";
+        var filterVentas = ventasCache.filter(function(v) {
+            var f = (v.fecha || '').slice(0,10);
+            if(filterType === 'hoy') { titleDate = hoyStr; return f === hoyStr; }
+            if(filterType === 'ayer') { titleDate = ayerStr; return f === ayerStr; }
+            if(filterType === 'semana') { titleDate = "Semana del " + semStr; return f >= semStr && f <= hoyStr; }
+            return true;
+        });
+
+        if(filterVentas.length === 0) {
+            alert("No hay ventas registradas en este periodo (" + filterType + ").");
+            return;
+        }
+
+        var total = 0;
+        var totalDescuentos = 0;
+        var tickets = filterVentas.length;
+        var metodos = {};
+        var detalleHTML = '';
+
+        filterVentas.forEach(function(v) {
+            total += parseFloat(v.total) || 0;
+            totalDescuentos += parseFloat(v.descMonto) || 0;
+            var mPago = (v.metodoPago || 'EFECTIVO').toUpperCase();
+            metodos[mPago] = (metodos[mPago] || 0) + (parseFloat(v.total) || 0);
+            
+            var descStr = (parseFloat(v.descMonto) > 0) ? ' (Desc: $'+parseFloat(v.descMonto).toFixed(2)+')' : '';
+            var fechaCorta = (v.fecha || '').slice(5, 10) + ' ' + (v.hora || '');
+            
+            detalleHTML += '<div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc; padding:4px 0; font-size:12px;">' +
+                '<span>#' + v.id + ' - ' + fechaCorta + ' [' + mPago + ']</span>' +
+                '<span>$' + parseFloat(v.total).toFixed(2) + descStr + '</span>' +
+            '</div>';
+        });
+
+        var metodosHTML = Object.keys(metodos).map(function(k) {
+            return '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><b>' + k + ':</b> <span>$' + metodos[k].toFixed(2) + '</span></div>';
+        }).join('');
+
+        var printWindow = window.open('', '_blank', 'width=400,height=600');
+        printWindow.document.write(
+            '<html>' +
+            '<head>' +
+                '<title>Corte de Caja - ' + titleDate + '</title>' +
+                '<style>' +
+                    'body { font-family: monospace; padding: 20px; color: #000; font-size:14px; max-width:350px; margin:0 auto; }' +
+                    'h2 { text-align: center; margin-bottom: 5px; font-size:18px; }' +
+                    '.center { text-align: center; }' +
+                    '.section { margin-top: 20px; border-top: 1px dashed #000; padding-top: 10px; }' +
+                    '.line { display: flex; justify-content: space-between; margin-bottom: 5px; }' +
+                '</style>' +
+            '</head>' +
+            '<body>' +
+                '<h2>FIORE DE ENERO</h2>' +
+                '<div class="center" style="font-weight:bold; margin-bottom:5px;">CORTE DE CAJA</div>' +
+                '<div class="center" style="font-size:12px; margin-bottom:15px;">Periodo: ' + titleDate + '</div>' +
+                
+                '<div class="section">' +
+                    '<div class="line"><b>Total Ventas:</b> <span>$' + total.toFixed(2) + '</span></div>' +
+                    '<div class="line"><b>Total Descuentos:</b> <span>$' + totalDescuentos.toFixed(2) + '</span></div>' +
+                    '<div class="line"><b>Num. Tickets:</b> <span>' + tickets + '</span></div>' +
+                    '<div class="line"><b>Ticket Promedio:</b> <span>$' + (total/tickets).toFixed(2) + '</span></div>' +
+                '</div>' +
+                
+                '<div class="section">' +
+                    '<b style="display:block; margin-bottom:8px;">Por Método de Pago:</b>' +
+                    metodosHTML +
+                '</div>' +
+                
+                '<div class="section">' +
+                    '<b style="display:block; margin-bottom:8px;">Desglose de Tickets:</b>' +
+                    detalleHTML +
+                '</div>' +
+                
+                '<div class="section center" style="margin-top:40px;">' +
+                    '<p>_______________________</p>' +
+                    '<p>Firma Gerente</p>' +
+                '</div>' +
+            '</body>' +
+            '</html>'
+        );
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(function() { printWindow.print(); }, 500);
+    };
+
     window.descargarReporteCSV = function() {
         if(ventasCache.length === 0) { showToast('No hay ventas para exportar'); return; }
         var headers = ['ID Ticket', 'Fecha', 'Hora', 'Mesa', 'Mesero', 'Personas', 'Metodo Pago', 'Items', 'Cargos Extra', 'Subtotal', 'Descuento %', 'Descuento $', 'Propina %', 'Propina $', 'TOTAL'];
