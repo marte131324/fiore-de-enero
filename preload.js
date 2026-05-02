@@ -4,7 +4,8 @@ const menuData = [
     { category: "🥗 Antipasti", items: [
         { id: "a1", name: "Insalata Caprese al Pesto", price: 160, desc: "" },
         { id: "a2", name: "Insalata de frutos rojos", price: 180, desc: "Mezcla de lechugas, arándanos, zarzamora, higos, ate y queso de cabra con vinagreta de fresa." },
-        { id: "a3", name: "Tabla de quesos", price: 299, desc: "Chorizo español, salami, jamón serrano, manchego semi curado, queso de cabra, frutas de temporada, aceitunas con anchoas, miel y pan bomba." }
+        { id: "a3", name: "Tabla de quesos", price: 299, desc: "Chorizo español, salami, jamón serrano, manchego semi curado, queso de cabra, frutas de temporada, aceitunas con anchoas, miel y pan bomba." },
+        { id: "a4", name: "Burrata", price: 98, desc: "" }
     ]},
     { category: "🍕 La Vera Pizza Napoletana", items: [
         { id: "pn1", name: "Margherita", price: 160, desc: "Tomate san Marzano, mozzarella fresca, albahaca y aceite de oliva virgen." },
@@ -70,13 +71,31 @@ const menuData = [
         { id: "bf17", name: "Coca-Cola", price: 40, desc: "" },
         { id: "bf18", name: "Refresco de sabor", price: 38, desc: "" },
         { id: "bf19", name: "Carajillo", price: 140, desc: "" },
-        { id: "bf20", name: "Cerveza", price: 50, desc: "" }
+        { id: "bf20", name: "Cerveza", price: 50, desc: "" },
+        { id: "bf21", name: "Agua Mineral", price: 45, desc: "" },
+        { id: "bf22", name: "Arizona", price: 40, desc: "" }
     ]},
     { category: "🍨 Dolci de Véneto", items: [
         { id: "d1", name: "Affogato (Ahogado)", price: 75, desc: "Robusto espresso y cremoso helado de vainilla." },
         { id: "d2", name: "Affogato Matcha Nostra Ricetta", price: 90, desc: "" },
         { id: "d3", name: "Gelato di vainilla", price: 55, desc: "Con frutos rojos y crema batida." },
         { id: "d4", name: "Postre de temporada", price: 0, desc: "Pregunta por nuestro postre semanal." }
+    ]},
+    { category: "🍸 Coctelería Bar", items: [
+        { id: "ct1", name: "Cold Brew con Cold Foam de Vainilla", price: 89, desc: "" },
+        { id: "ct2", name: "Cold Brew Tonic", price: 95, desc: "Jugo de arándano y miel." },
+        { id: "ct3", name: "Martini Espresso", price: 140, desc: "" },
+        { id: "ct4", name: "Martini Espresso Baileys", price: 160, desc: "" },
+        { id: "ct5", name: "Vodka Frambuesa y Frutos Rojos", price: 140, desc: "" },
+        { id: "ct6", name: "Red Honey", price: 145, desc: "Jugo de arándano, miel y vodka." },
+        { id: "ct7", name: "Mojito Frutos Rojos", price: 150, desc: "Bebida de vodka con sangre vampírica secreta." },
+        { id: "ct8", name: "Mojito del Diablo", price: 140, desc: "Menta, jugo de limón, agua gasificada, ron blanco y frutos rojos." },
+        { id: "ct9", name: "Mojito Tradicional", price: 140, desc: "Jugo de limón, agua gasificada, menta fresca y ron." },
+        { id: "ct10", name: "Piña Colada", price: 140, desc: "Jugo de piña, malibú y una mezcla secreta de la casa." },
+        { id: "ct11", name: "Piña Colada Tradicional", price: 145, desc: "" },
+        { id: "ct12", name: "Mezcalita de Piña", price: 150, desc: "" },
+        { id: "ct13", name: "Mezcalina de Arándano y Fresa", price: 155, desc: "" },
+        { id: "ct14", name: "Aperol Spritz", price: 150, desc: "" }
     ]}
 ];
 

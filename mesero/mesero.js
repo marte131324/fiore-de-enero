@@ -36,7 +36,8 @@
         '☕ Bebidas Calientes': '☕ Café',
         '❄️ Frappes': '❄️ Frappes',
         '🧊 Bebidas Frías': '🧊 Bebidas',
-        '🍨 Dolci de Véneto': '🍨 Postres'
+        '🍨 Dolci de Véneto': '🍨 Postres',
+        '🍸 Coctelería Bar': '🍸 Cócteles'
     };
 
     // Make cmdPersonas accessible to inline onchange

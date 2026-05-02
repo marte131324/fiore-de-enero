@@ -186,12 +186,12 @@ function renderBoard() {
             if(station === 'barra') {
                 filteredItems = items.filter(i => {
                     const cat = (i.c || '').toLowerCase();
-                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci');
+                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci') || cat.includes('coctelería') || cat.includes('cocteleria');
                 });
             } else if(station === 'cocina') {
                 filteredItems = items.filter(i => {
                     const cat = (i.c || '').toLowerCase();
-                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci'));
+                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci') || cat.includes('coctelería') || cat.includes('cocteleria'));
                 });
             }
             if(filteredItems.length === 0) return;
@@ -313,12 +313,12 @@ function renderHistorial() {
             if(station === 'barra') {
                 filteredItems = items.filter(i => {
                     const cat = (i.c || '').toLowerCase();
-                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci');
+                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci') || cat.includes('coctelería') || cat.includes('cocteleria');
                 });
             } else if(station === 'cocina') {
                 filteredItems = items.filter(i => {
                     const cat = (i.c || '').toLowerCase();
-                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci'));
+                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café') || cat.includes('postre') || cat.includes('dolci') || cat.includes('coctelería') || cat.includes('cocteleria'));
                 });
             }
             if(filteredItems.length === 0) return;
