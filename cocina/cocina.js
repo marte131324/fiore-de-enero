@@ -140,6 +140,33 @@ function renderBoard() {
         // Visual toggle immediately to avoid waiting for render
         const el = document.getElementById('item-' + key);
         if(el) el.classList.toggle('item-checked');
+
+        // Evaluate if all items are checked to unlock the Entregado button
+        window.evaluateTicket(ticketId);
+    };
+
+    window.evaluateTicket = function(ticketId) {
+        const ticketEl = document.querySelector(`.ticket[data-id="${ticketId}"]`);
+        if(!ticketEl) return;
+        
+        const items = ticketEl.querySelectorAll('.ticket-item');
+        const checkedItems = ticketEl.querySelectorAll('.ticket-item.item-checked');
+        const isAllChecked = items.length > 0 && items.length === checkedItems.length;
+        
+        const btnEntregado = ticketEl.querySelector('.btn-entregado');
+        if(btnEntregado) {
+            if(isAllChecked) {
+                btnEntregado.disabled = false;
+                btnEntregado.style.opacity = '1';
+                btnEntregado.style.cursor = 'pointer';
+                btnEntregado.innerHTML = '<i class="ri-check-double-line"></i> Entregar Orden';
+            } else {
+                btnEntregado.disabled = true;
+                btnEntregado.style.opacity = '0.4';
+                btnEntregado.style.cursor = 'not-allowed';
+                btnEntregado.innerHTML = '<i class="ri-error-warning-line"></i> Faltan Ítems';
+            }
+        }
     };
 
     let html = '';
@@ -177,6 +204,13 @@ function renderBoard() {
         const prepClass = isPrep ? 'preparando' : '';
         const iconStation = t.estacion === 'barra' ? '🍹' : (t.estacion === 'cocina' ? '🍳' : '🎫');
 
+        // Check if all filtered items are checked
+        let allChecked = true;
+        filteredItems.forEach((item, idx) => {
+            if(!window._kdsChecks[t.id + '_' + idx]) allChecked = false;
+        });
+        if(filteredItems.length === 0) allChecked = false;
+
         html += `
         <div class="ticket ${isLate} ${prepClass}" data-id="${t.id}" data-time="${t.hora}">
             <div class="ticket-header">
@@ -213,8 +247,8 @@ function renderBoard() {
                     <i class="ri-fire-fill"></i> Preparar
                 </button>
                 ` : `
-                <button class="btn-listo" onclick="markReady('${t.id}')">
-                    <i class="ri-check-double-line"></i> Entregado
+                <button class="btn-listo btn-entregado" onclick="markReady('${t.id}')" ${allChecked ? '' : 'disabled style="opacity:0.4; cursor:not-allowed;"'}>
+                    ${allChecked ? '<i class="ri-check-double-line"></i> Entregar Orden' : '<i class="ri-error-warning-line"></i> Faltan Ítems'}
                 </button>
                 `}
             </div>
