@@ -66,6 +66,22 @@
         renderMesasActivas();
         renderMeserosAdmin();
         startPolling();
+
+        // FALLBACK: if ventasHoy came empty, try fetching via getVentasRango
+        if(ventasCache.length === 0) {
+            var hoy = formatDate(new Date());
+            fetch(WEBAPP_URL + '?action=getVentasRango&desde=' + hoy + '&hasta=' + hoy)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if(data.ventas && data.ventas.length > 0) {
+                        ventasCache = data.ventas;
+                        window._ventasHoy = data.ventas;
+                        renderDashboard();
+                        renderHistorial();
+                    }
+                })
+                .catch(function(e) { console.warn('Fallback ventas fetch failed', e); });
+        }
     };
 
     function startPolling() {
@@ -890,14 +906,24 @@
         c.innerHTML = '<div class="gauge-ring"><svg width="140" height="140" viewBox="0 0 140 140"><circle class="track" cx="70" cy="70" r="58"></circle><circle class="fill" cx="70" cy="70" r="58" stroke-dasharray="'+circ.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'"></circle></svg><div class="gauge-percent">'+pct+'%</div></div><div class="gauge-label">Tasa de Conversión</div><div class="gauge-detail"><strong>'+tickets+'</strong> tickets de <strong>'+personas+'</strong> personas</div>';
     }
 
+    var currentFilter = 'hoy';
+
     window.filtrarDash = async function(periodo, btn) {
         document.querySelectorAll('.dash-filter').forEach(function(b){ b.classList.remove('active'); });
         if(btn) btn.classList.add('active');
-        if(periodo === 'hoy') { ventasCache = window._ventasHoy || []; renderDashboard(); return; }
+        currentFilter = periodo;
         var now = new Date(), desde, hasta;
-        if(periodo === 'ayer') { var a = new Date(now); a.setDate(a.getDate()-1); desde=hasta=formatDate(a); }
+        if(periodo === 'hoy') { desde=hasta=formatDate(now); }
+        else if(periodo === 'ayer') { var a = new Date(now); a.setDate(a.getDate()-1); desde=hasta=formatDate(a); }
         else if(periodo === 'semana') { var i = new Date(now); i.setDate(i.getDate()-7); desde=formatDate(i); hasta=formatDate(now); }
-        try { var res = await fetch(WEBAPP_URL+'?action=getVentasRango&desde='+desde+'&hasta='+hasta); var data = await res.json(); ventasCache = data.ventas || []; renderDashboard(); } catch(e) { showToast('Error cargando datos'); }
+        try {
+            var res = await fetch(WEBAPP_URL+'?action=getVentasRango&desde='+desde+'&hasta='+hasta);
+            var data = await res.json();
+            ventasCache = data.ventas || [];
+            if(periodo === 'hoy') { window._ventasHoy = ventasCache; }
+            renderDashboard();
+            renderHistorial();
+        } catch(e) { showToast('Error cargando datos'); }
     };
 
     // ============================================================

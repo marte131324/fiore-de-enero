@@ -66,10 +66,16 @@ function doGet(e) {
     if(sheetVentas) {
       var vData = sheetVentas.getDataRange().getValues();
       for(var i=1; i<vData.length; i++) {
-        var fecha = vData[i][1];
-        if(fecha >= desde && fecha <= hasta) {
+        var fechaObj = vData[i][1];
+        var fechaStr = "";
+        if(fechaObj instanceof Date) {
+            fechaStr = Utilities.formatDate(fechaObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
+        } else {
+            fechaStr = String(fechaObj).substring(0, 10);
+        }
+        if(fechaStr >= desde && fechaStr <= hasta) {
           ventasRango.push({
-            id: vData[i][0], fecha: vData[i][1], hora: vData[i][2],
+            id: vData[i][0], fecha: fechaStr, hora: vData[i][2],
             items: vData[i][3], subtotal: vData[i][4], descuento: vData[i][5],
             total: vData[i][6], metodoPago: vData[i][7],
             mesa: vData[i][8] || '', mesero: vData[i][9] || '',
@@ -123,9 +129,16 @@ function doGet(e) {
     var vData = sheetVentas.getDataRange().getValues();
     if(vData.length > 1) {
       for(var i=1; i<vData.length; i++) {
-        if(vData[i][1] === todayStr) {
+        var fechaObj = vData[i][1];
+        var fechaStr = "";
+        if(fechaObj instanceof Date) {
+            fechaStr = Utilities.formatDate(fechaObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
+        } else {
+            fechaStr = String(fechaObj).substring(0, 10);
+        }
+        if(fechaStr === todayStr) {
           ventasHoy.push({
-            id: vData[i][0], fecha: vData[i][1], hora: vData[i][2],
+            id: vData[i][0], fecha: fechaStr, hora: vData[i][2],
             items: vData[i][3], subtotal: vData[i][4], descuento: vData[i][5],
             total: vData[i][6], metodoPago: vData[i][7],
             mesa: vData[i][8] || '', mesero: vData[i][9] || '',
