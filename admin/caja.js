@@ -1030,13 +1030,35 @@
         container.innerHTML = ventas.map(function(v) {
             var items = []; try { items = JSON.parse(v.items); } catch(e) {}
             var extras = []; try { extras = JSON.parse(v.extras || '[]'); } catch(e) {}
-            var mesaTag = v.mesa ? ' · Mesa ' + v.mesa : '';
-            var meseroTag = v.mesero && v.mesero !== 'Admin' ? ' · ' + v.mesero : '';
-            return '<div class="historial-ticket"><div class="historial-ticket-header" onclick="this.nextElementSibling.classList.toggle(\'open\')"><div class="historial-ticket-left"><span class="historial-ticket-time"><i class="ri-time-line"></i> ' + (v.hora||'--:--') + '</span><span class="historial-ticket-method">' + (v.metodoPago||'EFECTIVO') + '</span><span style="font-size:11px;color:var(--text-dim)">' + items.length + ' prod' + mesaTag + meseroTag + '</span></div><span class="historial-ticket-total">$' + (parseFloat(v.total)||0).toFixed(2) + '</span></div><div class="historial-detail"><div class="historial-detail-inner">' +
-                items.map(function(i) { var nota = i.nota ? '<div style="font-size:11px;color:var(--success);font-style:italic">  → '+i.nota+'</div>' : ''; return '<div class="historial-item-row"><span>'+i.n+' × '+i.q+'</span><span style="color:var(--accent)">$'+(i.q*i.p).toFixed(2)+'</span></div>'+nota; }).join('') +
+            var mesaTag = v.mesa ? 'Mesa ' + v.mesa : 'Barra';
+            var meseroTag = v.mesero || 'Admin';
+            var hasItems = items.length > 0;
+            
+            // Detail section: items if available, otherwise audit summary
+            var detailHTML = '';
+            if(hasItems) {
+                detailHTML = items.map(function(i) {
+                    var nota = i.nota ? '<div style="font-size:11px;color:var(--success);font-style:italic;margin-left:10px">→ '+i.nota+'</div>' : '';
+                    return '<div class="historial-item-row"><span>'+i.n+' × '+i.q+'</span><span style="color:var(--accent)">$'+(i.q*i.p).toFixed(2)+'</span></div>'+nota;
+                }).join('') +
                 extras.map(function(ex) { return '<div class="historial-item-row"><span style="color:var(--success)">⚡ '+ex.concepto+'</span><span style="color:var(--accent)">+$'+parseFloat(ex.monto).toFixed(2)+'</span></div>'; }).join('') +
-                (parseFloat(v.propinaMonto) > 0 ? '<div class="historial-summary"><span>Propina '+v.propina+'%</span><span style="color:var(--accent)">+$'+parseFloat(v.propinaMonto).toFixed(2)+'</span></div>' : '') +
-            '<button class="btn btn-secondary btn-sm" onclick="reimprimirTicket(\''+v.id+'\')" style="width:100%;margin-top:10px;"><i class="ri-whatsapp-line"></i> Compartir Ticket</button></div></div></div>';
+                (parseFloat(v.propinaMonto) > 0 ? '<div class="historial-summary"><span>Propina '+v.propina+'%</span><span style="color:var(--accent)">+$'+parseFloat(v.propinaMonto).toFixed(2)+'</span></div>' : '');
+            } else {
+                detailHTML = '<div style="padding:8px 0;color:var(--text-dim);font-size:13px"><i class="ri-information-line"></i> Detalle de items no disponible (datos recuperados de auditoría)</div>';
+            }
+            
+            return '<div class="historial-ticket">' +
+                '<div class="historial-ticket-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">' +
+                    '<div class="historial-ticket-left">' +
+                        '<span class="historial-ticket-time"><i class="ri-time-line"></i> ' + (v.hora||'--:--') + '</span>' +
+                        '<span class="historial-ticket-method">' + (v.metodoPago||'N/A') + '</span>' +
+                        '<span style="font-size:12px;color:var(--text-dim)">' + mesaTag + ' · ' + meseroTag + (hasItems ? ' · '+items.length+' prod' : '') + '</span>' +
+                    '</div>' +
+                    '<span class="historial-ticket-total">$' + (parseFloat(v.total)||0).toFixed(2) + '</span>' +
+                '</div>' +
+                '<div class="historial-detail"><div class="historial-detail-inner">' + detailHTML +
+                (hasItems ? '<button class="btn btn-secondary btn-sm" onclick="reimprimirTicket(\''+v.id+'\')" style="width:100%;margin-top:10px;"><i class="ri-whatsapp-line"></i> Compartir Ticket</button>' : '') +
+                '</div></div></div>';
         }).join('');
     }
 
