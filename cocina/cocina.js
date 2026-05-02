@@ -176,16 +176,36 @@ function renderHistorial() {
         return;
     }
 
+    const tzOffset = new Date().getTimezoneOffset() * 60000;
+    const todayStrLocal = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
+    const selectedDate = window._kdsHistorialDate || todayStrLocal;
+
+    // Filter tickets by selected date
+    const filteredHis = hisTickets.filter(t => {
+        if(!t.fecha) return true;
+        let dStr = t.fecha;
+        // Safari safe parse if it's ISO or just extract yyyy-mm-dd
+        if(dStr.includes('T')) dStr = dStr.split('T')[0];
+        return dStr === selectedDate;
+    });
+
     let html = `
     <div class="historial-container">
-        <div class="historial-header">
-            <h2><i class="ri-history-line"></i> Historial de Hoy</h2>
-            <span class="historial-badge">${hisTickets.length} TICKETS</span>
+        <div class="historial-header" style="flex-wrap:wrap; gap:10px;">
+            <h2><i class="ri-history-line"></i> Historial de Cocina</h2>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <input type="date" id="kds-date-picker" value="${selectedDate}" onchange="window._kdsHistorialDate=this.value; renderHistorial();" style="background:rgba(0,0,0,0.3); border:1px solid var(--border); color:var(--text-pure); border-radius:6px; padding:6px 10px; font-family:var(--font-ui); outline:none;">
+                <span class="historial-badge">${filteredHis.length} TICKETS</span>
+            </div>
         </div>
         <div class="historial-scroll">
     `;
 
-    hisTickets.forEach(t => {
+    if(filteredHis.length === 0) {
+        html += '<div style="padding:40px; text-align:center; color:var(--text-dim);">No hay comandas entregadas en esta fecha.</div>';
+    }
+
+    filteredHis.forEach(t => {
         let items = [];
         try { items = JSON.parse(t.items); } catch(e) {}
 
