@@ -21,7 +21,7 @@ input, select, textarea {
     --accent-color: #E6E2D1; /* Lighter Cream for pop */
     --text-light: #FFFCF5; /* Pure warm white */
     --text-dark: #1F2820;
-    --glass-bg: rgba(30, 48, 33, 0.45); /* Slightly darker/richer green glass */
+    --glass-bg: rgba(25, 42, 28, 0.82); /* Opaque enough to not need backdrop-filter */
     --glass-border: rgba(209, 202, 131, 0.4); /* Brighter border */
     --whatsapp-color: #25D366;
     
@@ -226,8 +226,7 @@ h1, h2, h3 {
 .cover-photo {
     width: 100%;
     height: 220px;
-    background-color: var(--glass-bg);
-    background-image: url('Assets/Portada.png');
+    background-image: url('Assets/Portada-optimized.jpg');
     background-size: cover;
     background-position: center;
     border-radius: 0 0 32px 32px;
@@ -250,13 +249,12 @@ h1, h2, h3 {
     border-radius: 50%;
     border: 3px solid var(--secondary-color);
     background-color: var(--primary-color);
-    box-shadow: 0 0 25px rgba(209, 202, 131, 0.5), 0 10px 30px rgba(0,0,0,0.8);
+    box-shadow: 0 0 20px rgba(209, 202, 131, 0.5), 0 10px 30px rgba(0,0,0,0.8);
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: glowPulse 4s infinite alternate;
 }
 
 @keyframes glowPulse {
@@ -270,15 +268,13 @@ h1, h2, h3 {
     object-fit: cover;
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism utility — backdrop-filter removed for mobile perf */
 .glass-effect {
     background: var(--glass-bg);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.12); /* Brighter borders to pop */
-    border-top: 1px solid rgba(255, 255, 255, 0.25); /* Light catching edge */
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 16px;
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.35);
     transition: var(--transition-smooth);
 }
 
@@ -336,15 +332,13 @@ h1, h2, h3 {
 /* Navigation Tabs */
 .nav-tabs {
     display: flex;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(10, 18, 12, 0.95);
     border-radius: 50px;
     padding: 0.4rem;
     gap: 0.3rem;
     position: sticky;
     top: 1rem;
     z-index: 10;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
@@ -711,10 +705,9 @@ input:focus {
     100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
-/* Utility Animations */
+/* Utility Animations — show content instantly on mobile, no white flash */
 .fade-in {
-    opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
+    opacity: 1;
 }
 
 @keyframes fadeIn {
@@ -1005,8 +998,7 @@ input:focus {
 .cart-modal {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.92);
     z-index: 10000;
     display: flex;
     align-items: flex-end;
@@ -1152,8 +1144,7 @@ input:focus {
     border-radius: 50%;
     font-size: 1.1rem;
     cursor: pointer;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(25, 40, 28, 0.9);
     transition: all 0.3s ease;
     opacity: 0.6;
     display: flex;
@@ -1179,8 +1170,6 @@ input:focus {
     color: var(--text-light) !important;
     font-family: var(--font-body) !important;
     max-width: 340px !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
     z-index: 1000000 !important;
 }
 
@@ -1338,7 +1327,7 @@ input:focus {
     border-radius: 50%;
     cursor: pointer;
     z-index: 100001;
-    backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.5);
     transition: background 0.3s;
 }
 
