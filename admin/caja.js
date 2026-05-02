@@ -560,6 +560,10 @@
 
     window.modificarMesa = function(num) {
         window._mesaAModificar = num;
+        if(sessionStorage.getItem('treze_role') !== 'cajera') {
+            abrirEditorMesa(num);
+            return;
+        }
         var modal = document.getElementById('modal-gerencial');
         if(modal) {
             document.getElementById('pin-gerencial-input').value = '';
@@ -574,7 +578,7 @@
         var data = encoder.encode(input);
         var hashBuffer = await crypto.subtle.digest('SHA-256', data);
         var hashed = Array.from(new Uint8Array(hashBuffer)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
-        if(hashed === PIN_GERENCIAL_HASH) {
+        if(hashed === '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab') {
             document.getElementById('modal-gerencial').classList.remove('show');
             abrirEditorMesa(window._mesaAModificar);
         } else {
@@ -634,7 +638,6 @@
         abrirEditorMesa(mesaNum);
     };
     window.removeEditItem = async function(mesaNum, idx) {
-        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         var key = String(mesaNum);
         var items = []; try { items = JSON.parse(mesasActivas[key].items); } catch(e) {}
         items.splice(idx, 1);
@@ -643,7 +646,6 @@
         abrirEditorMesa(mesaNum);
     };
     window.removeEditExtra = async function(mesaNum, idx) {
-        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         var key = String(mesaNum);
         var extras = []; try { extras = JSON.parse(mesasActivas[key].extras); } catch(e) {}
         extras.splice(idx, 1);
@@ -652,7 +654,6 @@
     };
 
     window.guardarEdicionMesa = async function() {
-        if(!(await authorizeGerente())) { alert("Autorización denegada."); return; }
         var num = document.getElementById('edit-mesa-num').value;
         var key = String(num);
         var desc = parseInt(document.getElementById('edit-mesa-descuento').value) || 0;

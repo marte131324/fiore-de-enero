@@ -545,11 +545,13 @@
 
             // STEP 3: Send new items to cocina ONLY after mesa save succeeded
             if(nuevosItems.length > 0) {
-                fetch(WEBAPP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems })
-                }).catch(function(){}); // Fire and forget
+                try {
+                    await fetch(WEBAPP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems })
+                    });
+                } catch(e) { console.error("Error enviando a cocina:", e); }
             }
 
         } catch(e) { 
