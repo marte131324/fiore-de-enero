@@ -615,6 +615,18 @@
         var subtotal = items.reduce(function(s,i){ return s+(i.p*i.q); }, 0) + extras.reduce(function(s,e){ return s+(parseFloat(e.monto)||0); }, 0);
         document.getElementById('edit-mesa-subtotal').textContent = '$' + subtotal.toFixed(2);
         document.getElementById('edit-mesa-descuento').value = mesa.descuento || 0;
+
+        // Poblar selector de productos
+        var selectEl = document.getElementById('edit-mesa-add-menu');
+        if(selectEl) {
+            var opts = '<option value="">-- Seleccionar --</option>';
+            var sortedProds = Object.values(posProducts).sort((a,b) => a.nombre.localeCompare(b.nombre));
+            sortedProds.forEach(function(p) {
+                opts += '<option value="'+p.id+'">' + p.nombre + ' ($' + p.precio + ')</option>';
+            });
+            selectEl.innerHTML = opts;
+        }
+
         modal.classList.add('show');
     }
 
@@ -651,6 +663,43 @@
         extras.splice(idx, 1);
         mesasActivas[key].extras = JSON.stringify(extras);
         abrirEditorMesa(mesaNum);
+    };
+
+    window.addMenuItemToEditMesa = function() {
+        var num = document.getElementById('edit-mesa-num').value;
+        var pid = document.getElementById('edit-mesa-add-menu').value;
+        if(!num || !pid) return;
+        var p = posProducts[pid];
+        if(!p) return;
+        var key = String(num);
+        var items = []; try { items = JSON.parse(mesasActivas[key].items); } catch(e) {}
+        var found = false;
+        for(var i=0; i<items.length; i++) {
+            if(items[i].id === pid && !items[i].nota) {
+                items[i].q += 1;
+                found = true;
+                break;
+            }
+        }
+        if(!found) items.push({ id: pid, n: p.nombre, p: parseFloat(p.precio), q: 1, nota: '', enviado: true });
+        mesasActivas[key].items = JSON.stringify(items);
+        abrirEditorMesa(num);
+    };
+
+    window.addManualItemToEditMesa = function() {
+        var num = document.getElementById('edit-mesa-num').value;
+        var nameInput = document.getElementById('edit-mesa-add-manual-name');
+        var priceInput = document.getElementById('edit-mesa-add-manual-price');
+        var name = nameInput.value.trim();
+        var price = parseFloat(priceInput.value) || 0;
+        if(!num || !name) return;
+        var key = String(num);
+        var items = []; try { items = JSON.parse(mesasActivas[key].items); } catch(e) {}
+        items.push({ id: 'manual-' + Date.now(), n: '⚡ ' + name, p: price, q: 1, nota: 'Producto Manual', enviado: true });
+        mesasActivas[key].items = JSON.stringify(items);
+        nameInput.value = '';
+        priceInput.value = '';
+        abrirEditorMesa(num);
     };
 
     window.guardarEdicionMesa = async function() {

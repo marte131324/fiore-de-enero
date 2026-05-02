@@ -315,7 +315,7 @@
                             <span class="comanda-total-value" id="cmd-total">$0.00</span>
                         </div>
                         <div class="comanda-actions">
-                            <button class="cmd-action-btn cmd-extra-btn" onclick="abrirExtraModal()"><i class="ri-add-circle-line"></i> + Cargo</button>
+                            <button class="cmd-action-btn cmd-extra-btn" onclick="abrirExtraModal()"><i class="ri-add-circle-line"></i> + Manual</button>
                             <button class="cmd-action-btn cmd-save" onclick="guardarComanda()"><i class="ri-check-double-line"></i> Enviar Orden</button>
                             <button class="cmd-action-btn cmd-cuenta" onclick="confirmarPedirCuenta()"><i class="ri-bill-line"></i> Pedir Cuenta</button>
                         </div>
@@ -326,12 +326,24 @@
         </div>
     </div>
 
-    <!-- MODAL: EXTRA CHARGE -->
+    <!-- MODAL: EXTRA CHARGE / MANUAL ITEM -->
     <div class="modal-overlay" id="modal-extra">
         <div class="modal-box">
-            <h3>💰 Cargo Extra</h3>
-            <input type="text" id="extra-concepto" placeholder="Concepto (Ej: Extra queso)">
-            <input type="number" id="extra-monto" placeholder="Monto ($MXN)" min="0" step="1" inputmode="decimal">
+            <h3>📝 Agregar Ítem Manual</h3>
+            <input type="text" id="extra-concepto" placeholder="Nombre (Ej: Burrata, Descorche)">
+            <input type="number" id="extra-monto" placeholder="Precio ($MXN)" min="0" step="1" inputmode="decimal">
+            
+            <div style="margin: 12px 0 16px 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input type="radio" name="extra-type" value="cocina" checked style="accent-color:var(--primary);width:16px;height:16px;"> 
+                    <span style="color:var(--text)">Producto para Cocina</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input type="radio" name="extra-type" value="cargo" style="accent-color:var(--primary);width:16px;height:16px;"> 
+                    <span style="color:var(--text-dim)">Sólo Cargo Extra (Sin Cocina)</span>
+                </label>
+            </div>
+
             <div class="modal-btns">
                 <button class="modal-cancel" onclick="cerrarExtraModal()">Cancelar</button>
                 <button class="modal-confirm" onclick="agregarExtra()">Agregar</button>

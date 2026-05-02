@@ -924,6 +924,22 @@
             </div>
             <input type="hidden" id="edit-mesa-num">
             <div id="edit-mesa-items"></div>
+
+            <div style="margin-top:16px; padding:12px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px;">
+                <h4 style="font-size:12px; color:var(--text-dim); text-transform:uppercase; margin-bottom:8px;">Agregar Ítem</h4>
+                
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <select id="edit-mesa-add-menu" style="flex:1; font-size:13px;"></select>
+                    <button class="btn btn-secondary btn-sm" onclick="addMenuItemToEditMesa()" style="width:80px; padding:0;">+ Menú</button>
+                </div>
+                
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="edit-mesa-add-manual-name" placeholder="Nombre manual (Ej: Descorche)" style="flex:2; font-size:13px; padding:8px;">
+                    <input type="number" id="edit-mesa-add-manual-price" placeholder="$" style="flex:1; font-size:13px; padding:8px;" min="0" step="1">
+                    <button class="btn btn-secondary btn-sm" onclick="addManualItemToEditMesa()" style="width:80px; padding:0;">+ Manual</button>
+                </div>
+            </div>
+
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
                 <span style="font-size:13px;color:var(--text-dim)">Subtotal:</span>
                 <span id="edit-mesa-subtotal" style="font-size:16px;font-weight:600;color:var(--accent);font-family:var(--font-display)">$0.00</span>

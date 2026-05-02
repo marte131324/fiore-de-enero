@@ -400,7 +400,23 @@
             showToast('Completa concepto y monto');
             return;
         }
-        extrasActual.push({ concepto: concepto, monto: monto, enviado: false });
+
+        var typeEl = document.querySelector('input[name="extra-type"]:checked');
+        var type = typeEl ? typeEl.value : 'cocina';
+
+        if(type === 'cocina') {
+            comandaActual.push({
+                id: 'manual-' + Date.now(),
+                n: '⚡ ' + concepto,
+                p: monto,
+                q: 1,
+                nota: 'Producto Manual',
+                enviado: false
+            });
+        } else {
+            extrasActual.push({ concepto: concepto, monto: monto, enviado: false });
+        }
+
         cerrarExtraModal();
         renderCmdItems();
     };
@@ -488,16 +504,6 @@
         comandaActual.forEach(function(i) { 
             if(!i.enviado) {
                 nuevosItems.push(i);
-            }
-        });
-        extrasActual.forEach(function(ex) {
-            if(!ex.enviado) {
-                nuevosItems.push({
-                    n: "⚡ " + ex.concepto,
-                    q: 1,
-                    nota: "Cargo Extra",
-                    enviado: false
-                });
             }
         });
 
