@@ -109,49 +109,22 @@ input, select, textarea {
     box-sizing: border-box;
 }
 
+html, body {
+    -webkit-overflow-scrolling: touch;
+}
+
 body {
     font-family: var(--font-body);
-    background: radial-gradient(circle at top, #233527 0%, #111A13 100%); /* Richer depth */
+    background: radial-gradient(circle at top, #1A251C 0%, #0A100C 100%);
+    background-attachment: fixed;
     color: var(--text-light);
     line-height: 1.6;
     min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
+    margin: 0;
+    padding: 0;
 }
 
-/* Background Animations */
-.bg-shape {
-    position: fixed;
-    border-radius: 50%;
-    z-index: -1;
-    pointer-events: none;
-    will-change: transform;
-}
-
-.circle-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(143,39,57,0.25) 0%, rgba(143,39,57,0) 70%);
-    top: -200px;
-    left: -200px;
-    animation: float 8s ease-in-out infinite alternate;
-    transform: translateZ(0); /* Force Hardware Acceleration */
-}
-
-.circle-2 {
-    width: 450px;
-    height: 450px;
-    background: radial-gradient(circle, rgba(138,91,49,0.25) 0%, rgba(138,91,49,0) 70%);
-    bottom: -150px;
-    right: -150px;
-    animation: float 10s ease-in-out infinite alternate-reverse;
-    transform: translateZ(0); /* Force Hardware Acceleration */
-}
-
-@keyframes float {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(0, 25px, 0); } /* Avoid scaling blurred objects */
-}
+/* Removed Background Animations */
 
 /* Typography */
 h1, h2, h3 {
@@ -1251,6 +1224,14 @@ input:focus {
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     margin-top: 1rem;
+}
+
+/* Perf Optimization: Limit initial rendering of gallery to prevent iOS scroll lag */
+.gallery-grid .gallery-item:nth-child(n+13) {
+    display: none;
+}
+.gallery-grid.show-all .gallery-item {
+    display: block;
 }
 
 .gallery-item {

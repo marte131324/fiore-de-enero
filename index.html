@@ -17,7 +17,7 @@
     <link rel="icon" type="image/jpeg" href="Assets/Logo.jpg">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,9 +54,7 @@
         </div>
     </div>
 
-    <!-- Background Elements -->
-    <div class="bg-shape circle-1"></div>
-    <div class="bg-shape circle-2"></div>
+    <!-- Background Elements Removed for Scroll Performance -->
 
     <main class="vcard-container">
         <!-- Global Banner (Dynamic) -->
@@ -343,6 +341,9 @@
                         <img src="FIORE FOTOS/_MG_9972.webp" alt="Fiore de Enero" loading="lazy">
                     </div>
                 </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button id="load-more-btn" onclick="document.getElementById('gallery-grid').classList.add('show-all'); this.style.display='none';" style="background: var(--secondary-color); color: var(--primary-color); border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; font-family: var(--font-body); font-size: 1rem; box-shadow: 0 4px 15px rgba(209, 202, 131, 0.3);">Cargar más fotos</button>
+                </div>
             </section>
 
             <!-- Eventos Section -->
@@ -506,7 +507,7 @@
 
     <!-- Tour Button removed -->
     <!-- Main Script -->
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 
 
 
