@@ -78,6 +78,12 @@ function showSection(sectionId) {
     const tabs = document.querySelectorAll('.tab-btn');
     const clickedTab = Array.from(tabs).find(tab => tab.getAttribute('onclick') && tab.getAttribute('onclick').includes(sectionId));
     if (clickedTab) clickedTab.classList.add('active');
+
+    // Smooth scroll to content top if user is far down
+    const contentTop = document.querySelector('.content-wrapper').offsetTop - 20;
+    if (window.scrollY > contentTop) {
+        window.scrollTo({ top: contentTop, behavior: 'smooth' });
+    }
 }
 
 // Simple Review Carousel
@@ -580,6 +586,12 @@ window.switchMenuTab = function(tabName, btnRef) {
     
     document.querySelectorAll('.menu-subtab').forEach(btn => btn.classList.remove('active'));
     btnRef.classList.add('active');
+    
+    // Smooth scroll back to top of menu tabs
+    const menuTabsTop = document.querySelector('.menu-tabs-container').offsetTop - 60;
+    if (window.scrollY > menuTabsTop) {
+        window.scrollTo({ top: menuTabsTop, behavior: 'smooth' });
+    }
 }
 
 function renderMenu() {
@@ -595,7 +607,7 @@ function renderMenu() {
                     <span>${section.category}</span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
-                <div class="accordion-content" style="max-height: ${index===0?'1500px':'0'};">
+                <div class="accordion-content" style="max-height: ${index===0?'none':'0'};">
                     <div class="accordion-inner">
                         ${section.items.map(item => `
                         <div class="menu-product">
@@ -619,6 +631,15 @@ function renderMenu() {
         
         container.innerHTML += html;
     });
+
+    // Post-render: Set precise max-height for open accordions to ensure smooth closing transitions
+    setTimeout(() => {
+        document.querySelectorAll('.accordion-content').forEach(content => {
+            if (content.style.maxHeight === 'none') {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
+    }, 50);
 }
 
 window.toggleAccordion = function(btn) {

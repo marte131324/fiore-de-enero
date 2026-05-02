@@ -798,6 +798,16 @@ input:focus {
 
 .menu-tabs-container {
     display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.menu-tab-content {
+    animation: fadeIn 0.4s ease;
+}
+
+.menu-subtab {
     gap: 0.5rem;
     margin-bottom: 1.5rem;
     justify-content: center;
@@ -1359,3 +1369,7 @@ input:focus {
     }
 }
 
+
+html {
+    scroll-behavior: smooth;
+}
