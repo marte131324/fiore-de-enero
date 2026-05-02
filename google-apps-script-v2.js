@@ -222,7 +222,8 @@ function doPost(e) {
               hora: horaStr,
               items: cData[i][4],
               estado: estado,
-              terminadoHora: horaTerminadoStr
+              terminadoHora: horaTerminadoStr,
+              estacion: cData[i][7] || 'todas'
             });
         }
     }
@@ -231,19 +232,47 @@ function doPost(e) {
     var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
     if(!sheetCocina) {
       sheetCocina = sheet.insertSheet("Cocina_Tickets");
-      sheetCocina.appendRow(['TicketID','MesaNum','Mesero','Hora','ItemsJSON','Estado', 'TerminadoHora']);
+      sheetCocina.appendRow(['TicketID','MesaNum','Mesero','Hora','ItemsJSON','Estado', 'TerminadoHora', 'Estacion']);
     }
-    var tID = Date.now().toString(36) + Math.random().toString(36).substring(2,5);
+    var baseID = Date.now().toString(36) + Math.random().toString(36).substring(2,5);
     var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm");
-    sheetCocina.appendRow([
-      tID, 
-      postData.mesaNum, 
-      postData.mesero, 
-      timeStr, 
-      JSON.stringify(postData.nuevosItems), 
-      'PENDIENTE',
-      ''
-    ]);
+    
+    var barraItems = [];
+    var cocinaItems = [];
+    
+    postData.nuevosItems.forEach(function(i) {
+        var cat = String(i.c || '').toLowerCase();
+        if(cat.indexOf('bebida') > -1 || cat.indexOf('frappe') > -1 || cat.indexOf('café') > -1) {
+            barraItems.push(i);
+        } else {
+            cocinaItems.push(i);
+        }
+    });
+
+    if(barraItems.length > 0) {
+        sheetCocina.appendRow([
+          baseID + '-B', 
+          postData.mesaNum, 
+          postData.mesero, 
+          timeStr, 
+          JSON.stringify(barraItems), 
+          'PENDIENTE',
+          '',
+          'barra'
+        ]);
+    }
+    if(cocinaItems.length > 0) {
+        sheetCocina.appendRow([
+          baseID + '-C', 
+          postData.mesaNum, 
+          postData.mesero, 
+          timeStr, 
+          JSON.stringify(cocinaItems), 
+          'PENDIENTE',
+          '',
+          'cocina'
+        ]);
+    }
     return ContentService.createTextOutput(JSON.stringify({"status":"ok"})).setMimeType(ContentService.MimeType.JSON);
   } else if(action === 'markCocinaPreparing') {
     var sheetCocina = sheet.getSheetByName("Cocina_Tickets");

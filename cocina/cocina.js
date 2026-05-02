@@ -147,36 +147,42 @@ function renderBoard() {
         let items = [];
         try { items = JSON.parse(t.items); } catch(e) {}
         
-        // STATION FILTERING
+        // STATION TICKET FILTERING (Server-side split logic)
         const station = window._kdsStation;
         let filteredItems = items;
-        if(station === 'barra') {
-            filteredItems = items.filter(i => {
-                const cat = (i.c || '').toLowerCase();
-                return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café');
-            });
-        } else if(station === 'cocina') {
-            filteredItems = items.filter(i => {
-                const cat = (i.c || '').toLowerCase();
-                return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café'));
-            });
-        }
         
-        // If ticket has no items for this station, skip rendering it entirely
-        if(filteredItems.length === 0) return;
+        if (t.estacion === 'barra' && station === 'cocina') return;
+        if (t.estacion === 'cocina' && station === 'barra') return;
+        
+        // Fallback for old tickets (estacion: 'todas')
+        if (t.estacion === 'todas' && station !== 'todas') {
+            if(station === 'barra') {
+                filteredItems = items.filter(i => {
+                    const cat = (i.c || '').toLowerCase();
+                    return cat.includes('bebida') || cat.includes('frappe') || cat.includes('café');
+                });
+            } else if(station === 'cocina') {
+                filteredItems = items.filter(i => {
+                    const cat = (i.c || '').toLowerCase();
+                    return !(cat.includes('bebida') || cat.includes('frappe') || cat.includes('café'));
+                });
+            }
+            if(filteredItems.length === 0) return;
+        }
 
         const mins = getMinutesDiff(t.hora);
         const horaDisplay = formatHora(t.hora);
         const isLate = mins >= 15 ? 'late' : '';
         const isPrep = t.estado === 'EN PREPARACION';
         const prepClass = isPrep ? 'preparando' : '';
+        const iconStation = t.estacion === 'barra' ? '🍹' : (t.estacion === 'cocina' ? '🍳' : '🎫');
 
         html += `
         <div class="ticket ${isLate} ${prepClass}" data-id="${t.id}" data-time="${t.hora}">
             <div class="ticket-header">
                 <div class="ticket-mesa">
                     <span>MESA</span>
-                    ${t.mesaNum}
+                    ${t.mesaNum} <span style="font-size:16px; margin-left:4px;">${iconStation}</span>
                 </div>
                 <div class="ticket-meta" style="position:relative; padding-right: 30px;">
                     <div class="ticket-timer"><i class="ri-timer-line"></i> <span>${mins}m</span></div>
@@ -277,7 +283,7 @@ function renderHistorial() {
         html += `
             <div class="historial-card">
                 <div class="historial-card-header">
-                    <div class="historial-mesa">M-${t.mesaNum}</div>
+                    <div class="historial-mesa">M-${t.mesaNum} <span style="font-size:16px;">${iconStation}</span></div>
                     <div class="historial-times">
                         <div class="historial-time-row">
                             <span class="time-label">Pedido:</span>
@@ -296,7 +302,7 @@ function renderHistorial() {
                 <div class="historial-card-body">
                     <div class="historial-mesero"><i class="ri-user-smile-line"></i> ${t.mesero}</div>
                     <div class="historial-items">
-                        ${items.map(item => `
+                        ${filteredItems.map(item => `
                             <div class="historial-item-row">
                                 <span class="historial-item-qty">${item.q}x</span>
                                 <span class="historial-item-name">${item.n}</span>
