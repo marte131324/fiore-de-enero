@@ -67,20 +67,68 @@
         renderMeserosAdmin();
         startPolling();
 
-        // FALLBACK: if ventasHoy came empty, try fetching via getVentasRango
+        // FALLBACK: if ventasHoy came empty, reconstruct from Auditoria log
         if(ventasCache.length === 0) {
-            var hoy = formatDate(new Date());
-            fetch(WEBAPP_URL + '?action=getVentasRango&desde=' + hoy + '&hasta=' + hoy)
+            fetch(WEBAPP_URL + '?action=getAuditoria')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    if(data.ventas && data.ventas.length > 0) {
-                        ventasCache = data.ventas;
-                        window._ventasHoy = data.ventas;
+                    var auditEntries = data.auditoria || [];
+                    var hoy = formatDate(new Date());
+                    var ventasRecovered = [];
+                    auditEntries.forEach(function(entry) {
+                        if(entry.accion !== 'VENTA') return;
+                        // Parse: "Ticket V1777694768091 Mesa 2 $596"
+                        var det = entry.detalles || '';
+                        var ticketMatch = det.match(/Ticket\s+(V\d+)/);
+                        var mesaMatch = det.match(/Mesa\s+(\S+)/);
+                        var totalMatch = det.match(/\$([0-9.]+)/);
+                        if(!ticketMatch || !totalMatch) return;
+                        
+                        // Parse timestamp to date string
+                        var ts = entry.timestamp || '';
+                        var entryDate = '';
+                        try {
+                            var d = new Date(ts);
+                            entryDate = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+                        } catch(e) { return; }
+                        
+                        // Only include today's entries
+                        if(entryDate !== hoy) return;
+                        
+                        var horaStr = '';
+                        try {
+                            var d2 = new Date(ts);
+                            horaStr = String(d2.getHours()).padStart(2,'0') + ':' + String(d2.getMinutes()).padStart(2,'0');
+                        } catch(e) {}
+                        
+                        ventasRecovered.push({
+                            id: ticketMatch[1],
+                            fecha: entryDate,
+                            hora: horaStr,
+                            mesa: mesaMatch ? mesaMatch[1] : '',
+                            mesero: entry.usuario || 'Admin',
+                            total: parseFloat(totalMatch[1]) || 0,
+                            metodoPago: 'N/A',
+                            items: '[]',
+                            extras: '[]',
+                            subtotal: parseFloat(totalMatch[1]) || 0,
+                            descuento: 0,
+                            descMonto: 0,
+                            propina: 0,
+                            propinaMonto: 0,
+                            personas: 1
+                        });
+                    });
+                    
+                    if(ventasRecovered.length > 0) {
+                        ventasCache = ventasRecovered;
+                        window._ventasHoy = ventasRecovered;
                         renderDashboard();
                         renderHistorial();
+                        console.log('Ventas recuperadas de Auditoria:', ventasRecovered.length);
                     }
                 })
-                .catch(function(e) { console.warn('Fallback ventas fetch failed', e); });
+                .catch(function(e) { console.warn('Auditoria fallback failed', e); });
         }
     };
 
@@ -916,10 +964,54 @@
         if(periodo === 'hoy') { desde=hasta=formatDate(now); }
         else if(periodo === 'ayer') { var a = new Date(now); a.setDate(a.getDate()-1); desde=hasta=formatDate(a); }
         else if(periodo === 'semana') { var i = new Date(now); i.setDate(i.getDate()-7); desde=formatDate(i); hasta=formatDate(now); }
+        
+        // First try getVentasRango, fallback to Auditoria
         try {
             var res = await fetch(WEBAPP_URL+'?action=getVentasRango&desde='+desde+'&hasta='+hasta);
             var data = await res.json();
-            ventasCache = data.ventas || [];
+            if(data.ventas && data.ventas.length > 0) {
+                ventasCache = data.ventas;
+                if(periodo === 'hoy') { window._ventasHoy = ventasCache; }
+                renderDashboard();
+                renderHistorial();
+                return;
+            }
+        } catch(e) {}
+        
+        // Fallback: reconstruct from Auditoria
+        try {
+            var res2 = await fetch(WEBAPP_URL+'?action=getAuditoria');
+            var data2 = await res2.json();
+            var auditEntries = data2.auditoria || [];
+            var ventasRecovered = [];
+            auditEntries.forEach(function(entry) {
+                if(entry.accion !== 'VENTA') return;
+                var det = entry.detalles || '';
+                var ticketMatch = det.match(/Ticket\s+(V\d+)/);
+                var mesaMatch = det.match(/Mesa\s+(\S+)/);
+                var totalMatch = det.match(/\$([0-9.]+)/);
+                if(!ticketMatch || !totalMatch) return;
+                var ts = entry.timestamp || '';
+                var entryDate = '';
+                try {
+                    var d = new Date(ts);
+                    entryDate = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+                } catch(e) { return; }
+                if(entryDate < desde || entryDate > hasta) return;
+                var horaStr = '';
+                try {
+                    var d2 = new Date(ts);
+                    horaStr = String(d2.getHours()).padStart(2,'0') + ':' + String(d2.getMinutes()).padStart(2,'0');
+                } catch(e) {}
+                ventasRecovered.push({
+                    id: ticketMatch[1], fecha: entryDate, hora: horaStr,
+                    mesa: mesaMatch ? mesaMatch[1] : '', mesero: entry.usuario || 'Admin',
+                    total: parseFloat(totalMatch[1]) || 0, metodoPago: 'N/A',
+                    items: '[]', extras: '[]', subtotal: parseFloat(totalMatch[1]) || 0,
+                    descuento: 0, propina: 0, propinaMonto: 0, personas: 1
+                });
+            });
+            ventasCache = ventasRecovered;
             if(periodo === 'hoy') { window._ventasHoy = ventasCache; }
             renderDashboard();
             renderHistorial();
