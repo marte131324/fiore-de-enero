@@ -499,7 +499,7 @@ async function loadDynamicData() {
                 const statusText = document.getElementById('store-status-text');
                 const statusDot = document.getElementById('store-status-dot');
                 if(statusText && statusDot) {
-                    if(data.config.tiendaStatus === 'ACEPTANDO PEDIDOS') {
+                    if(data.config.tiendaStatus === 'ABIERTO' || data.config.tiendaStatus === 'ACEPTANDO PEDIDOS') {
                         statusText.innerText = 'Abierto Hoy';
                         statusDot.style.background = '#4ade80';
                         statusDot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
