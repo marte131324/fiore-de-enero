@@ -123,29 +123,27 @@ body {
 .bg-shape {
     position: fixed;
     border-radius: 50%;
-    filter: blur(60px); /* Opimized blur intensity */
     z-index: -1;
-    opacity: 0.35;
     pointer-events: none;
     will-change: transform;
 }
 
 .circle-1 {
-    width: 400px;
-    height: 400px;
-    background: #8F2739;
-    top: -150px;
-    left: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(143,39,57,0.25) 0%, rgba(143,39,57,0) 70%);
+    top: -200px;
+    left: -200px;
     animation: float 8s ease-in-out infinite alternate;
     transform: translateZ(0); /* Force Hardware Acceleration */
 }
 
 .circle-2 {
-    width: 320px;
-    height: 320px;
-    background: #8A5B31;
-    bottom: -50px;
-    right: -100px;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(138,91,49,0.25) 0%, rgba(138,91,49,0) 70%);
+    bottom: -150px;
+    right: -150px;
     animation: float 10s ease-in-out infinite alternate-reverse;
     transform: translateZ(0); /* Force Hardware Acceleration */
 }
@@ -837,8 +835,7 @@ input:focus {
     border-radius: 16px;
     margin-bottom: 1rem;
     overflow: hidden;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    /* backdrop-filter eliminado para evitar lag de scroll en iOS */
 }
 
 .accordion-header {
