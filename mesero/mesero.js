@@ -405,12 +405,14 @@
         var typeEl = document.querySelector('input[name="extra-type"]:checked');
         var type = typeEl ? typeEl.value : 'cocina';
 
-        if(type === 'cocina') {
+        if(type === 'cocina' || type === 'barra') {
+            var catName = type === 'barra' ? 'Bebidas Manual' : 'Cocina Manual';
             comandaActual.push({
                 id: 'manual-' + Date.now(),
                 n: '⚡ ' + concepto,
                 p: monto,
                 q: 1,
+                c: catName,
                 nota: 'Producto Manual',
                 enviado: false
             });
