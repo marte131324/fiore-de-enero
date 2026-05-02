@@ -230,6 +230,7 @@
                 if(item.enviado === undefined) item.enviado = true; // Items from server were already sent
             });
             try { extrasActual = JSON.parse(mesa.extras); } catch(e) { extrasActual = []; }
+            extrasActual.forEach(function(ex) { ex.enviado = true; });
             cmdPersonas = mesa.personas || 1;
         } else {
             comandaActual = [];
@@ -399,7 +400,7 @@
             showToast('Completa concepto y monto');
             return;
         }
-        extrasActual.push({ concepto: concepto, monto: monto });
+        extrasActual.push({ concepto: concepto, monto: monto, enviado: false });
         cerrarExtraModal();
         renderCmdItems();
     };
@@ -489,6 +490,16 @@
                 nuevosItems.push(i);
             }
         });
+        extrasActual.forEach(function(ex) {
+            if(!ex.enviado) {
+                nuevosItems.push({
+                    n: "⚡ " + ex.concepto,
+                    q: 1,
+                    nota: "Cargo Extra",
+                    enviado: false
+                });
+            }
+        });
 
         // BUG 3 FIX: Preserve existing mesa owner
         var existingMesa = mesasData[String(mesaAbierta)];
@@ -505,12 +516,16 @@
             return { id: i.id, n: i.n, p: i.p, q: i.q, nota: i.nota || '', enviado: true };
         });
 
+        var extrasSnapshot = extrasActual.map(function(ex) {
+            return { concepto: ex.concepto, monto: ex.monto, enviado: true };
+        });
+
         var mesaPayload = {
             mesaNum: mesaAbierta,
             mesero: meseroCode,
             personas: cmdPersonas,
             items: JSON.stringify(itemsSnapshot),
-            extras: JSON.stringify(extrasActual),
+            extras: JSON.stringify(extrasSnapshot),
             descuento: existingMesa ? existingMesa.descuento : 0,
             total: total,
             pideCuenta: pideCuentaFlag
@@ -542,6 +557,7 @@
 
             // STEP 2: Mesa saved OK — NOW mark items as enviado locally
             comandaActual.forEach(function(i) { i.enviado = true; });
+            extrasActual.forEach(function(ex) { ex.enviado = true; });
 
             // STEP 3: Send new items to cocina ONLY after mesa save succeeded
             if(nuevosItems.length > 0) {
