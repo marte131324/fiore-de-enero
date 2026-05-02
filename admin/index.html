@@ -229,7 +229,7 @@
         .historial-list { display: flex; flex-direction: column; gap: 12px; max-height: 70vh; overflow-y: auto; padding-right: 5px; }
         .historial-list::-webkit-scrollbar { width: 4px; }
         .historial-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        .historial-ticket { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: 0.3s; }
+        .historial-ticket { flex-shrink: 0; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: 0.3s; }
         .historial-ticket:hover { border-color: rgba(229,213,193,0.4); }
         .historial-ticket-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; }
         .historial-ticket-left { display: flex; align-items: center; gap: 14px; }
@@ -972,7 +972,7 @@
     <!-- Sync Toast -->
     <div class="sync-toast" id="toast"><i class="ri-checkbox-circle-fill"></i> Base de Datos Sincronizada</div>
 
-    <script src="app.js"></script>
-    <script src="caja.js"></script>
+    <script src="app.js?v=2.1"></script>
+    <script src="caja.js?v=2.1"></script>
 </body>
 </html>

@@ -1056,6 +1056,7 @@
                         '<span class="historial-ticket-time"><i class="ri-time-line"></i> ' + (v.hora||'--:--') + '</span>' +
                         '<span class="historial-ticket-method">' + (v.metodoPago||'N/A') + '</span>' +
                         '<span style="font-size:12px;color:var(--text-dim)">' + mesaTag + ' · ' + meseroTag + (hasItems ? ' · '+items.length+' prod' : '') + '</span>' +
+                        (v.id ? '' : '<span style="color:red">ID ERROR</span>') +
                     '</div>' +
                     '<span class="historial-ticket-total">$' + (parseFloat(v.total)||0).toFixed(2) + '</span>' +
                 '</div>' +
