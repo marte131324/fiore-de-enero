@@ -54,9 +54,27 @@
     <p>Los sistemas web modernos (como el Command Center) tienen estrictas reglas de seguridad que bloquean la impresión de documentos sin que un humano presione "Aceptar" en una pantalla. En una cocina de alto volumen, requerir que un chef toque una tablet con las manos sucias para imprimir cada ticket es inoperable.</p>
 </div>
 
-<h2>La Solución: Arquitectura "Treze Bridge"</h2>
+<h2>Análisis de Alternativas (Estudio de Viabilidad)</h2>
+<p>Para resolver este reto, nuestro laboratorio evaluó 3 arquitecturas diferentes. Dos de ellas fueron descartadas para proteger la inversión y estabilidad operativa del restaurante:</p>
 
-<p>Hemos diseñado una arquitectura puente (Local-Nube) que elimina la necesidad de tener pantallas o computadoras adicionales dentro del área de cocina, utilizando los recursos tecnológicos con los que ya cuenta el local.</p>
+<table>
+    <tr>
+        <th style="background:#ef4444;">Alternativa Evaluada</th>
+        <th style="background:#ef4444;">Veredicto: DESCARTADA ❌</th>
+    </tr>
+    <tr>
+        <td><strong>1. Impresión vía Bluetooth (Web Bluetooth API)</strong><br><em>(Requiere tablet Android en cocina + Impresora Bluetooth genérica)</em></td>
+        <td>Descartada por <strong>riesgo de inestabilidad operativa</strong>. Si la tablet en la cocina entra en modo ahorro de batería o se apaga la pantalla, Chrome congela los procesos y desconecta el Bluetooth. Requeriría que los cocineros presionen un botón de "Reconectar" constantemente. Inviable en horas pico.</td>
+    </tr>
+    <tr>
+        <td><strong>2. Impresoras Cloud Inteligentes (ePOS / CloudPRNT)</strong><br><em>(Hardware corporativo tipo Starbucks/UberEats)</em></td>
+        <td>Descartada por <strong>costo de hardware excesivo</strong>. Equipos como la Star Micronics mC-Print3 resuelven el problema de forma autónoma comunicándose con nuestros servidores, pero su costo oscila entre los $6,500 y $8,000 MXN. Consideramos que es un gasto innecesario pudiendo aprovechar la PC que ya existe en la caja.</td>
+    </tr>
+</table>
+
+<h2>La Solución Óptima: Arquitectura "Treze Bridge"</h2>
+
+<p>Tras descartar las opciones inestables o sobrevaloradas, hemos diseñado una arquitectura puente (Local-Nube) que elimina la necesidad de tener pantallas o computadoras adicionales dentro del área de cocina, utilizando los recursos tecnológicos con los que ya cuenta el local.</p>
 
 <div class="tip">
     <strong>¿Cómo funciona?</strong> Instalaremos la impresora en la cocina (sólo requiere corriente eléctrica e internet). En la computadora de la Caja, Treze Labs instalará un "cerebro invisible" que descargará las comandas de la nube en tiempo real y se las disparará a la impresora de la cocina a través de su propia red interna.
