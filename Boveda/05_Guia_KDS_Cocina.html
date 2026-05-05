@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guía KDS Cocina | Fiore de Enero</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        @page { size: letter; margin: 2cm 2.5cm; }
+        body { font-family:'Inter',sans-serif; color:#1e293b; line-height:1.7; padding:40px 50px; max-width:850px; margin:0 auto; }
+        .header { border-bottom:3px solid #0284c7; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
+        .header h1 { font-size:1.6rem; font-weight:800; color:#0f172a; }
+        .header .sub { font-size:0.8rem; color:#64748b; }
+        .badge { display:inline-block; background:#0e86b0; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom: 5px; }
+        h2 { font-size:1.15rem; font-weight:700; color:#0284c7; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+        h3 { font-size:0.95rem; font-weight:700; color:#334155; margin:18px 0 8px; }
+        p, li { font-size:0.88rem; color:#475569; }
+        ul, ol { padding-left:22px; margin:8px 0; }
+        li { margin:6px 0; }
+        .section-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px 24px; margin:16px 0; page-break-inside:avoid; }
+        .section-card h3 { margin-top:0; color:#0284c7; }
+        .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
+        .warn { background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#92400e; }
+        .note { background:#eff6ff; border-left:4px solid #3b82f6; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        .security { background:#fef2f2; border-left:4px solid #ef4444; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#991b1b; }
+        .footer { margin-top:40px; padding-top:16px; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; }
+
+        body.dark-mode { background:#0f172a; color:#cbd5e1; }
+        body.dark-mode .header { border-bottom-color: #38bdf8; }
+        body.dark-mode .header h1 { color:#f8fafc; }
+        body.dark-mode h2 { color:#38bdf8; border-bottom-color:#334155; }
+        body.dark-mode h3 { color:#e2e8f0; }
+        body.dark-mode p, body.dark-mode li { color:#94a3b8; }
+        body.dark-mode .section-card { background:#1e293b; border-color:#334155; }
+        body.dark-mode .section-card h3 { color:#38bdf8; }
+        body.dark-mode .note { background:rgba(59,130,246,0.1); color:#93c5fd; }
+        body.dark-mode .warn { background:rgba(245,158,11,0.1); color:#fcd34d; }
+        body.dark-mode .security { background:rgba(239,68,68,0.1); color:#fca5a5; }
+        body.dark-mode .tip { background:rgba(34,197,94,0.1); color:#86efac; }
+        body.dark-mode .footer { border-top-color:#334155; color:#64748b; }
+        body.dark-mode code { background:#020617; color:#38bdf8; padding:2px 6px; border-radius:4px; }
+        .theme-btn { background:none; border:none; cursor:pointer; font-size:1.2rem; color:#64748b; margin-left:20px; outline:none; }
+        body.dark-mode .theme-btn { color:#fcd34d; }
+        @media print { body { padding:0; } .section-card { break-inside:avoid; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <span class="badge">Documento 5 de 6</span>
+            <h1>🍳 Guía Kitchen Display System (KDS)</h1>
+            <div class="sub">Fiore de Enero — Panel de Cocina Digital</div>
+        </div>
+        <div style="text-align:right; display:flex; align-items:flex-end; gap:10px;">
+            <div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Treze Labs</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">Laboratorio de Sistemas Digitales · Abril 2026</div>
+            </div>
+            <button class="theme-btn" onclick="document.body.classList.toggle('dark-mode')" title="Alternar Modo Oscuro">🌓</button>
+        </div>
+    </div>
+
+    <p>El <strong>Kitchen Display System (KDS)</strong> es una pantalla digital independiente diseñada para que el equipo de cocina reciba, organice y confirme las comandas en tiempo real, sin interferir con la caja ni con los meseros.</p>
+
+    <h2>📺 1. ¿Qué es el KDS?</h2>
+    <div class="section-card">
+        <p>Es un tablero digital estilo <strong>Kanban</strong> (similar a Trello) que muestra tarjetas de color para cada pedido nuevo. Cada tarjeta contiene:</p>
+        <ul>
+            <li><strong>Número de Mesa</strong> — Grande y visible para que cocina identifique rápido.</li>
+            <li><strong>Nombre del Mesero</strong> — Quién levantó la comanda.</li>
+            <li><strong>Lista de Platillos</strong> — Con cantidades exactas y notas especiales (ej. "sin cebolla").</li>
+            <li><strong>Temporizador</strong> — Muestra cuántos minutos lleva el ticket. Si supera <strong>15 minutos</strong>, la tarjeta se pone en <span style="color:#ef4444; font-weight:700;">ROJO DE ALERTA</span>.</li>
+            <li><strong>Botón "Entregado"</strong> — Al terminar el platillo, el cocinero presiona este botón y la tarjeta desaparece.</li>
+        </ul>
+    </div>
+
+    <h2>🔗 2. ¿Cómo Acceder?</h2>
+    <div class="section-card">
+        <p>Abrir en la tablet o monitor de cocina:</p>
+        <div class="note">
+            <strong>URL:</strong> <code>fiore-de-enero.vercel.app/cocina/</code>
+        </div>
+        <p><strong>No requiere PIN.</strong> El KDS es solo lectura (no puede modificar precios, mesas ni ventas). Solo recibe y confirma tickets.</p>
+        
+        <div class="tip">
+            <strong>Recomendación de Instalación:</strong> Guarda este enlace como "Agregar a pantalla de inicio" en la tablet de cocina. Así se abre como una app nativa con pantalla completa, sin barra de navegador.
+        </div>
+    </div>
+
+    <h2>🔄 3. ¿Cómo Funcionan las Comandas?</h2>
+    <div class="section-card">
+        <h3>Flujo Normal</h3>
+        <ol>
+            <li>El <strong>mesero</strong> levanta el pedido en su celular y presiona <strong>"Enviar"</strong>.</li>
+            <li>El ticket aparece automáticamente en el KDS en un máximo de <strong>15 segundos</strong> (sincronización automática).</li>
+            <li>Cocina prepara los platillos.</li>
+            <li>Al terminar, el cocinero presiona <strong>"Entregado"</strong> y confirma con el botón verde.</li>
+            <li>La tarjeta desaparece del KDS. <strong>No afecta la cuenta de la mesa</strong> (eso lo maneja la cajera por separado).</li>
+        </ol>
+
+        <h3>Pedidos Adicionales (Delta)</h3>
+        <p>Si un cliente pide algo más después de su primer pedido, el mesero agrega los nuevos platillos y vuelve a enviar. El sistema es <strong>inteligente</strong>: <u>solo envía a cocina los platillos NUEVOS</u>, no duplica los que ya fueron enviados antes.</p>
+        
+        <div class="warn">
+            <strong>Ejemplo:</strong> Mesa 3 pidió 2 hamburguesas (ya enviadas). Ahora piden 1 postre. Al enviar la comanda actualizada, a cocina le llegará un ticket <strong>solo con el postre</strong>, no con las 2 hamburguesas de nuevo.
+        </div>
+    </div>
+
+    <h2>🔔 4. Sonido de Notificación</h2>
+    <div class="section-card">
+        <p>Cuando entra un nuevo ticket, la tablet emitirá un <strong>sonido de campana</strong> para alertar al equipo de cocina.</p>
+        
+        <div class="warn">
+            <strong>IMPORTANTE (Primera vez del día):</strong> Chrome y Safari requieren que alguien <strong>toque la pantalla al menos una vez</strong> después de abrir la página para habilitar el audio. Protocolo: al encender la tablet por la mañana, abrir el KDS y dar un toque en cualquier parte de la pantalla. Después de eso, el sonido funcionará todo el día.
+        </div>
+    </div>
+
+    <h2>⏱️ 5. Alertas de Tiempo</h2>
+    <div class="section-card">
+        <ul>
+            <li><strong>0 – 14 minutos:</strong> Tarjeta normal con borde amarillo dorado.</li>
+            <li><strong>15+ minutos:</strong> Tarjeta en rojo con borde brillante. Indica que el tiempo de espera del cliente ya rebasó lo aceptable.</li>
+        </ul>
+        <div class="tip">
+            <strong>Regla de Oro:</strong> Si una tarjeta se pone roja, priorizar ese pedido de inmediato. Un cliente esperando más de 15 minutos reduce drásticamente la posibilidad de que regrese.
+        </div>
+    </div>
+
+    <h2>❓ 6. Preguntas Frecuentes</h2>
+    <div class="section-card">
+        <h3>¿Qué pasa si alguien presiona "Entregado" por error?</h3>
+        <p>El ticket se marca como <strong>LISTO</strong> en la base de datos. No se puede deshacer desde el KDS. Si aún no se entregó, el mesero puede volver a enviar la comanda desde su celular.</p>
+        
+        <h3>¿El KDS puede modificar precios o cerrar mesas?</h3>
+        <p><strong>No.</strong> El KDS es 100% de solo lectura para comandas. No tiene acceso a precios, ventas ni mesas. Solo recibe y confirma platillos.</p>
+        
+        <h3>¿Qué pasa si se pierde el internet en cocina?</h3>
+        <p>Los tickets que ya están en pantalla permanecen visibles. Los nuevos no llegarán hasta que se restaure la conexión. El sistema reintentará automáticamente cada 15 segundos.</p>
+    </div>
+
+    <div class="footer">
+        FIORE DE ENERO — Documentación de Entrega &copy; 2026 Treze Labs<br>
+        Este documento es confidencial.
+    </div>
+
+</body>
+</html>
