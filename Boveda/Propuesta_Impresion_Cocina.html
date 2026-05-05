@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Propuesta de Infraestructura: Impresión en Cocina</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        @page { size: letter; margin: 2cm 2.5cm; }
+        body { font-family:'Inter',sans-serif; color:#1e293b; line-height:1.7; padding:40px 50px; max-width:850px; margin:0 auto; }
+        .header { border-bottom:3px solid #0e86b0; padding-bottom:18px; margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end; }
+        .header h1 { font-size:1.6rem; font-weight:800; color:#042d3d; }
+        .header .sub { font-size:0.8rem; color:#64748b; }
+        .badge { display:inline-block; background:#0e86b0; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+        h2 { font-size:1.15rem; font-weight:700; color:#0e86b0; margin:28px 0 12px; padding-bottom:6px; border-bottom:1px solid #e2e8f0; }
+        h3 { font-size:0.95rem; font-weight:700; color:#334155; margin:18px 0 8px; }
+        p, li { font-size:0.88rem; color:#475569; }
+        ul, ol { padding-left:22px; margin:8px 0; }
+        li { margin:6px 0; }
+        .section-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px 24px; margin:16px 0; page-break-inside:avoid; }
+        .section-card h3 { margin-top:0; color:#0e86b0; }
+        .step { display:flex; gap:14px; margin:12px 0; align-items:flex-start; }
+        .step-num { background:#0e86b0; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; flex-shrink:0; margin-top:2px; }
+        .step-text { flex:1; }
+        .tip { background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#166534; }
+        .warn { background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#92400e; }
+        .note { background:#eff6ff; border-left:4px solid #0e86b0; padding:12px 16px; border-radius:0 8px 8px 0; margin:14px 0; font-size:0.84rem; color:#1e40af; }
+        table { width:100%; border-collapse:collapse; margin:14px 0; font-size:0.84rem; }
+        th { background:#0e86b0; color:white; padding:10px 14px; text-align:left; font-weight:600; }
+        td { padding:10px 14px; border-bottom:1px solid #e2e8f0; }
+        tr:nth-child(even) td { background:#f8fafc; }
+        .footer { margin-top:40px; padding-top:16px; border-top:2px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center; }
+        @media print { body { padding:0; } .section-card { break-inside:avoid; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <span class="badge">Propuesta Técnica</span>
+    <h1>🖨️ Arquitectura de Impresión en Cocina</h1>
+    <div class="sub">Fiore de Enero — Automatización KDS</div>
+  </div>
+  <div style="text-align:right;">
+    <div style="font-size:0.75rem; color:#94a3b8; font-weight: bold;">TREZE LABS</div>
+    <div style="font-size:0.75rem; color:#94a3b8;">Infraestructura Digital Premium</div>
+  </div>
+</div>
+
+<p>Este documento detalla la propuesta de infraestructura diseñada por <strong>Treze Labs</strong> para implementar la emisión de comandas físicas (tickets) de forma 100% silenciosa, automática y remota dentro del flujo de cocina de Fiore de Enero, garantizando máxima estabilidad operativa con el menor presupuesto posible en hardware.</p>
+
+<div class="section-card">
+    <h3>El Reto Tecnológico</h3>
+    <p>Los sistemas web modernos (como el Command Center) tienen estrictas reglas de seguridad que bloquean la impresión de documentos sin que un humano presione "Aceptar" en una pantalla. En una cocina de alto volumen, requerir que un chef toque una tablet con las manos sucias para imprimir cada ticket es inoperable.</p>
+</div>
+
+<h2>La Solución: Arquitectura "Treze Bridge"</h2>
+
+<p>Hemos diseñado una arquitectura puente (Local-Nube) que elimina la necesidad de tener pantallas o computadoras adicionales dentro del área de cocina, utilizando los recursos tecnológicos con los que ya cuenta el local.</p>
+
+<div class="tip">
+    <strong>¿Cómo funciona?</strong> Instalaremos la impresora en la cocina (sólo requiere corriente eléctrica e internet). En la computadora de la Caja, Treze Labs instalará un "cerebro invisible" que descargará las comandas de la nube en tiempo real y se las disparará a la impresora de la cocina a través de su propia red interna.
+</div>
+
+<h3>Ventajas Operativas</h3>
+<ul>
+    <li><strong>Cero Tablets en Cocina:</strong> La impresora funciona de forma completamente autónoma.</li>
+    <li><strong>Diseño Personalizado:</strong> Los tickets saldrán con el Logo de Fiore, negritas para legibilidad y formato exacto.</li>
+    <li><strong>Corte y Alarma:</strong> Corte de papel automático y alerta sonora (BEEP) al recibir órdenes.</li>
+    <li><strong>Flujo de Trabajo Intacto:</strong> La cajera sigue trabajando normalmente en su PC, el sistema opera invisiblemente en segundo plano.</li>
+</ul>
+
+<h2>Requerimientos de Hardware (A cargo del cliente)</h2>
+
+<p>Para asegurar que no existan desconexiones y la instalación sea instantánea (Plug & Play), es vital adquirir un equipo específico de red alámbrica (LAN). No recomendamos equipos Bluetooth o WiFi genéricos debido a su propensión a desconectarse en entornos de cocina.</p>
+
+<table>
+    <tr>
+        <th>Tipo de Equipo</th>
+        <th>Especificación Requerida</th>
+    </tr>
+    <tr>
+        <td><strong>Modelo</strong></td>
+        <td>Impresora Térmica 80mm de Red (Ethernet / LAN)</td>
+    </tr>
+    <tr>
+        <td><strong>Conexión</strong></td>
+        <td>Debe incluir puerto RJ45 para conectarse al módem.</td>
+    </tr>
+    <tr>
+        <td><strong>Marcas Sugeridas</strong></td>
+        <td>EC Line (Ej: EC-80360 LAN) o 3nStar (Ej: RPT008 LAN)</td>
+    </tr>
+    <tr>
+        <td><strong>Costo Estimado</strong></td>
+        <td>$2,200 - $2,800 MXN aprox.</td>
+    </tr>
+</table>
+
+<div class="warn">
+    <strong>Cuidado al comprar:</strong> Es sumamente importante <strong>NO</strong> comprar impresoras que digan solo "USB" o "Bluetooth". El empaque debe especificar explícitamente <strong>ETHERNET o LAN</strong>.
+</div>
+
+<h2>Procedimiento de Instalación (Llave en Mano)</h2>
+
+<div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text">
+        <strong>Recepción Física:</strong> Al recibir la impresora, conectarla a la corriente en la cocina y conectar un cable de internet (RJ45) directo desde el módem principal hasta la impresora.
+    </div>
+</div>
+<div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text">
+        <strong>Conexión Remota:</strong> Treze Labs se conectará de manera remota a la Computadora de la Caja durante un espacio de 20 minutos para realizar la instalación del puente digital.
+    </div>
+</div>
+<div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text">
+        <strong>Go-Live:</strong> Se realizan pruebas de emisión de tickets con alarmas auditivas, y el sistema queda operando perpetuamente.
+    </div>
+</div>
+
+<div class="footer">
+  Fiore de Enero — Propuesta de Hardware &copy; 2026 TREZE LABS — Infraestructura Digital Premium<br>
+  Este documento es confidencial y exclusivo para la evaluación del cliente.
+</div>
+
+</body>
+</html>
