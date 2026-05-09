@@ -1115,17 +1115,13 @@
     };
 
     window.imprimirCorteDia = function() {
-        if(ventasCache.length === 0) {
-            alert("No hay ventas para generar el corte.");
-            return;
-        }
+        if(ventasCache.length === 0) { alert("No hay ventas para generar el corte."); return; }
 
         var filterType = currentFilter || 'hoy';
         var d = new Date();
         var hoyStr = formatDate(d);
         var ayer = new Date(d); ayer.setDate(ayer.getDate()-1);
         var ayerStr = formatDate(ayer);
-        
         var dStart = new Date(d);
         var day = dStart.getDay() || 7;
         dStart.setDate(dStart.getDate() - day + 1);
@@ -1140,104 +1136,248 @@
             return true;
         });
 
-        if(filterVentas.length === 0) {
-            alert("No hay ventas registradas en este periodo (" + filterType + ").");
-            return;
-        }
+        if(filterVentas.length === 0) { alert("No hay ventas registradas en este periodo (" + filterType + ")."); return; }
 
-        var total = 0;
-        var totalDescuentos = 0;
-        var tickets = filterVentas.length;
-        var metodos = {};
-        var categorias = {};
-        var itemsVendidos = 0;
-        var detalleHTML = '';
+        // ── DATA AGGREGATION ──
+        var totalNeto = 0, subtotalBruto = 0, totalExtras = 0, totalDescuentos = 0, totalPropinas = 0;
+        var totalPersonas = 0, tickets = filterVentas.length;
+        var metodos = {}, categorias = {}, productos = {}, mesasMap = {};
 
         filterVentas.forEach(function(v) {
-            total += parseFloat(v.total) || 0;
-            totalDescuentos += parseFloat(v.descMonto) || 0;
+            var sub = parseFloat(v.subtotal) || 0;
+            var tot = parseFloat(v.total) || 0;
+            var propM = parseFloat(v.propinaMonto) || 0;
+            var descPct = parseFloat(v.descuento) || 0;
+            var descM = parseFloat(v.descMonto) || (sub * descPct / 100);
+            var personas = parseInt(v.personas) || 1;
+            var extras = []; try { extras = JSON.parse(v.extras || '[]'); } catch(e){}
+            var extMonto = extras.reduce(function(s,e){ return s+(parseFloat(e.monto)||0); }, 0);
+
+            totalNeto += tot; subtotalBruto += sub; totalExtras += extMonto;
+            totalDescuentos += descM; totalPropinas += propM; totalPersonas += personas;
+
             var mPago = (v.metodoPago || 'EFECTIVO').toUpperCase();
-            metodos[mPago] = (metodos[mPago] || 0) + (parseFloat(v.total) || 0);
-            
-            // Extract categories
-            var itemsList = [];
-            try { itemsList = JSON.parse(v.items || '[]'); } catch(e){}
+            if(!metodos[mPago]) metodos[mPago] = {count:0, total:0};
+            metodos[mPago].count++; metodos[mPago].total += tot;
+
+            var itemsList = []; try { itemsList = JSON.parse(v.items || '[]'); } catch(e){}
             itemsList.forEach(function(i) {
-                var catName = i.c || 'Otros';
+                var catRaw = i.c || 'Otros';
+                var catName = CAT_SHORT[catRaw] || catRaw;
                 var iSub = (parseFloat(i.q)||0) * (parseFloat(i.p)||0);
-                if(!categorias[catName]) categorias[catName] = { qty:0, sum:0 };
+                if(!categorias[catName]) categorias[catName] = {qty:0, sum:0};
                 categorias[catName].qty += (parseFloat(i.q)||0);
                 categorias[catName].sum += iSub;
-                itemsVendidos += (parseFloat(i.q)||0);
+                var pKey = i.n || 'Desconocido';
+                if(!productos[pKey]) productos[pKey] = {qty:0, rev:0};
+                productos[pKey].qty += (parseFloat(i.q)||0);
+                productos[pKey].rev += iSub;
             });
-            
-            var descStr = (parseFloat(v.descMonto) > 0) ? ' (Desc: $'+parseFloat(v.descMonto).toFixed(2)+')' : '';
-            var fechaCorta = (v.fecha || '').slice(5, 10) + ' ' + (v.hora || '');
-            
-            detalleHTML += '<div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc; padding:4px 0; font-size:12px;">' +
-                '<span>#' + v.id + ' - ' + fechaCorta + ' [' + mPago + ']</span>' +
-                '<span>$' + parseFloat(v.total).toFixed(2) + descStr + '</span>' +
-            '</div>';
+
+            // Mesa grouping
+            var mesaKey = v.mesa ? 'Mesa ' + v.mesa : 'Barra / Mostrador';
+            if(!mesasMap[mesaKey]) mesasMap[mesaKey] = [];
+            var meseroName = v.mesero || 'Admin';
+            if(meseroName !== 'Admin') {
+                var mFound = meserosData.find(function(x){ return x.codigo === meseroName; });
+                if(mFound) meseroName = mFound.nombre;
+            }
+            mesasMap[mesaKey].push({
+                id: v.id, hora: v.hora || '--:--', mesero: meseroName, personas: personas,
+                items: itemsList, extras: extras, descPct: descPct, descM: descM,
+                propPct: parseFloat(v.propina)||0, propM: propM, total: tot, metodo: mPago
+            });
         });
 
-        var metodosHTML = Object.keys(metodos).map(function(k) {
-            return '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><b>' + k + ':</b> <span>$' + metodos[k].toFixed(2) + '</span></div>';
-        }).join('');
-        
-        var categoriasHTML = Object.keys(categorias).length > 0 ? Object.keys(categorias).sort((a,b)=>categorias[b].sum - categorias[a].sum).map(function(k) {
-            return '<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;"><span>' + k + ' (' + categorias[k].qty + ')</span> <span>$' + categorias[k].sum.toFixed(2) + '</span></div>';
-        }).join('') : '<div style="font-size:12px; color:#666;">No hay detalle de items en ventas de contingencia.</div>';
+        var promedio = totalNeto / tickets;
+        var gastoPP = totalPersonas > 0 ? totalNeto / totalPersonas : 0;
+        var horaEmision = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 
-        var printWindow = window.open('', '_blank', 'width=400,height=600');
+        // ── SECTION BUILDERS ──
+        function secResumen() {
+            return '<div class="sec"><h3>📊 Resumen Ejecutivo</h3><table class="tb-res">' +
+                '<tr><td>Subtotal Bruto</td><td class="r">$'+subtotalBruto.toFixed(2)+'</td></tr>' +
+                (totalExtras > 0 ? '<tr><td>(+) Cargos Extra</td><td class="r accent">+$'+totalExtras.toFixed(2)+'</td></tr>' : '') +
+                (totalDescuentos > 0 ? '<tr><td>(−) Descuentos Otorgados</td><td class="r danger">−$'+totalDescuentos.toFixed(2)+'</td></tr>' : '') +
+                (totalPropinas > 0 ? '<tr><td>(+) Propinas Recibidas</td><td class="r accent">+$'+totalPropinas.toFixed(2)+'</td></tr>' : '') +
+                '<tr class="total-row"><td><b>TOTAL NETO</b></td><td class="r"><b>$'+totalNeto.toFixed(2)+'</b></td></tr>' +
+                '</table>' +
+                '<div class="kpi-row">' +
+                '<div class="kpi"><span class="kpi-v">'+tickets+'</span><span class="kpi-l">Tickets</span></div>' +
+                '<div class="kpi"><span class="kpi-v">$'+promedio.toFixed(2)+'</span><span class="kpi-l">Promedio</span></div>' +
+                '<div class="kpi"><span class="kpi-v">'+totalPersonas+'</span><span class="kpi-l">Personas</span></div>' +
+                '<div class="kpi"><span class="kpi-v">$'+gastoPP.toFixed(2)+'</span><span class="kpi-l">Gasto/Persona</span></div>' +
+                '</div></div>';
+        }
+
+        function secMetodos() {
+            var keys = Object.keys(metodos).sort(function(a,b){ return metodos[b].total - metodos[a].total; });
+            var icons = {EFECTIVO:'💵', TARJETA:'💳', TRANSFERENCIA:'📱'};
+            var rows = keys.map(function(k) {
+                var pct = totalNeto > 0 ? (metodos[k].total / totalNeto * 100).toFixed(1) : '0.0';
+                return '<tr><td>'+(icons[k]||'💰')+' '+k+'</td><td class="r">'+metodos[k].count+' tickets</td><td class="r"><b>$'+metodos[k].total.toFixed(2)+'</b></td><td class="r dim">'+pct+'%</td></tr>';
+            }).join('');
+            return '<div class="sec"><h3>💳 Desglose por Método de Pago</h3><table>'+
+                '<thead><tr><th>Método</th><th class="r">Tickets</th><th class="r">Monto</th><th class="r">%</th></tr></thead>'+
+                '<tbody>'+rows+'</tbody></table></div>';
+        }
+
+        function secCategorias() {
+            var keys = Object.keys(categorias);
+            if(keys.length === 0) return '<div class="sec"><h3>🍕 Ventas por Categoría</h3><p class="dim">Sin detalle de items disponible.</p></div>';
+            var totalCatSum = keys.reduce(function(s,k){ return s + categorias[k].sum; }, 0);
+            keys.sort(function(a,b){ return categorias[b].sum - categorias[a].sum; });
+            var rows = keys.map(function(k) {
+                var pct = totalCatSum > 0 ? (categorias[k].sum / totalCatSum * 100).toFixed(1) : '0.0';
+                var bar = '<div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%"></div></div>';
+                return '<tr><td>'+k+'</td><td class="r">'+categorias[k].qty+'</td><td class="r"><b>$'+categorias[k].sum.toFixed(2)+'</b></td><td class="r">'+pct+'%</td></tr><tr><td colspan="4" style="padding:0 0 6px 0">'+bar+'</td></tr>';
+            }).join('');
+            return '<div class="sec"><h3>🍕 Ventas por Categoría</h3><table>'+
+                '<thead><tr><th>Categoría</th><th class="r">Qty</th><th class="r">Ingreso</th><th class="r">%</th></tr></thead>'+
+                '<tbody>'+rows+'</tbody></table></div>';
+        }
+
+        function secTopProductos() {
+            var entries = Object.entries(productos).sort(function(a,b){ return b[1].qty - a[1].qty; }).slice(0,5);
+            if(entries.length === 0) return '';
+            var rows = entries.map(function(e,i) {
+                var medals = ['🥇','🥈','🥉','4°','5°'];
+                return '<tr><td>'+medals[i]+'</td><td>'+e[0]+'</td><td class="r">'+e[1].qty+' uds</td><td class="r"><b>$'+e[1].rev.toFixed(2)+'</b></td></tr>';
+            }).join('');
+            return '<div class="sec"><h3>🏆 Top 5 Productos</h3><table>'+
+                '<thead><tr><th>#</th><th>Producto</th><th class="r">Cantidad</th><th class="r">Revenue</th></tr></thead>'+
+                '<tbody>'+rows+'</tbody></table></div>';
+        }
+
+        function secMesas() {
+            var mesaKeys = Object.keys(mesasMap).sort(function(a,b) {
+                if(a === 'Barra / Mostrador') return 1;
+                if(b === 'Barra / Mostrador') return -1;
+                var na = parseInt(a.replace('Mesa ',''))||0, nb = parseInt(b.replace('Mesa ',''))||0;
+                return na - nb;
+            });
+            var html = '<div class="sec"><h3>🪑 Desglose por Mesa</h3>';
+            mesaKeys.forEach(function(mesaKey) {
+                var tix = mesasMap[mesaKey];
+                var mesaTotal = tix.reduce(function(s,t){ return s+t.total; },0);
+                var mesaPersonas = tix.reduce(function(s,t){ return s+t.personas; },0);
+                var meseros = [];
+                tix.forEach(function(t){ if(meseros.indexOf(t.mesero)===-1) meseros.push(t.mesero); });
+                html += '<div class="mesa-block"><div class="mesa-head">' +
+                    '<span class="mesa-title">'+mesaKey+'</span>' +
+                    '<span class="mesa-meta">'+meseros.join(', ')+' · '+mesaPersonas+'p · '+tix.length+' ticket'+(tix.length>1?'s':'')+'</span>' +
+                    '<span class="mesa-total">$'+mesaTotal.toFixed(2)+'</span></div>';
+                tix.forEach(function(t) {
+                    html += '<div class="mesa-ticket"><span class="mt-hora">'+t.hora+' ['+t.metodo+']</span>';
+                    if(t.items.length > 0) {
+                        t.items.forEach(function(it) {
+                            html += '<div class="mt-item"><span>'+it.n+' × '+it.q+'</span><span>$'+((it.q||0)*(it.p||0)).toFixed(2)+'</span></div>';
+                            if(it.nota) html += '<div class="mt-nota">→ '+it.nota+'</div>';
+                        });
+                    }
+                    t.extras.forEach(function(ex) {
+                        html += '<div class="mt-item extra"><span>⚡ '+ex.concepto+'</span><span>+$'+(parseFloat(ex.monto)||0).toFixed(2)+'</span></div>';
+                    });
+                    if(t.descPct > 0) html += '<div class="mt-item desc"><span>Descuento '+t.descPct+'%</span><span>−$'+t.descM.toFixed(2)+'</span></div>';
+                    if(t.propPct > 0) html += '<div class="mt-item prop"><span>Propina '+t.propPct+'%</span><span>+$'+t.propM.toFixed(2)+'</span></div>';
+                    html += '<div class="mt-total"><b>Total: $'+t.total.toFixed(2)+'</b></div></div>';
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function secTickets() {
+            var sorted = filterVentas.slice().sort(function(a,b){ return (a.hora||'').localeCompare(b.hora||''); });
+            var rows = sorted.map(function(v) {
+                var items = []; try { items = JSON.parse(v.items||'[]'); } catch(e){}
+                var itemStr = items.length > 0 ? items.map(function(i){ return i.n+'×'+i.q; }).join(', ') : '<i>Sin detalle</i>';
+                var mesaTag = v.mesa ? 'M'+v.mesa : 'Barra';
+                return '<tr><td>'+( v.hora||'--:--')+'</td><td>'+mesaTag+'</td><td>'+(v.mesero||'Admin')+'</td><td>'+(v.metodoPago||'N/A')+'</td><td class="items-col">'+itemStr+'</td><td class="r"><b>$'+(parseFloat(v.total)||0).toFixed(2)+'</b></td></tr>';
+            }).join('');
+            return '<div class="sec"><h3>📋 Listado Cronológico de Tickets</h3><table class="tb-tickets">'+
+                '<thead><tr><th>Hora</th><th>Mesa</th><th>Mesero</th><th>Pago</th><th>Productos</th><th class="r">Total</th></tr></thead>'+
+                '<tbody>'+rows+'</tbody></table></div>';
+        }
+
+        // ── RENDER ──
+        var printWindow = window.open('', '_blank', 'width=900,height=700');
         printWindow.document.write(
-            '<html>' +
-            '<head>' +
-                '<title>Corte de Caja - ' + titleDate + '</title>' +
-                '<style>' +
-                    'body { font-family: monospace; padding: 20px; color: #000; font-size:14px; max-width:350px; margin:0 auto; }' +
-                    'h2 { text-align: center; margin-bottom: 5px; font-size:18px; }' +
-                    '.center { text-align: center; }' +
-                    '.section { margin-top: 20px; border-top: 1px dashed #000; padding-top: 10px; }' +
-                    '.line { display: flex; justify-content: space-between; margin-bottom: 5px; }' +
-                '</style>' +
-            '</head>' +
-            '<body>' +
-                '<h2>FIORE DE ENERO</h2>' +
-                '<div class="center" style="font-weight:bold; margin-bottom:5px;">CORTE DE CAJA</div>' +
-                '<div class="center" style="font-size:12px; margin-bottom:15px;">Periodo: ' + titleDate + '</div>' +
-                
-                '<div class="section">' +
-                    '<div class="line"><b>Total Ventas:</b> <span>$' + total.toFixed(2) + '</span></div>' +
-                    '<div class="line"><b>Total Descuentos:</b> <span>$' + totalDescuentos.toFixed(2) + '</span></div>' +
-                    '<div class="line"><b>Num. Tickets:</b> <span>' + tickets + '</span></div>' +
-                    '<div class="line"><b>Ticket Promedio:</b> <span>$' + (total/tickets).toFixed(2) + '</span></div>' +
-                '</div>' +
-                
-                '<div class="section">' +
-                    '<b style="display:block; margin-bottom:8px;">Por Método de Pago:</b>' +
-                    metodosHTML +
-                '</div>' +
-                
-                '<div class="section">' +
-                    '<b style="display:block; margin-bottom:8px;">Ventas por Categoría:</b>' +
-                    categoriasHTML +
-                '</div>' +
-                
-                '<div class="section">' +
-                    '<b style="display:block; margin-bottom:8px;">Desglose de Tickets:</b>' +
-                    detalleHTML +
-                '</div>' +
-                
-                '<div class="section center" style="margin-top:40px;">' +
-                    '<p>_______________________</p>' +
-                    '<p>Firma Gerente</p>' +
-                '</div>' +
-            '</body>' +
-            '</html>'
+            '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">' +
+            '<title>Corte de Caja — ' + titleDate + '</title>' +
+            '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+            '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">' +
+            '<style>' +
+            '*{margin:0;padding:0;box-sizing:border-box}' +
+            'body{font-family:"Inter",sans-serif;color:#1e293b;background:#f8fafc;padding:0}' +
+            '.page{max-width:800px;margin:0 auto;background:#fff;padding:40px 48px;min-height:100vh}' +
+            '.header{text-align:center;border-bottom:3px solid #0e86b0;padding-bottom:20px;margin-bottom:8px}' +
+            '.header h1{font-size:1.8rem;font-weight:800;color:#042d3d;margin-bottom:2px}' +
+            '.header .sub{font-size:1.1rem;font-weight:600;color:#0e86b0;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}' +
+            '.header .meta{font-size:0.82rem;color:#64748b}' +
+            '.sec{margin-top:28px;page-break-inside:avoid}' +
+            '.sec h3{font-size:1.05rem;font-weight:700;color:#0e86b0;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e2e8f0}' +
+            'table{width:100%;border-collapse:collapse;font-size:0.84rem;margin-bottom:4px}' +
+            'thead th{background:#f1f5f9;color:#475569;padding:8px 10px;text-align:left;font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px}' +
+            'tbody td{padding:8px 10px;border-bottom:1px solid #f1f5f9}' +
+            '.r{text-align:right}' +
+            '.dim{color:#94a3b8}' +
+            '.accent{color:#0e86b0}' +
+            '.danger{color:#ef4444}' +
+            '.tb-res{margin-bottom:16px}' +
+            '.tb-res td{padding:10px 12px;font-size:0.92rem}' +
+            '.tb-res .total-row td{border-top:2px solid #0e86b0;font-size:1.15rem;background:#f0f9ff}' +
+            '.kpi-row{display:flex;gap:12px;margin-top:16px}' +
+            '.kpi{flex:1;text-align:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 8px}' +
+            '.kpi-v{display:block;font-size:1.3rem;font-weight:800;color:#042d3d}' +
+            '.kpi-l{display:block;font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-top:4px}' +
+            '.bar-bg{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden}' +
+            '.bar-fill{height:100%;background:linear-gradient(90deg,#0e86b0,#38bdf8);border-radius:3px}' +
+            '.mesa-block{border:1px solid #e2e8f0;border-radius:10px;margin-bottom:14px;overflow:hidden}' +
+            '.mesa-head{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;flex-wrap:wrap}' +
+            '.mesa-title{font-weight:700;font-size:1rem;color:#042d3d}' +
+            '.mesa-meta{font-size:0.78rem;color:#64748b;flex:1}' +
+            '.mesa-total{font-weight:800;font-size:1.1rem;color:#0e86b0}' +
+            '.mesa-ticket{padding:10px 16px;border-bottom:1px solid #f1f5f9}' +
+            '.mesa-ticket:last-child{border-bottom:none}' +
+            '.mt-hora{font-size:0.75rem;color:#94a3b8;display:block;margin-bottom:4px}' +
+            '.mt-item{display:flex;justify-content:space-between;font-size:0.84rem;padding:2px 0}' +
+            '.mt-item.extra{color:#0e86b0}.mt-item.desc{color:#ef4444}.mt-item.prop{color:#22c55e}' +
+            '.mt-nota{font-size:0.75rem;color:#22c55e;font-style:italic;padding-left:12px}' +
+            '.mt-total{text-align:right;padding-top:6px;font-size:0.9rem;color:#042d3d}' +
+            '.items-col{max-width:280px;font-size:0.78rem;color:#64748b;line-height:1.4}' +
+            '.tb-tickets tbody tr:hover{background:#f0f9ff}' +
+            '.footer-corte{text-align:center;margin-top:48px;padding-top:24px;border-top:2px solid #e2e8f0}' +
+            '.firma-row{display:flex;gap:60px;justify-content:center;margin-top:40px;margin-bottom:20px}' +
+            '.firma{text-align:center}.firma .line{display:block;width:180px;border-bottom:1px solid #1e293b;margin-bottom:6px;height:40px}' +
+            '.firma span{font-size:0.78rem;color:#64748b}' +
+            '.print-btn{position:fixed;bottom:24px;right:24px;background:#0e86b0;color:#fff;border:none;padding:14px 28px;border-radius:12px;font-size:0.95rem;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(14,134,176,0.3);z-index:999}' +
+            '.print-btn:hover{background:#0c7a9f;transform:translateY(-2px)}' +
+            '@media print{.print-btn{display:none}body{background:#fff;padding:0}.page{padding:20px 30px;box-shadow:none}.sec{page-break-inside:avoid}.mesa-block{page-break-inside:avoid}}' +
+            '</style></head><body>' +
+            '<div class="page">' +
+            '<div class="header">' +
+                '<h1>FIORE DE ENERO</h1>' +
+                '<div class="sub">Corte de Caja</div>' +
+                '<div class="meta">Periodo: <b>' + titleDate + '</b> · Emitido: ' + hoyStr + ' a las ' + horaEmision + '</div>' +
+            '</div>' +
+            secResumen() +
+            secMetodos() +
+            secCategorias() +
+            secTopProductos() +
+            secMesas() +
+            secTickets() +
+            '<div class="footer-corte">' +
+                '<div class="firma-row"><div class="firma"><div class="line"></div><span>Firma Gerente</span></div><div class="firma"><div class="line"></div><span>Firma Cajera</span></div></div>' +
+                '<p style="font-size:0.7rem;color:#cbd5e1">Generado por Treze Labs · Sistema Fiore de Enero v3.0</p>' +
+            '</div>' +
+            '</div>' +
+            '<button class="print-btn" onclick="window.print()">🖨️ Imprimir Corte</button>' +
+            '</body></html>'
         );
         printWindow.document.close();
         printWindow.focus();
-        setTimeout(function() { printWindow.print(); }, 500);
     };
 
     window.descargarReporteCSV = function() {
