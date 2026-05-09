@@ -194,6 +194,9 @@
         .dash-filters { display: flex; gap: 6px; }
         .dash-filter { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: var(--font-ui); font-size: 12px; cursor: pointer; transition: 0.2s; }
         .dash-filter.active { background: rgba(229,213,193,0.12); color: var(--accent); border-color: var(--accent); }
+        .fecha-picker { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-pure); font-family: var(--font-ui); font-size: 12px; outline: none; cursor: pointer; transition: 0.2s; }
+        .fecha-picker::-webkit-calendar-picker-indicator { filter: invert(0.8) sepia(1) hue-rotate(330deg) saturate(3); cursor: pointer; }
+        .fecha-picker:focus { border-color: var(--accent); background: rgba(229,213,193,0.05); }
         .metodo-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); font-size: 13px; color: var(--text-pure); }
         .metodo-row span { display: flex; align-items: center; gap: 6px; }
         .metodo-row i { color: var(--accent); }
@@ -722,6 +725,7 @@
                     <button onclick="filtrarDash('hoy', this)" class="dash-filter active">Hoy</button>
                     <button onclick="filtrarDash('ayer', this)" class="dash-filter">Ayer</button>
                     <button onclick="filtrarDash('semana', this)" class="dash-filter">Semana</button>
+                    <input type="date" class="fecha-picker" onchange="filtrarFecha(this.value)">
                     <button onclick="imprimirCorteDia()" class="btn btn-primary btn-sm" style="margin-left: 10px;"><i class="ri-printer-line"></i> Corte</button>
                 </div>
             </div>
@@ -798,6 +802,7 @@
                         <button onclick="filtrarDash('hoy', this)" class="dash-filter active">Hoy</button>
                         <button onclick="filtrarDash('ayer', this)" class="dash-filter">Ayer</button>
                         <button onclick="filtrarDash('semana', this)" class="dash-filter">Semana</button>
+                        <input type="date" class="fecha-picker" onchange="filtrarFecha(this.value)">
                     </div>
                     <button class="btn btn-secondary btn-sm" onclick="descargarReporteCSV()"><i class="ri-file-download-line"></i> CSV</button>
                     <button onclick="imprimirCorteDia()" class="btn btn-primary btn-sm"><i class="ri-printer-line"></i> Corte</button>

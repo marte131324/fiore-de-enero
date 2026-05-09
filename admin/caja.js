@@ -958,15 +958,25 @@
     }
 
     var currentFilter = 'hoy';
+    var customDateStr = '';
+
+    window.filtrarFecha = function(dateValue) {
+        if(!dateValue) return;
+        customDateStr = dateValue;
+        document.querySelectorAll('.dash-filter').forEach(function(b){ b.classList.remove('active'); });
+        filtrarDash('fecha', null);
+    };
 
     window.filtrarDash = async function(periodo, btn) {
         document.querySelectorAll('.dash-filter').forEach(function(b){ b.classList.remove('active'); });
         if(btn) btn.classList.add('active');
         currentFilter = periodo;
+        if(periodo !== 'fecha') { document.querySelectorAll('.fecha-picker').forEach(function(p){ p.value=''; }); customDateStr=''; }
         var now = new Date(), desde, hasta;
         if(periodo === 'hoy') { desde=hasta=formatDate(now); }
         else if(periodo === 'ayer') { var a = new Date(now); a.setDate(a.getDate()-1); desde=hasta=formatDate(a); }
         else if(periodo === 'semana') { var i = new Date(now); i.setDate(i.getDate()-7); desde=formatDate(i); hasta=formatDate(now); }
+        else if(periodo === 'fecha') { desde=hasta=customDateStr; }
         
         // First try getVentasRango, fallback to Auditoria
         try {
@@ -1133,6 +1143,7 @@
             if(filterType === 'hoy') { titleDate = hoyStr; return f === hoyStr; }
             if(filterType === 'ayer') { titleDate = ayerStr; return f === ayerStr; }
             if(filterType === 'semana') { titleDate = "Semana del " + semStr; return f >= semStr && f <= hoyStr; }
+            if(filterType === 'fecha') { titleDate = customDateStr; return f === customDateStr; }
             return true;
         });
 
