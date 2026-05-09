@@ -408,7 +408,7 @@
 
         if(mesasActivas[key] && mesasActivas[key].estado === 'abierta') {
             var mesa = mesasActivas[key];
-            try { var items = JSON.parse(mesa.items); ticketActual = items.map(function(i) { return { id:i.id||('m'+Date.now()), nombre:i.n, precio:i.p, qty:i.q, nota:i.nota||'' }; }); } catch(e) { ticketActual = []; }
+            try { var items = JSON.parse(mesa.items); ticketActual = items.map(function(i) { return { id:i.id||('m'+Date.now()), nombre:i.n, precio:i.p, qty:i.q, nota:i.nota||'', categoria: i.c||'Otros' }; }); } catch(e) { ticketActual = []; }
             try { extrasTicket = JSON.parse(mesa.extras); } catch(e) { extrasTicket = []; }
             personasMesa = mesa.personas || 1;
             descuentoActual = mesa.descuento || 0;
@@ -437,7 +437,7 @@
         mesasActivas[key] = {
             mesaNum: mesaActual, estado:'abierta', mesero:'Admin', personas:personasMesa,
             horaApertura: (mesasActivas[key] && mesasActivas[key].horaApertura) || timeStr,
-            items: JSON.stringify(ticketActual.map(function(i) { return {id:i.id,n:i.nombre,q:i.qty,p:i.precio,nota:i.nota||''}; })),
+            items: JSON.stringify(ticketActual.map(function(i) { return {id:i.id,n:i.nombre,q:i.qty,p:i.precio,nota:i.nota||'',c:i.categoria||'Otros'}; })),
             extras: JSON.stringify(extrasTicket),
             descuento: descuentoActual, total: calcTotal()
         };
@@ -1167,7 +1167,8 @@
             totalNeto += tot; subtotalBruto += sub; totalExtras += extMonto;
             totalDescuentos += descM; totalPropinas += propM; totalPersonas += personas;
 
-            var mPago = (v.metodoPago || 'EFECTIVO').toUpperCase();
+            var mPago = (v.metodoPago || 'NO ESPECIFICADO').toUpperCase();
+            if(mPago === 'N/A') mPago = 'NO ESPECIFICADO';
             if(!metodos[mPago]) metodos[mPago] = {count:0, total:0};
             metodos[mPago].count++; metodos[mPago].total += tot;
 
@@ -1285,6 +1286,8 @@
                             html += '<div class="mt-item"><span>'+it.n+' × '+it.q+'</span><span>$'+((it.q||0)*(it.p||0)).toFixed(2)+'</span></div>';
                             if(it.nota) html += '<div class="mt-nota">→ '+it.nota+'</div>';
                         });
+                    } else if(t.extras.length === 0) {
+                        html += '<div class="mt-item"><span style="color:#94a3b8;font-style:italic;">Consumo General</span></div>';
                     }
                     t.extras.forEach(function(ex) {
                         html += '<div class="mt-item extra"><span>⚡ '+ex.concepto+'</span><span>+$'+(parseFloat(ex.monto)||0).toFixed(2)+'</span></div>';
@@ -1303,9 +1306,10 @@
             var sorted = filterVentas.slice().sort(function(a,b){ return (a.hora||'').localeCompare(b.hora||''); });
             var rows = sorted.map(function(v) {
                 var items = []; try { items = JSON.parse(v.items||'[]'); } catch(e){}
-                var itemStr = items.length > 0 ? items.map(function(i){ return i.n+'×'+i.q; }).join(', ') : '<i>Sin detalle</i>';
+                var itemStr = items.length > 0 ? items.map(function(i){ return i.n+'×'+i.q; }).join(', ') : '<i style="color:#94a3b8">Consumo general</i>';
                 var mesaTag = v.mesa ? 'M'+v.mesa : 'Barra';
-                return '<tr><td>'+( v.hora||'--:--')+'</td><td>'+mesaTag+'</td><td>'+(v.mesero||'Admin')+'</td><td>'+(v.metodoPago||'N/A')+'</td><td class="items-col">'+itemStr+'</td><td class="r"><b>$'+(parseFloat(v.total)||0).toFixed(2)+'</b></td></tr>';
+                var pagoDisplay = (v.metodoPago === 'N/A' || !v.metodoPago) ? 'NO ESPEC.' : v.metodoPago;
+                return '<tr><td>'+( v.hora||'--:--')+'</td><td>'+mesaTag+'</td><td>'+(v.mesero||'Admin')+'</td><td>'+pagoDisplay+'</td><td class="items-col">'+itemStr+'</td><td class="r"><b>$'+(parseFloat(v.total)||0).toFixed(2)+'</b></td></tr>';
             }).join('');
             return '<div class="sec"><h3>📋 Listado Cronológico de Tickets</h3><table class="tb-tickets">'+
                 '<thead><tr><th>Hora</th><th>Mesa</th><th>Mesero</th><th>Pago</th><th>Productos</th><th class="r">Total</th></tr></thead>'+
