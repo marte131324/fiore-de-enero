@@ -323,6 +323,15 @@
         .badge-green { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
         .badge-gold { background: rgba(229,213,193,0.1); color: var(--accent); border: 1px solid rgba(229,213,193,0.3); }
         @keyframes pulse-cuenta-admin { 0%,100%{ box-shadow:none; } 50%{ box-shadow:0 0 15px rgba(167,139,250,0.6); } }
+
+        /* Corte de Caja — Pulsing Reminder */
+        .corte-banner { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; margin-bottom:20px; border-radius:12px; background:rgba(229,213,193,0.06); border:1px solid rgba(229,213,193,0.15); cursor:pointer; transition:all 0.3s; }
+        .corte-banner:hover { background:rgba(229,213,193,0.12); border-color:var(--accent); transform:translateY(-1px); box-shadow:0 4px 20px rgba(229,213,193,0.1); }
+        .corte-banner .corte-info { display:flex; align-items:center; gap:10px; font-size:0.85rem; color:var(--text-dim); }
+        .corte-banner .corte-info i { font-size:1.2rem; color:var(--accent); }
+        .corte-banner .corte-info strong { color:var(--text-light); }
+        .corte-pulse-btn { padding:8px 18px; border-radius:8px; border:1px solid var(--accent); background:rgba(229,213,193,0.1); color:var(--accent); font-family:var(--font-ui); font-size:0.8rem; font-weight:600; cursor:pointer; animation:pulse-corte 2.5s infinite; white-space:nowrap; }
+        @keyframes pulse-corte { 0%,100%{ box-shadow:0 0 0 0 rgba(229,213,193,0.3); } 50%{ box-shadow:0 0 16px 4px rgba(229,213,193,0.25); } }
         .mesa-status-time { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
         .mesa-status-total { font-size: 26px; font-weight: 600; color: var(--text-pure); font-family: var(--font-display); }
         .mesa-status-items { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-bottom: 16px; }
@@ -408,12 +417,11 @@
             style.innerHTML = `
                 /* Ocultar botones bloqueados para cajera */
                 [onclick*="v-dashboard"] { display: none !important; }
-                [onclick*="v-historial"] { display: none !important; }
                 [onclick*="v-meseros"] { display: none !important; }
                 [onclick*="v-tienda"] { display: none !important; }
                 [onclick*="v-productos"] { display: none !important; }
                 [onclick*="v-personal"] { display: none !important; }
-                #v-dashboard, #v-historial, #v-meseros, #v-tienda, #v-productos, #v-personal { display: none !important; }
+                #v-dashboard, #v-meseros, #v-tienda, #v-productos, #v-personal { display: none !important; }
             `;
             document.head.appendChild(style);
             // Cambiar la vista por defecto a Active Mesas
@@ -670,6 +678,13 @@
                     <p>Consulta el consumo en tiempo real de cada mesa. Modifica cuentas con PIN gerencial.</p>
                 </div>
             </div>
+            <div class="corte-banner" onclick="imprimirCorteDia()">
+                <div class="corte-info">
+                    <i class="ri-file-chart-line"></i>
+                    <span><strong>Corte de Caja</strong> — Genera el reporte detallado del día</span>
+                </div>
+                <button class="corte-pulse-btn"><i class="ri-printer-line"></i> Generar Corte</button>
+            </div>
             <div id="mesas-grid-view">
                 <div class="historial-empty"><i class="ri-restaurant-line"></i><p>No hay mesas activas</p></div>
             </div>
@@ -777,9 +792,15 @@
                     <h2>Historial de Ventas</h2>
                     <p>Registro de tickets cobrados. Toca un ticket para ver el detalle.</p>
                 </div>
-                <div style="display:flex; align-items:center; gap:12px;">
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <span id="historial-count" style="color:var(--text-dim);font-size:13px;">0 tickets</span>
-                    <button class="btn btn-secondary btn-sm" onclick="descargarReporteCSV()"><i class="ri-file-download-line"></i> Descargar CSV</button>
+                    <div class="dash-filters">
+                        <button onclick="filtrarDash('hoy', this)" class="dash-filter active">Hoy</button>
+                        <button onclick="filtrarDash('ayer', this)" class="dash-filter">Ayer</button>
+                        <button onclick="filtrarDash('semana', this)" class="dash-filter">Semana</button>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="descargarReporteCSV()"><i class="ri-file-download-line"></i> CSV</button>
+                    <button onclick="imprimirCorteDia()" class="btn btn-primary btn-sm"><i class="ri-printer-line"></i> Corte</button>
                 </div>
             </div>
             <div class="historial-list" id="historial-list">
