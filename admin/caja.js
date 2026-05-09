@@ -982,7 +982,7 @@
         try {
             var res = await fetch(WEBAPP_URL+'?action=getVentasRango&desde='+desde+'&hasta='+hasta);
             var data = await res.json();
-            if(data.ventas && data.ventas.length > 0) {
+            if(data.ventas) {
                 ventasCache = data.ventas;
                 if(periodo === 'hoy') { window._ventasHoy = ventasCache; }
                 renderDashboard();
