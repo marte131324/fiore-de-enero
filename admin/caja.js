@@ -972,25 +972,34 @@
         if(btn) btn.classList.add('active');
         currentFilter = periodo;
         if(periodo !== 'fecha') { document.querySelectorAll('.fecha-picker').forEach(function(p){ p.value=''; }); customDateStr=''; }
-        var now = new Date(), desde, hasta;
-        if(periodo === 'hoy') { desde=hasta=formatDate(now); }
-        else if(periodo === 'ayer') { var a = new Date(now); a.setDate(a.getDate()-1); desde=hasta=formatDate(a); }
-        else if(periodo === 'semana') { var i = new Date(now); i.setDate(i.getDate()-7); desde=formatDate(i); hasta=formatDate(now); }
-        else if(periodo === 'fecha') { desde=hasta=customDateStr; }
-        
-        // First try getVentasRango, fallback to Auditoria
+        var now = new Date(), desde, hasta, periodoLabel;
+        if(periodo === 'hoy') { desde=hasta=formatDate(now); periodoLabel='Hoy — '+formatDateLabel(now); }
+        else if(periodo === 'ayer') { var a = new Date(now); a.setDate(a.getDate()-1); desde=hasta=formatDate(a); periodoLabel='Ayer — '+formatDateLabel(a); }
+        else if(periodo === 'semana') { var s = new Date(now); s.setDate(s.getDate()-7); desde=formatDate(s); hasta=formatDate(now); periodoLabel='Semana ('+formatDateShort(s)+' — '+formatDateShort(now)+')'; }
+        else if(periodo === 'fecha') { desde=hasta=customDateStr; periodoLabel=customDateStr; }
+
+        // Show loading state
+        var loadingEl = document.getElementById('dash-period-label');
+        if(loadingEl) loadingEl.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Cargando...';
+        if(btn) { btn.dataset.origText = btn.textContent; btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i>'; btn.disabled = true; }
+
+        // Primary source: getVentasRango
         try {
             var res = await fetch(WEBAPP_URL+'?action=getVentasRango&desde='+desde+'&hasta='+hasta);
             var data = await res.json();
             if(data.ventas) {
                 ventasCache = data.ventas;
                 if(periodo === 'hoy') { window._ventasHoy = ventasCache; }
+                if(loadingEl) loadingEl.textContent = periodoLabel + ' · ' + ventasCache.length + ' ticket' + (ventasCache.length !== 1 ? 's' : '');
+                if(btn) { btn.textContent = btn.dataset.origText; btn.disabled = false; }
                 renderDashboard();
                 renderHistorial();
                 return;
             }
-        } catch(e) {}
-        
+        } catch(e) {
+            console.error('[Fiore] Error en getVentasRango:', e);
+        }
+
         // Fallback: reconstruct from Auditoria
         try {
             var res2 = await fetch(WEBAPP_URL+'?action=getAuditoria');
@@ -1026,10 +1035,27 @@
             });
             ventasCache = ventasRecovered;
             if(periodo === 'hoy') { window._ventasHoy = ventasCache; }
+            if(loadingEl) loadingEl.textContent = periodoLabel + ' · ' + ventasCache.length + ' ticket' + (ventasCache.length !== 1 ? 's' : '') + ' (auditoría)';
+            if(btn) { btn.textContent = btn.dataset.origText; btn.disabled = false; }
             renderDashboard();
             renderHistorial();
-        } catch(e) { showToast('Error cargando datos'); }
+        } catch(e) {
+            console.error('[Fiore] Error en fallback auditoría:', e);
+            showToast('Error cargando datos: ' + e.message);
+            if(loadingEl) loadingEl.textContent = '⚠️ Error al cargar datos';
+            if(btn) { btn.textContent = btn.dataset.origText; btn.disabled = false; }
+        }
     };
+
+    // Helper: human-readable date labels
+    function formatDateLabel(d) {
+        var dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+        var meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        return dias[d.getDay()] + ' ' + d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function formatDateShort(d) {
+        return d.getDate() + '/' + (d.getMonth()+1);
+    }
 
     // ============================================================
     // HISTORIAL
@@ -1037,7 +1063,8 @@
     function renderHistorial() {
         var container = document.getElementById('historial-list');
         if(!container) return;
-        if(ventasCache.length === 0) { container.innerHTML = '<div class="historial-empty"><i class="ri-file-list-3-line"></i><p>No hay ventas registradas hoy</p></div>'; setText('historial-count','0 tickets'); return; }
+        var emptyLabels = { hoy:'hoy', ayer:'ayer', semana:'esta semana', fecha: customDateStr || 'esta fecha' };
+        if(ventasCache.length === 0) { container.innerHTML = '<div class="historial-empty"><i class="ri-file-list-3-line"></i><p>No hay ventas registradas ' + (emptyLabels[currentFilter] || '') + '</p></div>'; setText('historial-count','0 tickets'); return; }
         var ventas = ventasCache.slice().reverse();
         setText('historial-count', ventas.length + ' ticket' + (ventas.length !== 1 ? 's' : ''));
         container.innerHTML = ventas.map(function(v) {
