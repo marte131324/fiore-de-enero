@@ -87,7 +87,12 @@ function doGet(e) {
             // Use explicit timezone to prevent day-shift from UTC conversion
             fechaStr = Utilities.formatDate(fechaObj, tz, "yyyy-MM-dd");
         } else {
-            fechaStr = String(fechaObj).substring(0, 10);
+            var parsedDate = new Date(fechaObj);
+            if (!isNaN(parsedDate.getTime())) {
+                fechaStr = Utilities.formatDate(parsedDate, tz, "yyyy-MM-dd");
+            } else {
+                fechaStr = String(fechaObj).substring(0, 10);
+            }
         }
         if(fechaStr >= desde && fechaStr <= hasta) {
           // Normalize hora — GSheets may store as Date object
@@ -96,7 +101,12 @@ function doGet(e) {
           if(horaRaw instanceof Date) {
             horaStr = Utilities.formatDate(horaRaw, tz, "HH:mm");
           } else {
-            horaStr = String(horaRaw || '');
+            var parsedHora = new Date(horaRaw);
+            if (!isNaN(parsedHora.getTime()) && String(horaRaw).length > 10) {
+               horaStr = Utilities.formatDate(parsedHora, tz, "HH:mm");
+            } else {
+               horaStr = String(horaRaw || '');
+            }
           }
           
           // Normalize items — ensure it's a JSON string
@@ -181,7 +191,12 @@ function doGet(e) {
         if(fechaObj instanceof Date) {
             fechaStr = Utilities.formatDate(fechaObj, 'America/Mexico_City', "yyyy-MM-dd");
         } else {
-            fechaStr = String(fechaObj).substring(0, 10);
+            var parsedDate = new Date(fechaObj);
+            if (!isNaN(parsedDate.getTime())) {
+                fechaStr = Utilities.formatDate(parsedDate, 'America/Mexico_City', "yyyy-MM-dd");
+            } else {
+                fechaStr = String(fechaObj).substring(0, 10);
+            }
         }
         if(fechaStr === todayStr) {
           // Normalize hora
@@ -190,7 +205,12 @@ function doGet(e) {
           if(horaRaw instanceof Date) {
             horaStr = Utilities.formatDate(horaRaw, 'America/Mexico_City', "HH:mm");
           } else {
-            horaStr = String(horaRaw || '');
+            var parsedHora = new Date(horaRaw);
+            if (!isNaN(parsedHora.getTime()) && String(horaRaw).length > 10) {
+               horaStr = Utilities.formatDate(parsedHora, 'America/Mexico_City', "HH:mm");
+            } else {
+               horaStr = String(horaRaw || '');
+            }
           }
           // Normalize items
           var itemsRaw = vData[i][3];
