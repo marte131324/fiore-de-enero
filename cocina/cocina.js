@@ -4,6 +4,8 @@ let actTickets = [];
 let hisTickets = [];
 let currentView = 'activos';
 let lastCount = 0;
+let _deliveredIds = {};
+let _lastRenderHash = '';
 
 function updateClock() {
     const now = new Date();
@@ -72,7 +74,8 @@ async function fetchTickets() {
         const data = await res.json();
         
         if (data && data.tickets) {
-            actTickets = data.tickets.filter(t => t.estado === 'PENDIENTE' || t.estado === 'EN PREPARACION');
+            // BUG 1 FIX: Filter out locally-delivered tickets to prevent ghost reappearance
+            actTickets = data.tickets.filter(t => (t.estado === 'PENDIENTE' || t.estado === 'EN PREPARACION') && !_deliveredIds[t.id]);
             hisTickets = data.tickets.filter(t => t.estado === 'LISTO');
             
             hisTickets.sort((a, b) => {
@@ -81,8 +84,17 @@ async function fetchTickets() {
                 return hb.localeCompare(ha);
             });
             
+            // BUG 3 FIX: Smart render — only re-render if tickets actually changed
+            var newHash = actTickets.map(t => t.id + ':' + t.estado).join('|');
+            
             if (currentView === 'activos') {
-                renderBoard();
+                if (newHash !== _lastRenderHash) {
+                    _lastRenderHash = newHash;
+                    renderBoard();
+                } else {
+                    // Tickets unchanged — just update timers, no DOM rebuild
+                    updateTimers();
+                }
             } else {
                 renderHistorial();
             }
@@ -400,7 +412,8 @@ window.markPreparing = async function(id) {
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action: 'markCocinaPreparing', ticketID: id })
         });
-        setTimeout(fetchTickets, 1000);
+        // Invalidate render hash so next poll re-renders with updated state
+        _lastRenderHash = '';
     } catch(e) {
         console.error(e);
         alert('Error conectando. Verifica conexión de red.');
@@ -408,6 +421,14 @@ window.markPreparing = async function(id) {
 };
 
 window.markReady = async function(id) {
+    // BUG 1 FIX: Track as delivered locally to prevent ghost reappearance
+    _deliveredIds[id] = true;
+    setTimeout(function(){ delete _deliveredIds[id]; }, 20000); // Clean up after 20s
+    
+    // Remove from local state immediately
+    actTickets = actTickets.filter(t => t.id !== id);
+    _lastRenderHash = actTickets.map(t => t.id + ':' + t.estado).join('|');
+    
     const tEl = document.querySelector(`.ticket[data-id="${id}"]`);
     if(tEl) {
         tEl.style.transform = 'scale(0.9)';
@@ -415,13 +436,19 @@ window.markReady = async function(id) {
         setTimeout(() => tEl.remove(), 300);
     }
 
+    // Clean up checked items for this ticket
+    Object.keys(window._kdsChecks || {}).forEach(function(k) {
+        if(k.startsWith(id + '_')) delete window._kdsChecks[k];
+    });
+    localStorage.setItem('kds_checks', JSON.stringify(window._kdsChecks || {}));
+
     try {
         await fetch(WEBAPP_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ action: 'markCocinaReady', ticketID: id })
         });
-        setTimeout(fetchTickets, 1000);
+        // NO re-fetch — the 15s poll will sync, and _deliveredIds prevents ghost
     } catch(e) {
         console.error(e);
         alert('Error conectando. Verifica conexión de red.');

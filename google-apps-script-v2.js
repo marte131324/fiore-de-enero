@@ -74,13 +74,44 @@ function doGet(e) {
             fechaStr = String(fechaObj).substring(0, 10);
         }
         if(fechaStr >= desde && fechaStr <= hasta) {
+          // Normalize hora — GSheets may store as Date object
+          var horaRaw = vData[i][2];
+          var horaStr = '';
+          if(horaRaw instanceof Date) {
+            horaStr = Utilities.formatDate(horaRaw, Session.getScriptTimeZone(), "HH:mm");
+          } else {
+            horaStr = String(horaRaw || '');
+          }
+          
+          // Normalize items — ensure it's a JSON string, not a parsed object
+          var itemsRaw = vData[i][3];
+          var itemsStr = '[]';
+          if(typeof itemsRaw === 'string') {
+            itemsStr = itemsRaw;
+          } else if(itemsRaw) {
+            try { itemsStr = JSON.stringify(itemsRaw); } catch(e2) { itemsStr = '[]'; }
+          }
+          
+          // Normalize extras
+          var extrasRaw = vData[i][13];
+          var extrasStr = '[]';
+          if(typeof extrasRaw === 'string' && extrasRaw.length > 0) {
+            extrasStr = extrasRaw;
+          } else if(extrasRaw) {
+            try { extrasStr = JSON.stringify(extrasRaw); } catch(e2) { extrasStr = '[]'; }
+          }
+          
+          var sub = parseFloat(vData[i][4]) || 0;
+          var descPct = parseFloat(vData[i][5]) || 0;
+          
           ventasRango.push({
-            id: vData[i][0], fecha: fechaStr, hora: vData[i][2],
-            items: vData[i][3], subtotal: vData[i][4], descuento: vData[i][5],
-            total: vData[i][6], metodoPago: vData[i][7],
+            id: vData[i][0], fecha: fechaStr, hora: horaStr,
+            items: itemsStr, subtotal: sub, descuento: descPct,
+            descMonto: sub * descPct / 100,
+            total: parseFloat(vData[i][6]) || 0, metodoPago: vData[i][7] || '',
             mesa: vData[i][8] || '', mesero: vData[i][9] || '',
             personas: vData[i][10] || 1, propina: vData[i][11] || 0,
-            propinaMonto: vData[i][12] || 0, extras: vData[i][13] || '[]'
+            propinaMonto: parseFloat(vData[i][12]) || 0, extras: extrasStr
           });
         }
       }
@@ -137,13 +168,36 @@ function doGet(e) {
             fechaStr = String(fechaObj).substring(0, 10);
         }
         if(fechaStr === todayStr) {
+          // Normalize hora
+          var horaRaw = vData[i][2];
+          var horaStr = '';
+          if(horaRaw instanceof Date) {
+            horaStr = Utilities.formatDate(horaRaw, Session.getScriptTimeZone(), "HH:mm");
+          } else {
+            horaStr = String(horaRaw || '');
+          }
+          // Normalize items
+          var itemsRaw = vData[i][3];
+          var itemsStr = '[]';
+          if(typeof itemsRaw === 'string') { itemsStr = itemsRaw; }
+          else if(itemsRaw) { try { itemsStr = JSON.stringify(itemsRaw); } catch(e2) {} }
+          // Normalize extras
+          var extrasRaw = vData[i][13];
+          var extrasStr = '[]';
+          if(typeof extrasRaw === 'string' && extrasRaw.length > 0) { extrasStr = extrasRaw; }
+          else if(extrasRaw) { try { extrasStr = JSON.stringify(extrasRaw); } catch(e2) {} }
+          
+          var sub = parseFloat(vData[i][4]) || 0;
+          var descPct = parseFloat(vData[i][5]) || 0;
+          
           ventasHoy.push({
-            id: vData[i][0], fecha: fechaStr, hora: vData[i][2],
-            items: vData[i][3], subtotal: vData[i][4], descuento: vData[i][5],
-            total: vData[i][6], metodoPago: vData[i][7],
+            id: vData[i][0], fecha: fechaStr, hora: horaStr,
+            items: itemsStr, subtotal: sub, descuento: descPct,
+            descMonto: sub * descPct / 100,
+            total: parseFloat(vData[i][6]) || 0, metodoPago: vData[i][7] || '',
             mesa: vData[i][8] || '', mesero: vData[i][9] || '',
             personas: vData[i][10] || 1, propina: vData[i][11] || 0,
-            propinaMonto: vData[i][12] || 0, extras: vData[i][13] || '[]'
+            propinaMonto: parseFloat(vData[i][12]) || 0, extras: extrasStr
           });
         }
       }
