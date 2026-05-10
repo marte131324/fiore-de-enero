@@ -382,7 +382,16 @@ window.markPreparing = async function(id) {
         tEl.classList.add('preparando');
         const btn = tEl.querySelector('.btn-preparando');
         if(btn) {
-            btn.outerHTML = `<button class="btn-listo" onclick="markReady('${id}')"><i class="ri-check-double-line"></i> Entregado</button>`;
+            // Check if all items are already checked before showing Entregado
+            const items = tEl.querySelectorAll('.ticket-item');
+            const checkedItems = tEl.querySelectorAll('.ticket-item.item-checked');
+            const allChecked = items.length > 0 && items.length === checkedItems.length;
+            
+            if(allChecked) {
+                btn.outerHTML = `<button class="btn-listo btn-entregado" onclick="markReady('${id}')"><i class="ri-check-double-line"></i> Entregar Orden</button>`;
+            } else {
+                btn.outerHTML = `<button class="btn-listo btn-entregado" onclick="markReady('${id}')" disabled style="opacity:0.4; cursor:not-allowed;"><i class="ri-error-warning-line"></i> Faltan Ítems</button>`;
+            }
         }
     }
     try {
