@@ -12,7 +12,7 @@ function logAuditEntry(sheet, usuario, accion, detalles) {
     sheetAudit.appendRow(['Timestamp', 'Usuario', 'Accion', 'Detalles']);
   }
   var now = new Date();
-  var timestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+  var timestamp = Utilities.formatDate(now, 'America/Mexico_City', "yyyy-MM-dd HH:mm:ss");
   sheetAudit.appendRow([timestamp, usuario, accion, detalles]);
 }
 
@@ -54,7 +54,7 @@ function doGet(e) {
 
   // --- Fecha de hoy ---
   var today = new Date();
-  var todayStr = Utilities.formatDate(today, Session.getScriptTimeZone(), "yyyy-MM-dd");
+  var todayStr = Utilities.formatDate(today, 'America/Mexico_City', "yyyy-MM-dd");
   
   var action = (e && e.parameter) ? e.parameter.action : '';
 
@@ -62,6 +62,7 @@ function doGet(e) {
   if(action === 'getVentasRango') {
     var desde = e.parameter.desde;
     var hasta = e.parameter.hasta;
+    var tz = 'America/Mexico_City';
     var ventasRango = [];
     if(sheetVentas) {
       var vData = sheetVentas.getDataRange().getValues();
@@ -69,7 +70,8 @@ function doGet(e) {
         var fechaObj = vData[i][1];
         var fechaStr = "";
         if(fechaObj instanceof Date) {
-            fechaStr = Utilities.formatDate(fechaObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
+            // Use explicit timezone to prevent day-shift from UTC conversion
+            fechaStr = Utilities.formatDate(fechaObj, tz, "yyyy-MM-dd");
         } else {
             fechaStr = String(fechaObj).substring(0, 10);
         }
@@ -78,12 +80,12 @@ function doGet(e) {
           var horaRaw = vData[i][2];
           var horaStr = '';
           if(horaRaw instanceof Date) {
-            horaStr = Utilities.formatDate(horaRaw, Session.getScriptTimeZone(), "HH:mm");
+            horaStr = Utilities.formatDate(horaRaw, tz, "HH:mm");
           } else {
             horaStr = String(horaRaw || '');
           }
           
-          // Normalize items — ensure it's a JSON string, not a parsed object
+          // Normalize items — ensure it's a JSON string
           var itemsRaw = vData[i][3];
           var itemsStr = '[]';
           if(typeof itemsRaw === 'string') {
@@ -163,7 +165,7 @@ function doGet(e) {
         var fechaObj = vData[i][1];
         var fechaStr = "";
         if(fechaObj instanceof Date) {
-            fechaStr = Utilities.formatDate(fechaObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
+            fechaStr = Utilities.formatDate(fechaObj, 'America/Mexico_City', "yyyy-MM-dd");
         } else {
             fechaStr = String(fechaObj).substring(0, 10);
         }
@@ -172,7 +174,7 @@ function doGet(e) {
           var horaRaw = vData[i][2];
           var horaStr = '';
           if(horaRaw instanceof Date) {
-            horaStr = Utilities.formatDate(horaRaw, Session.getScriptTimeZone(), "HH:mm");
+            horaStr = Utilities.formatDate(horaRaw, 'America/Mexico_City', "HH:mm");
           } else {
             horaStr = String(horaRaw || '');
           }
@@ -249,14 +251,14 @@ function doPost(e) {
     var cData = sheetCocina.getDataRange().getValues();
     var tickets = [];
     // Include historic tickets from today. We can filter by date if needed, but for now we'll just send all LISTO today or recent.
-    var todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
+    var todayStr = Utilities.formatDate(new Date(), 'America/Mexico_City', "yyyy-MM-dd");
     for(var i=1; i<cData.length; i++) {
         var estado = cData[i][5];
         if(estado === 'PENDIENTE' || estado === 'EN PREPARACION' || estado === 'LISTO') {
             var horaObj = cData[i][3];
             var horaStr = "";
             if (horaObj instanceof Date) {
-               horaStr = Utilities.formatDate(horaObj, Session.getScriptTimeZone(), "HH:mm");
+               horaStr = Utilities.formatDate(horaObj, 'America/Mexico_City', "HH:mm");
             } else {
                horaStr = String(horaObj);
             }
@@ -264,7 +266,7 @@ function doPost(e) {
             var horaTerminadoObj = cData[i][6];
             var horaTerminadoStr = "";
             if (horaTerminadoObj instanceof Date) {
-               horaTerminadoStr = Utilities.formatDate(horaTerminadoObj, Session.getScriptTimeZone(), "HH:mm");
+               horaTerminadoStr = Utilities.formatDate(horaTerminadoObj, 'America/Mexico_City', "HH:mm");
             } else {
                horaTerminadoStr = String(horaTerminadoObj || "");
             }
@@ -289,7 +291,7 @@ function doPost(e) {
       sheetCocina.appendRow(['TicketID','MesaNum','Mesero','Hora','ItemsJSON','Estado', 'TerminadoHora', 'Estacion']);
     }
     var baseID = Date.now().toString(36) + Math.random().toString(36).substring(2,5);
-    var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm");
+    var timeStr = Utilities.formatDate(new Date(), 'America/Mexico_City', "HH:mm");
     
     var barraItems = [];
     var cocinaItems = [];
@@ -344,7 +346,7 @@ function doPost(e) {
     var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
     if(sheetCocina) {
       var cData = sheetCocina.getDataRange().getValues();
-      var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm");
+      var timeStr = Utilities.formatDate(new Date(), 'America/Mexico_City', "HH:mm");
       for(var i=1; i<cData.length; i++) {
         if(String(cData[i][0]) === String(postData.ticketID)) {
           sheetCocina.getRange(i+1, 6).setValue('LISTO');
@@ -411,8 +413,8 @@ function doPost(e) {
       sheetTrafico.appendRow(['Fecha', 'Personas', 'UltimaActualizacion']);
     }
     var today = new Date();
-    var todayStr = Utilities.formatDate(today, Session.getScriptTimeZone(), "yyyy-MM-dd");
-    var timeStr = Utilities.formatDate(today, Session.getScriptTimeZone(), "HH:mm:ss");
+    var todayStr = Utilities.formatDate(today, 'America/Mexico_City', "yyyy-MM-dd");
+    var timeStr = Utilities.formatDate(today, 'America/Mexico_City', "HH:mm:ss");
     var tData = sheetTrafico.getDataRange().getValues();
     var found = false;
     for(var i=1; i<tData.length; i++) {
@@ -443,7 +445,7 @@ function doPost(e) {
     var isNewReq = postData.isNew === true;
     var mData = sheetMesas.getDataRange().getValues();
     var found = false;
-    var timeStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm:ss");
+    var timeStr = Utilities.formatDate(new Date(), 'America/Mexico_City', "HH:mm:ss");
     var pideCuentaVal = m.pideCuenta ? "SI" : "NO";
     
     for(var i=1; i<mData.length; i++) {
@@ -484,7 +486,7 @@ function doPost(e) {
       for(var i=1; i<mData.length; i++) {
         if(String(mData[i][0]) == String(postData.mesaNum) && mData[i][1] === 'abierta') {
           sheetMesas.getRange(i+1, 2).setValue('cobrada');
-          sheetMesas.getRange(i+1, 10).setValue(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm:ss"));
+          sheetMesas.getRange(i+1, 10).setValue(Utilities.formatDate(new Date(), 'America/Mexico_City', "HH:mm:ss"));
           break;
         }
       }
@@ -500,7 +502,7 @@ function doPost(e) {
       for(var i=1; i<mData.length; i++) {
         if(String(mData[i][0]) == String(postData.mesaNum) && mData[i][1] === 'abierta') {
           sheetMesas.getRange(i+1, 2).setValue('cancelada');
-          sheetMesas.getRange(i+1, 10).setValue(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "HH:mm:ss"));
+          sheetMesas.getRange(i+1, 10).setValue(Utilities.formatDate(new Date(), 'America/Mexico_City', "HH:mm:ss"));
           break;
         }
       }
@@ -561,7 +563,7 @@ function doPost(e) {
       sheetErrors.getRange(1, 1, 1, 8).setFontWeight('bold');
     }
     var now = new Date();
-    var timestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+    var timestamp = Utilities.formatDate(now, 'America/Mexico_City', "yyyy-MM-dd HH:mm:ss");
     sheetErrors.appendRow([
       timestamp,
       postData.modulo || 'Desconocido',
