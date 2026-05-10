@@ -58,6 +58,20 @@ function doGet(e) {
   
   var action = (e && e.parameter) ? e.parameter.action : '';
 
+  if(action === 'getAllVentasDebug') {
+    var ventasDebug = [];
+    if(sheetVentas) {
+      var vData = sheetVentas.getDataRange().getValues();
+      var max = Math.min(vData.length, 100);
+      for(var i=1; i<max; i++) {
+        var fType = typeof vData[i][1];
+        var isDate = vData[i][1] instanceof Date;
+        ventasDebug.push({ id: vData[i][0], rawFecha: String(vData[i][1]), fType: fType, isDate: isDate });
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify(ventasDebug)).setMimeType(ContentService.MimeType.JSON);
+  }
+
   // --- Ventas por rango (Dashboard) ---
   if(action === 'getVentasRango') {
     var desde = e.parameter.desde;
