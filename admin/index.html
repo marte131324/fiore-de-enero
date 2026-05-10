@@ -424,7 +424,8 @@
                 [onclick*="v-tienda"] { display: none !important; }
                 [onclick*="v-productos"] { display: none !important; }
                 [onclick*="v-personal"] { display: none !important; }
-                #v-dashboard, #v-meseros, #v-tienda, #v-productos, #v-personal { display: none !important; }
+                [onclick*="v-errorlog"] { display: none !important; }
+                #v-dashboard, #v-meseros, #v-tienda, #v-productos, #v-personal, #v-errorlog { display: none !important; }
             `;
             document.head.appendChild(style);
             // Cambiar la vista por defecto a Active Mesas
@@ -473,6 +474,7 @@
             <div class="nav-item" onclick="switchView('v-personal', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-user-settings-line"></i> Personal & PIN</div>
             <div class="nav-item" onclick="switchView('v-promo', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-megaphone-line"></i> Promociones (VCard)</div>
             <div class="nav-item" onclick="switchView('v-eventos', this); document.querySelector('.sidebar').classList.remove('open')"><i class="ri-calendar-event-line"></i> Eventos (VCard)</div>
+            <div class="nav-item" onclick="switchView('v-errorlog', this); document.querySelector('.sidebar').classList.remove('open'); cargarErrorLog()"><i class="ri-alarm-warning-line"></i> Registro de Errores</div>
             
             <div class="nav-separator"></div>
             <!-- Vínculos Externos -->
@@ -842,6 +844,20 @@
                     <button class="btn btn-primary btn-sm" onclick="agregarMesero()"><i class="ri-add-line"></i> Agregar</button>
                 </div>
                 <div id="meseros-list"><p style="color:var(--text-dim);font-size:13px;text-align:center;padding:20px;">Sin meseros registrados</p></div>
+            </div>
+        </section>
+
+        <!-- REGISTRO DE ERRORES -->
+        <section id="v-errorlog" class="view-section">
+            <div class="header">
+                <div>
+                    <h2><i class="ri-alarm-warning-line" style="color:#ef4444;"></i> Registro de Errores del Sistema</h2>
+                    <p>Monitorea fallos operativos — comandas no enviadas, errores de conexión, etc.</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="cargarErrorLog()"><i class="ri-refresh-line"></i> Actualizar</button>
+            </div>
+            <div id="errorlog-container" style="display:flex;flex-direction:column;gap:12px;max-height:70vh;overflow-y:auto;padding-right:5px;">
+                <div class="historial-empty"><i class="ri-shield-check-line"></i><p>Sin errores registrados ✓</p></div>
             </div>
         </section>
 

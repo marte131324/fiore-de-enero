@@ -570,14 +570,74 @@
             extrasActual.forEach(function(ex) { ex.enviado = true; });
 
             // STEP 3: Send new items to cocina ONLY after mesa save succeeded
+            // CRITICAL FIX: Validate response and retry on failure
+            var cocinaOK = true;
             if(nuevosItems.length > 0) {
+                var cocinaPayload = JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems });
+                cocinaOK = false;
+                
+                // Attempt 1
                 try {
-                    await fetch(WEBAPP_URL, {
+                    var cocinaRes = await fetch(WEBAPP_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'sendToCocina', mesaNum: mesaAbierta, mesero: meseroActual.nombre, nuevosItems: nuevosItems })
+                        body: cocinaPayload
                     });
-                } catch(e) { console.error("Error enviando a cocina:", e); }
+                    if(cocinaRes.ok) {
+                        var cocinaData = await cocinaRes.json();
+                        if(cocinaData.status === 'ok' || cocinaData.status === 'success') {
+                            cocinaOK = true;
+                        }
+                    }
+                } catch(e) { 
+                    console.error("sendToCocina intento 1 falló:", e); 
+                }
+
+                // Attempt 2 (retry) if first failed
+                if(!cocinaOK) {
+                    try {
+                        await new Promise(function(r) { setTimeout(r, 1500); }); // Wait 1.5s before retry
+                        var cocinaRes2 = await fetch(WEBAPP_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: cocinaPayload
+                        });
+                        if(cocinaRes2.ok) {
+                            var cocinaData2 = await cocinaRes2.json();
+                            if(cocinaData2.status === 'ok' || cocinaData2.status === 'success') {
+                                cocinaOK = true;
+                            }
+                        }
+                    } catch(e2) { 
+                        console.error("sendToCocina intento 2 falló:", e2); 
+                    }
+                }
+
+                // If BOTH attempts failed — critical error
+                if(!cocinaOK) {
+                    // Revert enviado for items that didn't make it to cocina
+                    nuevosItems.forEach(function(ni) {
+                        var match = comandaActual.find(function(c) { return c.id === ni.id && c.n === ni.n; });
+                        if(match) match.enviado = false;
+                    });
+
+                    // Log error to backend (fire-and-forget)
+                    try {
+                        fetch(WEBAPP_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({
+                                action: 'logError',
+                                modulo: 'Mesero',
+                                errorType: 'COCINA_SEND_FAILED',
+                                mesero: meseroActual.nombre,
+                                mesa: mesaAbierta,
+                                detalles: 'Items no enviados a cocina/barra: ' + nuevosItems.map(function(i) { return i.n + '(x' + i.q + ')'; }).join(', '),
+                                itemsJSON: JSON.stringify(nuevosItems)
+                            })
+                        });
+                    } catch(logErr) {}
+                }
             }
 
         } catch(e) { 
@@ -605,7 +665,15 @@
         // Restore button
         if(saveBtn) { saveBtn.innerHTML = saveBtnText; saveBtn.style.opacity = '1'; saveBtn.disabled = false; }
         guardando = false;
-        showToast('Orden enviada ✓');
+
+        // Differentiated feedback — mesero MUST know if cocina didn't receive
+        if(!cocinaOK && nuevosItems.length > 0) {
+            showToast('⚠️ Mesa guardada pero COCINA NO RECIBIÓ la orden');
+            // Show persistent warning
+            alert("⚠️ ATENCIÓN " + meseroActual.nombre + ":\n\nLa mesa " + mesaAbierta + " se guardó correctamente, PERO los productos nuevos NO llegaron a cocina/barra.\n\nProductos afectados:\n" + nuevosItems.map(function(i) { return "• " + i.n + " (x" + i.q + ")"; }).join("\n") + "\n\nIntenta guardar de nuevo o avisa a tu encargado.");
+        } else {
+            showToast('Orden enviada ✓');
+        }
         renderCmdItems();
     };
 

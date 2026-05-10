@@ -1439,4 +1439,75 @@
     function setText(id, val) { var el = document.getElementById(id); if(el) el.textContent = val; }
     function formatDate(d) { return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
+    // ============================================================
+    // ERROR LOG — Sistema de Registro de Errores
+    // ============================================================
+    window.cargarErrorLog = async function() {
+        var container = document.getElementById('errorlog-container');
+        if(!container) return;
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);"><div class="loader-spinner" style="margin:0 auto 16px;"></div><p>Consultando registro de errores...</p></div>';
+        
+        try {
+            var res = await fetch(WEBAPP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'getErrorLog' })
+            });
+            var data = await res.json();
+            var errors = data.errors || [];
+            
+            if(errors.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:60px 20px;"><i class="ri-shield-check-line" style="font-size:48px;color:var(--success);display:block;margin-bottom:12px;"></i><p style="color:var(--success);font-size:16px;font-weight:600;">Sistema Limpio</p><p style="color:var(--text-dim);font-size:13px;margin-top:4px;">No se han registrado errores en el sistema ✓</p></div>';
+                return;
+            }
+            
+            // Summary banner
+            var today = formatDate(new Date());
+            var todayErrors = errors.filter(function(e) { 
+                var ts = String(e.timestamp || '');
+                return ts.indexOf(today) === 0;
+            });
+            
+            var html = '<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<div class="kpi-card" style="flex:1;min-width:120px;"><div class="kpi-icon"><i class="ri-error-warning-line" style="color:#ef4444;"></i></div><div class="kpi-value" style="color:#ef4444;">' + todayErrors.length + '</div><div class="kpi-label">Errores Hoy</div></div>' +
+                '<div class="kpi-card" style="flex:1;min-width:120px;"><div class="kpi-icon"><i class="ri-history-line"></i></div><div class="kpi-value">' + errors.length + '</div><div class="kpi-label">Total Registrados</div></div>' +
+            '</div>';
+            
+            html += errors.map(function(err) {
+                var icon = '⚠️';
+                var borderColor = 'rgba(239,68,68,0.3)';
+                if(err.tipoError === 'COCINA_SEND_FAILED') { icon = '🔥'; borderColor = 'rgba(239,68,68,0.5)'; }
+                else if(err.tipoError === 'NETWORK') { icon = '📶'; borderColor = 'rgba(251,191,36,0.4)'; }
+                
+                var ts = String(err.timestamp || 'Sin fecha');
+                var resuelto = err.resuelto === 'SI';
+                var resueltoBadge = resuelto 
+                    ? '<span class="status-badge status-on">RESUELTO</span>' 
+                    : '<span class="status-badge status-off">PENDIENTE</span>';
+                
+                return '<div style="background:rgba(0,0,0,0.25);border:1px solid ' + borderColor + ';border-radius:10px;padding:16px;' + (resuelto ? 'opacity:0.5;' : '') + '">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
+                        '<div style="display:flex;align-items:center;gap:8px;">' +
+                            '<span style="font-size:20px;">' + icon + '</span>' +
+                            '<span style="font-family:var(--font-display);font-size:14px;color:var(--accent);">' + (err.tipoError || 'ERROR') + '</span>' +
+                            resueltoBadge +
+                        '</div>' +
+                        '<span style="font-size:11px;color:var(--text-dim);font-family:monospace;">' + ts + '</span>' +
+                    '</div>' +
+                    '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;">' +
+                        (err.modulo ? '<span class="mesa-status-badge badge-gold"><i class="ri-smartphone-line"></i> ' + err.modulo + '</span>' : '') +
+                        (err.mesero ? '<span class="mesa-status-badge badge-green"><i class="ri-user-star-line"></i> ' + err.mesero + '</span>' : '') +
+                        (err.mesa ? '<span class="mesa-status-badge badge-gold"><i class="ri-layout-grid-line"></i> Mesa ' + err.mesa + '</span>' : '') +
+                    '</div>' +
+                    '<p style="font-size:13px;color:var(--text-pure);line-height:1.5;margin:0;">' + (err.detalles || 'Sin detalles') + '</p>' +
+                '</div>';
+            }).join('');
+            
+            container.innerHTML = html;
+            
+        } catch(e) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;"><i class="ri-wifi-off-line" style="font-size:40px;color:var(--danger);display:block;margin-bottom:12px;"></i><p style="color:var(--danger);font-size:14px;">Error al cargar el registro. Verifica tu conexión.</p></div>';
+        }
+    };
+
 })();

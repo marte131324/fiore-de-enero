@@ -71,14 +71,19 @@ Hojas configuradas:
 - Ecosistema listo para entrega al cliente.
 
 ## 📝 Bugs Encontrados en Auditoría
-<!-- Agregar bugs aquí conforme se detecten -->
 | # | Descripción | Módulo | Severidad | Estado |
 |---|-------------|--------|-----------|--------|
-| - | - | - | - | - |
+| BUG-001 | sendToCocina falla silenciosamente — mesero ve "Orden enviada ✓" pero cocina nunca recibe el ticket. Sin reintentos ni alertas. | Mesero | 🔴 CRÍTICA | ✅ CORREGIDO (2026-05-10) |
+| BUG-002 | No hay validación de respuesta del servidor en sendToCocina — error 500 pasa desapercibido | Mesero | 🔴 CRÍTICA | ✅ CORREGIDO (2026-05-10) |
+| BUG-003 | Sin sistema de logging de errores — imposible detectar fallos operativos sin reporte manual | Sistema | 🟡 ALTA | ✅ IMPLEMENTADO (2026-05-10) |
 
 ## 📅 Historial de Cambios
 | Fecha | Cambio |
 |-------|--------|
+| 2026-05-10 | FIX CRÍTICO: sendToCocina ahora valida respuesta, reintenta 1x, alerta al mesero si falla, y loguea error al backend |
+| 2026-05-10 | FEATURE: Sistema ErrorLog — hoja ErrorLog en GSheets + panel visual en Admin con KPIs y cards |
+| 2026-05-10 | FEATURE: RBAC actualizado — Error Log visible solo para rol Admin |
+| 2026-05-10 | MEJORA: Categoría 'coctelería' explícitamente incluida en filtro de barra (con/sin tilde) |
 | 2026-04-23 | Creación de STATUS.md — Inicio de auditoría de flujo operativo |
 
 ---
