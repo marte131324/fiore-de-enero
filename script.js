@@ -471,75 +471,39 @@ let menuData = {
 };
 
 async function loadDynamicData() {
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
+    const CACHE_KEY = 'fiore_config_cache';
+    const CACHE_TS_KEY = 'fiore_config_cache_ts';
+
+    // ── STEP 1: Show from CACHE instantly (if available) ──
+    let cachedConfig = null;
     try {
-        const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (raw) cachedConfig = JSON.parse(raw);
+    } catch(e) { /* ignore bad cache */ }
+
+    if (cachedConfig) {
+        // Apply config from cache RIGHT NOW — no network wait
+        applyConfig(cachedConfig, true);
+        applyEvents(cachedConfig);
+    }
+
+    // ── STEP 2: Fetch fresh data from backend (background) ──
+    try {
         const res = await fetch(WEBAPP_URL + "?action=get");
         const data = await res.json();
-        // Configuración General
-        if(data && data.config) {
-            // Global Banner
-            if(data.config.banner && data.config.banner.trim() !== '') {
-                const bannerDiv = document.getElementById('global-banner');
-                if(bannerDiv) {
-                    bannerDiv.innerText = data.config.banner;
-                    bannerDiv.style.display = 'block';
-                }
-            }
 
-            // Promo Pop-up — aparece rápido tras splash
-            if(data.config.promoActive === 'SI') {
-                const promoModal = document.getElementById('promo-modal');
-                if(promoModal) {
-                    document.getElementById('promo-title-display').innerText = data.config.promoTitle || '¡Promoción Especial!';
-                    document.getElementById('promo-desc-display').innerText = data.config.promoDesc || '';
-                    // Show 800ms after data loads (splash already gone by then)
-                    setTimeout(() => {
-                        promoModal.style.display = 'flex';
-                        void promoModal.offsetWidth;
-                        promoModal.style.opacity = '1';
-                        promoModal.querySelector('.modal-content').style.transform = 'translateY(0) scale(1)';
-                    }, 800);
-                }
-            }
+        if (data && data.config) {
+            // Save to cache for next visit
+            localStorage.setItem(CACHE_KEY, JSON.stringify(data.config));
+            localStorage.setItem(CACHE_TS_KEY, Date.now().toString());
 
-            // Tienda Status
-            if(data.config.tiendaStatus) {
-                const statusText = document.getElementById('store-status-text');
-                const statusDot = document.getElementById('store-status-dot');
-                if(statusText && statusDot) {
-                    if(data.config.tiendaStatus === 'ABIERTO' || data.config.tiendaStatus === 'ACEPTANDO PEDIDOS') {
-                        statusText.innerText = 'Abierto Hoy';
-                        statusDot.style.background = '#4ade80';
-                        statusDot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
-                    } else {
-                        statusText.innerText = 'Cerrado Temporalmente';
-                        statusDot.style.background = '#ef4444';
-                        statusDot.style.boxShadow = '0 0 8px rgba(239, 68, 68, 0.6)';
-                    }
-                }
-            }
-        }
-        
-        // Render Eventos dinámicos
-        if(data && data.config && data.config.eventoTitulo) {
-            const evCard = document.querySelector('#eventos .event-card');
-            if(evCard) {
-                evCard.innerHTML = `
-                    <div class="event-date">
-                        <span class="day"><i class="far fa-calendar-alt"></i> PRÓXIMO EVENTO</span>
-                    </div>
-                    <div class="event-details" style="text-align: left; margin-top: 1rem;">
-                        <h3 style="color: var(--secondary-color); font-size: 1.4rem; font-family: var(--font-heading); margin-bottom: 0.3rem;">${data.config.eventoTitulo}</h3>
-                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.2rem; line-height: 1.4;">${data.config.eventoDesc || ''}</p>
-                        <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--accent-color);">
-                            <span><i class="far fa-calendar" style="margin-right: 4px;"></i> ${data.config.eventoFecha || 'Próximamente'}</span>
-                            <span><i class="far fa-clock" style="margin-right: 4px;"></i> ${data.config.eventoHora || ''}</span>
-                        </div>
-                    </div>
-                `;
-            }
+            // Apply fresh data (overwrite cache if different)
+            applyConfig(data.config, !cachedConfig); // show popup only if wasn't shown from cache
+            applyEvents(data.config);
         }
 
+        // Products (menu) — always from network
         if(data && data.productos && data.productos.length > 0) {
             let newMenu = { comida: [], bebidas: [] };
             let cats = {};
@@ -575,7 +539,80 @@ async function loadDynamicData() {
             renderMenu();
         }
     } catch(e) {
-        console.error("VCard: Using offline menu data.");
+        console.error("VCard: Using offline/cache data.", e);
+    }
+}
+
+// ── Apply banner, store status & promo popup ──
+function applyConfig(config, showPopup) {
+    if (!config) return;
+
+    // Global Banner
+    if(config.banner && config.banner.trim() !== '') {
+        const bannerDiv = document.getElementById('global-banner');
+        if(bannerDiv) {
+            bannerDiv.innerText = config.banner;
+            bannerDiv.style.display = 'block';
+        }
+    }
+
+    // Promo Pop-up — show right after splash (2.5s splash + 300ms buffer)
+    if(showPopup && config.promoActive === 'SI') {
+        const promoModal = document.getElementById('promo-modal');
+        if(promoModal && promoModal.style.display !== 'flex') {
+            document.getElementById('promo-title-display').innerText = config.promoTitle || '¡Promoción Especial!';
+            document.getElementById('promo-desc-display').innerText = config.promoDesc || '';
+            
+            // Wait for splash to finish (2.5s) + tiny buffer, then show
+            const splashDuration = 2800; // splash is 2.5s + 300ms animation
+            const elapsed = performance.now();
+            const delay = Math.max(0, splashDuration - elapsed);
+            
+            setTimeout(() => {
+                promoModal.style.display = 'flex';
+                void promoModal.offsetWidth;
+                promoModal.style.opacity = '1';
+                promoModal.querySelector('.modal-content').style.transform = 'translateY(0) scale(1)';
+            }, delay);
+        }
+    }
+
+    // Tienda Status
+    if(config.tiendaStatus) {
+        const statusText = document.getElementById('store-status-text');
+        const statusDot = document.getElementById('store-status-dot');
+        if(statusText && statusDot) {
+            if(config.tiendaStatus === 'ABIERTO' || config.tiendaStatus === 'ACEPTANDO PEDIDOS') {
+                statusText.innerText = 'Abierto Hoy';
+                statusDot.style.background = '#4ade80';
+                statusDot.style.boxShadow = '0 0 8px rgba(74, 222, 128, 0.6)';
+            } else {
+                statusText.innerText = 'Cerrado Temporalmente';
+                statusDot.style.background = '#ef4444';
+                statusDot.style.boxShadow = '0 0 8px rgba(239, 68, 68, 0.6)';
+            }
+        }
+    }
+}
+
+// ── Apply event data ──
+function applyEvents(config) {
+    if (!config || !config.eventoTitulo) return;
+    const evCard = document.querySelector('#eventos .event-card');
+    if(evCard) {
+        evCard.innerHTML = `
+            <div class="event-date">
+                <span class="day"><i class="far fa-calendar-alt"></i> PRÓXIMO EVENTO</span>
+            </div>
+            <div class="event-details" style="text-align: left; margin-top: 1rem;">
+                <h3 style="color: var(--secondary-color); font-size: 1.4rem; font-family: var(--font-heading); margin-bottom: 0.3rem;">${config.eventoTitulo}</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.2rem; line-height: 1.4;">${config.eventoDesc || ''}</p>
+                <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--accent-color);">
+                    <span><i class="far fa-calendar" style="margin-right: 4px;"></i> ${config.eventoFecha || 'Próximamente'}</span>
+                    <span><i class="far fa-clock" style="margin-right: 4px;"></i> ${config.eventoHora || ''}</span>
+                </div>
+            </div>
+        `;
     }
 }
 
