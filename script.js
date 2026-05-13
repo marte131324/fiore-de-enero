@@ -472,34 +472,24 @@ let menuData = {
 
 async function loadDynamicData() {
     const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
-    const CACHE_KEY = 'fiore_config_cache';
-    const CACHE_TS_KEY = 'fiore_config_cache_ts';
+    const CACHE_KEY = 'fiore_config_v2'; // v2 = invalidates old cache from wrong URL
 
-    // ── STEP 1: Show from CACHE instantly (if available) ──
-    let cachedConfig = null;
+    // ── STEP 1: Instant render from cache ──
     try {
-        const raw = localStorage.getItem(CACHE_KEY);
-        if (raw) cachedConfig = JSON.parse(raw);
-    } catch(e) { /* ignore bad cache */ }
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        if (cached && cached.eventoTitulo) {
+            applyConfig(cached, true);
+            applyEvents(cached);
+        }
+    } catch(e) {}
 
-    if (cachedConfig) {
-        // Apply config from cache RIGHT NOW — no network wait
-        applyConfig(cachedConfig, true);
-        applyEvents(cachedConfig);
-    }
-
-    // ── STEP 2: Fetch fresh data from backend (background) ──
+    // ── STEP 2: Fetch fresh (always runs, always applies) ──
     try {
         const res = await fetch(WEBAPP_URL + "?action=get");
         const data = await res.json();
-
         if (data && data.config) {
-            // Save to cache for next visit
             localStorage.setItem(CACHE_KEY, JSON.stringify(data.config));
-            localStorage.setItem(CACHE_TS_KEY, Date.now().toString());
-
-            // Apply fresh data (overwrite cache if different)
-            applyConfig(data.config, !cachedConfig); // show popup only if wasn't shown from cache
+            applyConfig(data.config, true);
             applyEvents(data.config);
         }
 
