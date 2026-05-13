@@ -504,11 +504,38 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Mensaje de Anuncio Global (Banner Superior)</label>
+                    <label>Cintillo Superior (Banner) — aparece arriba de la VCard</label>
                     <input type="text" id="config-banner" placeholder="Ej: Agenda abierta para San Valentín 2026. Cupos limitados.">
+                    <small style="color:var(--text-dim); font-size:11px; margin-top:4px; display:block;">Déjalo vacío para ocultar el cintillo.</small>
                 </div>
-                <button class="btn btn-primary" onclick="salvarConfiguracion()"><i class="ri-save-line"></i> Actualizar Servidores</button>
             </div>
+
+            <!-- MENSAJE FLOTANTE DE BIENVENIDA -->
+            <div class="card" style="margin-top:16px;">
+                <div style="margin-bottom:16px;">
+                    <h3 style="color:var(--accent); font-size:1rem; margin-bottom:4px;"><i class="ri-chat-smile-2-line" style="margin-right:6px;"></i>Mensaje Flotante de Bienvenida (Pop-Up)</h3>
+                    <p style="font-size:0.8rem; color:var(--text-dim);">Este mensaje aparece al entrar a la VCard. Úsalo para promociones, avisos importantes o dar la bienvenida.</p>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>¿Activar Mensaje Flotante?</label>
+                        <select id="promo-active">
+                            <option value="SI">✅ SÍ — MOSTRAR AL ENTRAR</option>
+                            <option value="NO">❌ NO — APAGADO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Título del Mensaje</label>
+                    <input type="text" id="promo-title" placeholder="Ej: ¡Bienvenidos a Fiore de Enero!">
+                </div>
+                <div class="form-group">
+                    <label>Descripción / Detalle</label>
+                    <textarea id="promo-desc" rows="3" placeholder="Ej: Hoy tenemos 2x1 en pizzas familiares. ¡No te lo pierdas!" style="min-height:70px;"></textarea>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top:16px; width:100%;" onclick="salvarConfiguracion()"><i class="ri-save-line"></i> Guardar Todo (Estado + Cintillo + Mensaje Flotante)</button>
             <!-- Mesa count is saved with config via getFullConfig() -->
         </section>
 
@@ -527,38 +554,18 @@
             </div>
         </section>
 
-        <!-- PROMOCIONES -->
+        <!-- PROMOCIONES (Redirigido a Control Maestro) -->
         <section id="v-promo" class="view-section">
             <div class="header">
                 <div>
-                    <h2>Promoción Activa (Pop-Up)</h2>
-                    <p>Configura la promoción que saltará en pantalla cuando la gente entre al ecosistema.</p>
+                    <h2>Promociones (VCard)</h2>
+                    <p>El mensaje flotante y el cintillo ahora se editan desde <strong>Control Maestro</strong>.</p>
                 </div>
             </div>
-
-            <div class="card">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>¿Activar Pop-up Promocional?</label>
-                        <select id="promo-active">
-                            <option value="SI">SÍ ACTIVAR</option>
-                            <option value="NO">NO (APAGADO)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Título de Promoción (Opcional)</label>
-                    <input type="text" id="promo-title" placeholder="Ej: Especial de San Valentín">
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Descripción de Promoción</label>
-                    <input type="text" id="promo-desc" placeholder="Ej: En la compra de una pizza grande, llévate 2 refrescos.">
-                </div>
-            </div>
-            
-            <!-- SECTION REMOVED FOR CANVA INTEGRATION -->
-            
-            <button class="btn btn-primary" style="margin-top:20px;" onclick="salvarConfiguracion()">Guardar Configuración y Promos</button>
+            <div class="card" style="text-align:center; padding:40px 20px;">
+                <i class="ri-arrow-left-up-line" style="font-size:48px; color:var(--accent); margin-bottom:12px; display:block;"></i>
+                <p style="color:var(--text-dim); font-size:0.9rem; max-width:400px; margin:0 auto;">Para editar el <strong style="color:var(--accent);">Mensaje Flotante de Bienvenida</strong> y el <strong style="color:var(--accent);">Cintillo Superior</strong>, ve a la sección <strong>"Control Maestro"</strong> en el menú lateral.</p>
+                <button class="btn btn-primary" style="margin-top:20px;" onclick="switchView('v-tienda', document.querySelector('.nav-item'))"><i class="ri-settings-3-line"></i> Ir a Control Maestro</button>
             </div>
         </section>
 

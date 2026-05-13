@@ -137,7 +137,7 @@ function salvarConfiguracion() {
         action: 'saveConfig',
         data: getFullConfig()
     };
-    saveData(payload, "Configuración del Servidor Guardada");
+    saveData(payload, "✅ Todo Guardado — Estado, Cintillo y Mensaje Flotante actualizados en la VCard");
 }
 
 function salvarPromo() {
