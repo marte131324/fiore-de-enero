@@ -472,7 +472,7 @@ let menuData = {
 
 async function loadDynamicData() {
     try {
-        const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxSfezJEvwiAdwqsSqtUuCE3pctKRNg3zkeGoO-4iTZRjdMBlezOjlBBgrLbGqWMTsA/exec";
+        const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
         const res = await fetch(WEBAPP_URL + "?action=get");
         const data = await res.json();
         // Configuración General
@@ -486,17 +486,19 @@ async function loadDynamicData() {
                 }
             }
 
-            // Promo Pop-up
+            // Promo Pop-up — aparece rápido tras splash
             if(data.config.promoActive === 'SI') {
                 const promoModal = document.getElementById('promo-modal');
                 if(promoModal) {
                     document.getElementById('promo-title-display').innerText = data.config.promoTitle || '¡Promoción Especial!';
                     document.getElementById('promo-desc-display').innerText = data.config.promoDesc || '';
-                    promoModal.style.display = 'flex';
-                    // Trigger reflow for animation
-                    void promoModal.offsetWidth;
-                    promoModal.style.opacity = '1';
-                    promoModal.querySelector('.modal-content').style.transform = 'scale(1)';
+                    // Show 800ms after data loads (splash already gone by then)
+                    setTimeout(() => {
+                        promoModal.style.display = 'flex';
+                        void promoModal.offsetWidth;
+                        promoModal.style.opacity = '1';
+                        promoModal.querySelector('.modal-content').style.transform = 'translateY(0) scale(1)';
+                    }, 800);
                 }
             }
 
