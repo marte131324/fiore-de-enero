@@ -539,91 +539,64 @@
     </div>
 </div>
 
-<!-- Promo / Welcome Modal — Premium Design -->
+<!-- Promo / Welcome Modal — v3 Refined -->
 <style>
     .promo-overlay {
         display: none; position: fixed; inset: 0; z-index: 999999;
-        background: rgba(5, 8, 6, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        background: rgba(5, 8, 6, 0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
         align-items: center; justify-content: center; padding: 24px;
         opacity: 0; transition: opacity 0.5s ease;
     }
     .promo-card {
-        max-width: 360px; width: 100%; position: relative;
-        border-radius: 20px; overflow: hidden;
-        background: linear-gradient(165deg, rgba(26, 37, 28, 0.95) 0%, rgba(15, 22, 16, 0.98) 100%);
-        border: 1px solid rgba(209, 202, 131, 0.12);
-        box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 80px rgba(209, 202, 131, 0.04);
-        transform: translateY(30px) scale(0.95);
-        transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        max-width: 340px; width: 100%; position: relative;
+        border-radius: 16px; padding: 36px 28px 28px;
+        background: linear-gradient(170deg, rgba(30, 40, 32, 0.97) 0%, rgba(12, 18, 13, 0.99) 100%);
+        border: 1px solid rgba(209, 202, 131, 0.1);
+        box-shadow: 0 32px 64px rgba(0,0,0,0.6);
+        transform: translateY(24px) scale(0.96);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
     }
-    .promo-card-top {
-        padding: 28px 28px 0; text-align: center;
-    }
-    .promo-card-logo {
-        width: 56px; height: 56px; border-radius: 50%;
-        object-fit: cover; margin: 0 auto 12px;
-        border: 2px solid rgba(209, 202, 131, 0.25);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
-    .promo-badge {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 5px 14px; border-radius: 20px; font-size: 0.68rem;
-        font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-        background: linear-gradient(135deg, var(--secondary-color, #d1ca83) 0%, #c4b85e 100%);
-        color: #1a251c; margin-bottom: 16px;
-        box-shadow: 0 2px 12px rgba(209, 202, 131, 0.3);
-    }
-    .promo-divider {
-        width: 40px; height: 1px; margin: 0 auto 18px;
-        background: linear-gradient(90deg, transparent, rgba(209, 202, 131, 0.4), transparent);
-    }
-    .promo-card-body {
-        padding: 0 28px 28px; text-align: center;
+    .promo-accent-line {
+        width: 32px; height: 2px; margin: 0 auto 24px;
+        background: var(--secondary-color, #d1ca83);
+        border-radius: 2px;
     }
     .promo-title-text {
         color: #fff; font-family: var(--font-heading, 'Cormorant Garamond', serif);
-        font-size: 1.45rem; font-weight: 600; line-height: 1.25;
-        margin-bottom: 12px; letter-spacing: 0.3px;
+        font-size: 1.5rem; font-weight: 500; line-height: 1.3;
+        margin-bottom: 16px; letter-spacing: 0.3px;
     }
     .promo-desc-text {
-        color: rgba(255,255,255,0.7); font-family: var(--font-body, 'Outfit', sans-serif);
-        font-size: 0.88rem; line-height: 1.65; margin-bottom: 24px;
+        color: rgba(255,255,255,0.55); font-family: var(--font-body, 'Outfit', sans-serif);
+        font-size: 0.82rem; line-height: 1.75; margin-bottom: 28px;
         white-space: pre-line;
     }
     .promo-cta {
-        width: 100%; padding: 13px 20px; border: 1px solid rgba(209, 202, 131, 0.35);
-        background: rgba(209, 202, 131, 0.08); color: var(--secondary-color, #d1ca83);
-        font-family: var(--font-body, 'Outfit', sans-serif); font-size: 0.85rem;
-        font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
-        border-radius: 10px; cursor: pointer;
-        transition: all 0.3s ease;
+        display: block; width: 100%; padding: 14px; border: none;
+        background: rgba(209, 202, 131, 0.12); color: var(--secondary-color, #d1ca83);
+        font-family: var(--font-body, 'Outfit', sans-serif); font-size: 0.78rem;
+        font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+        border-radius: 8px; cursor: pointer; transition: background 0.3s;
     }
-    .promo-cta:hover { background: rgba(209, 202, 131, 0.15); transform: translateY(-1px); }
+    .promo-cta:hover { background: rgba(209, 202, 131, 0.2); }
     .promo-close {
-        position: absolute; right: 14px; top: 14px; width: 28px; height: 28px;
+        position: absolute; right: 12px; top: 12px; width: 32px; height: 32px;
         border-radius: 50%; border: none; cursor: pointer;
-        background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.35);
-        font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
-        transition: all 0.2s;
+        background: transparent; color: rgba(255,255,255,0.25);
+        font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
+        transition: color 0.2s;
     }
-    .promo-close:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+    .promo-close:hover { color: rgba(255,255,255,0.6); }
 </style>
 
 <div id="promo-modal" class="promo-overlay">
     <div class="modal-content promo-card">
         <button onclick="closePromoModal()" class="promo-close"><i class="fas fa-times"></i></button>
-
-        <div class="promo-card-top">
-            <img src="Assets/Logo.jpg" alt="Fiore de Enero" class="promo-card-logo">
-            <div class="promo-badge"><i class="fas fa-star"></i> Fiore de Enero</div>
-            <div class="promo-divider"></div>
-        </div>
-
-        <div class="promo-card-body">
-            <h2 id="promo-title-display" class="promo-title-text"></h2>
-            <p id="promo-desc-display" class="promo-desc-text"></p>
-            <button onclick="closePromoModal()" class="promo-cta">Entendido</button>
-        </div>
+        <div class="promo-accent-line"></div>
+        <h2 id="promo-title-display" class="promo-title-text"></h2>
+        <p id="promo-desc-display" class="promo-desc-text"></p>
+        <button onclick="closePromoModal()" class="promo-cta">Entendido</button>
     </div>
 </div>
 
@@ -631,7 +604,7 @@
     function closePromoModal() {
         const modal = document.getElementById('promo-modal');
         modal.style.opacity = '0';
-        modal.querySelector('.modal-content').style.transform = 'translateY(30px) scale(0.95)';
+        modal.querySelector('.modal-content').style.transform = 'translateY(24px) scale(0.96)';
         setTimeout(() => modal.style.display = 'none', 500);
     }
 </script>
