@@ -471,7 +471,7 @@ window.promptDeleteTicket = function(id) {
 
 window.confirmarDeleteTicket = async function() {
     var pin = document.getElementById('delete-pin').value;
-    if(pin !== '2026') {
+    if(pin !== '2033') {
         alert("PIN Incorrecto.");
         return;
     }

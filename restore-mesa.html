@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html><head><title>Restaurar Mesa — Treze Labs</title></head>
+<body style="background:#0a0a0f;color:#fff;font-family:monospace;padding:40px;text-align:center">
+<h2>🔧 Restauración de Mesa Perdida</h2>
+<p>Subtotal: $588 | Mesa 6</p>
+<button id="btn" onclick="restaurar()" style="padding:15px 40px;font-size:18px;background:#22c55e;color:#000;border:none;border-radius:8px;cursor:pointer;margin:20px">
+  RESTAURAR MESA
+</button>
+<pre id="log" style="text-align:left;margin-top:20px;color:#94a3b8"></pre>
+<script>
+const URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
+const log = document.getElementById('log');
+
+async function restaurar() {
+  document.getElementById('btn').disabled = true;
+  log.textContent = "Enviando a Google Apps Script...\n";
+  
+  try {
+    await fetch(URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: "saveMesa",
+        isNew: true,
+        mesa: {
+          mesaNum: 6,
+          estado: "abierta",
+          mesero: "Admin",
+          personas: 1,
+          items: JSON.stringify([{
+            "n": "Consumo recuperado",
+            "p": 588,
+            "q": 1,
+            "c": "Recuperación Treze Labs",
+            "nota": "Mesa original 3/4 — subtotal $588 recuperado por soporte",
+            "enviado": true
+          }]),
+          extras: "[]",
+          descuento: 0,
+          total: 588,
+          pideCuenta: false
+        }
+      })
+    });
+    
+    log.textContent += "✅ POST enviado (mode: no-cors).\nEsperando 3 segundos para verificar...\n";
+    
+    await new Promise(r => setTimeout(r, 3000));
+    
+    const res = await fetch(URL + "?action=get");
+    const data = await res.json();
+    const mesa6 = data.mesas ? data.mesas.find(m => m.mesaNum == 6) : null;
+    
+    if (mesa6) {
+      log.textContent += "✅ MESA 6 ENCONTRADA:\n" + JSON.stringify(mesa6, null, 2);
+      log.style.color = "#22c55e";
+    } else {
+      log.textContent += "⚠️ Mesa 6 no encontrada aún. Mesas actuales:\n";
+      log.textContent += data.mesas.map(m => `  Mesa ${m.mesaNum}: $${m.total}`).join("\n");
+      log.style.color = "#eab308";
+    }
+  } catch(e) {
+    log.textContent += "❌ Error: " + e.message;
+    log.style.color = "#ef4444";
+  }
+}
+</script>
+</body></html>

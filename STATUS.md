@@ -16,7 +16,7 @@
 | Backend API | Google Apps Script v2 | WebApp URL conectada | ✅ LIVE |
 
 ## 🔑 Credenciales del Sistema
-- **PIN Admin:** 2026 (acceso completo)
+- **PIN Admin:** 2033 (acceso completo)
 - **PIN Cajera:** 1313 (acceso restringido — sin Dashboard, Historial, Meseros, Config, Productos)
 - **PIN Meseros:** Se gestionan desde Admin > Personal & PIN
 - **Dominio Autorizado:** `fiore-de-enero.vercel.app` (+ localhost)

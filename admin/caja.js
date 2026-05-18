@@ -25,7 +25,7 @@
     let mesaCount = 15;
     let pollTimer = null;
 
-    // La autorización gerencial usa el hash del PIN Admin (2026) directamente en authorizeGerente()
+    // La autorización gerencial usa el hash del PIN Admin (2033) directamente en authorizeGerente()
 
     const CAT_SHORT = {
         '🍕 La Vera Pizza Napoletana': '🍕 Pizza',
@@ -705,7 +705,7 @@
         var data = encoder.encode(p);
         var hashBuffer = await crypto.subtle.digest('SHA-256', data);
         var hashed = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-        return hashed === '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab';
+        return hashed === '9212e5e6ef4106525be27ac4fcde2db1aa65f4e706eb469cea7f0baec27dcc96';
     }
 
     window.updateEditItem = function(mesaNum, idx, newQty) {
