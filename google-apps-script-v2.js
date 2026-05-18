@@ -16,6 +16,33 @@ function logAuditEntry(sheet, usuario, accion, detalles) {
   sheetAudit.appendRow([timestamp, usuario, accion, detalles]);
 }
 
+// ---- HELPER: Bitacora de Movimientos (Debug & Analytics) ----
+function logBitacora(sheet, action, postData) {
+  var sheetBitacora = sheet.getSheetByName("Bitacora_Debug");
+  if(!sheetBitacora) {
+    sheetBitacora = sheet.insertSheet("Bitacora_Debug");
+    sheetBitacora.appendRow(['Timestamp', 'Accion', 'Usuario', 'Mesa', 'Payload']);
+  }
+  var now = new Date();
+  var timestamp = Utilities.formatDate(now, 'America/Mexico_City', "yyyy-MM-dd HH:mm:ss");
+  
+  var usuario = "N/A";
+  var mesaNum = "N/A";
+  if(postData && postData.mesa) {
+      usuario = postData.mesa.mesero || "N/A";
+      mesaNum = postData.mesa.mesaNum || "N/A";
+  } else if (postData && postData.ticketId) {
+      usuario = "Cocina/Admin";
+  } else if (postData && postData.action === 'logError') {
+      usuario = "Sistema";
+  }
+  
+  var payloadStr = "";
+  try { payloadStr = JSON.stringify(postData); } catch(e) { payloadStr = "Error stringifying"; }
+  
+  sheetBitacora.appendRow([timestamp, action, usuario, mesaNum, payloadStr]);
+}
+
 // ========== GET ==========
 function doGet(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -259,11 +286,22 @@ function doGet(e) {
 
 // ========== POST ==========
 function doPost(e) {
-  var postData = JSON.parse(e.postData.contents);
-  var action = postData.action;
-  var sheet = SpreadsheetApp.getActiveSpreadsheet();
-  
-  // --- Config (original) ---
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(12000); // Wait up to 12 seconds for concurrency
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: 'Sistema ocupado por otra orden. Reintenta en unos segundos.'})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    var postData = JSON.parse(e.postData.contents);
+    var action = postData.action;
+    var sheet = SpreadsheetApp.getActiveSpreadsheet();
+    
+    // Loguear ABSOLUTAMENTE TODO movimiento que intente alterar la base de datos
+    try { logBitacora(sheet, action, postData); } catch(errLog) {}
+    
+    // --- Config (original) ---
   if(action === 'getCocina') {
     var sheetCocina = sheet.getSheetByName("Cocina_Tickets");
     if(!sheetCocina) {
@@ -626,8 +664,10 @@ function doPost(e) {
   if(action === 'logAudit') {
     logAuditEntry(sheet, postData.usuario || 'Sistema', postData.accion || '', postData.detalles || '');
   }
-  
-  return ContentService.createTextOutput(JSON.stringify({"status":"success"})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({status: 'success'})).setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 // ========== HELPERS ==========
