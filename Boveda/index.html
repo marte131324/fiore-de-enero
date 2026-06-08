@@ -220,27 +220,43 @@
                 <div class="qr-slide" id="slide0">
                     <div class="qr-label label-public">Clientes</div>
                     <p>QR Menú para Mesas</p>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=020617&format=svg" alt="QR VCard">
+                    <img id="qr-img-0" src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/&bgcolor=FFFFFF&color=020617&format=svg" alt="QR VCard" data-url="https://fiore-de-enero.vercel.app/">
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="downloadQRCard(0)" style="padding: 8px 16px; font-size: 0.75rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.2);"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:2px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> Descargar JPG</button>
+                    </div>
                 </div>
                 <div class="qr-slide" id="slide1">
                     <div class="qr-label label-lealtad">Secreto</div>
                     <p>QR Sellar Lealtad</p>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https%3A%2F%2Ffiore-de-enero.vercel.app%2F%3Fsello%3D1313&bgcolor=FFFFFF&color=020617&format=svg" alt="QR Puntos">
+                    <img id="stamp-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https%3A%2F%2Ffiore-de-enero.vercel.app%2F%3Fsello%3D1313&bgcolor=FFFFFF&color=020617&format=svg" alt="QR Puntos" data-url="https://fiore-de-enero.vercel.app/?sello=1313">
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="downloadQRCard(1)" style="padding: 8px 16px; font-size: 0.75rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.2);"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:2px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> Descargar JPG</button>
+                        <button class="btn btn-secondary" onclick="regenerateStampQR()" style="padding: 8px 16px; font-size: 0.75rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; border-color: rgba(245, 158, 11, 0.4); color: #fcd34d; background: rgba(245, 158, 11, 0.05);"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:2px;"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Regenerar QR</button>
+                    </div>
                 </div>
                 <div class="qr-slide" id="slide2">
                     <div class="qr-label label-admin">Gerencia</div>
                     <p>QR Admin / Caja</p>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/admin/index.html&bgcolor=FFFFFF&color=78590a&format=svg" alt="QR Admin">
+                    <img id="qr-img-2" src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/admin/index.html&bgcolor=FFFFFF&color=78590a&format=svg" alt="QR Admin" data-url="https://fiore-de-enero.vercel.app/admin/index.html">
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="downloadQRCard(2)" style="padding: 8px 16px; font-size: 0.75rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.2);"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:2px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> Descargar JPG</button>
+                    </div>
                 </div>
                 <div class="qr-slide" id="slide3">
                     <div class="qr-label label-mesero">Meseros</div>
                     <p>QR Panel de Meseros</p>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/mesero/&bgcolor=FFFFFF&color=6b21a8&format=svg" alt="QR Mesero">
+                    <img id="qr-img-3" src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/mesero/&bgcolor=FFFFFF&color=6b21a8&format=svg" alt="QR Mesero" data-url="https://fiore-de-enero.vercel.app/mesero/">
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="downloadQRCard(3)" style="padding: 8px 16px; font-size: 0.75rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.2);"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:2px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> Descargar JPG</button>
+                    </div>
                 </div>
                 <div class="qr-slide" id="slide4">
                     <div class="qr-label label-cocina">Cocina</div>
                     <p>QR Kitchen Display</p>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/cocina/&bgcolor=FFFFFF&color=991b1b&format=svg" alt="QR Cocina">
+                    <img id="qr-img-4" src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https://fiore-de-enero.vercel.app/cocina/&bgcolor=FFFFFF&color=991b1b&format=svg" alt="QR Cocina" data-url="https://fiore-de-enero.vercel.app/cocina/">
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="downloadQRCard(4)" style="padding: 8px 16px; font-size: 0.75rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px; background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.2);"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right:2px;"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> Descargar JPG</button>
+                    </div>
                 </div>
             </div>
             <div class="qr-dots" id="qr-dots">
@@ -454,6 +470,199 @@
         slider.scrollTo({ left: slideWidth * index, behavior: 'smooth' });
     }
 
+    // === QR Dynamic Salt Synchronizer ===
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDWCCn2P3v4-Co3OtJWbXQSHR244n96x7x1vqe4mE_L3tMns_E5-aT4CcyyHAPc8L2/exec";
+
+    async function loadQRData() {
+        try {
+            const res = await fetch(WEBAPP_URL + "?action=get");
+            const data = await res.json();
+            if (data && data.config) {
+                const salt = data.config.stampSalt || "";
+                const stampUrl = "https://fiore-de-enero.vercel.app/?sello=1313" + (salt ? "_" + salt : "");
+                const qrImg = document.getElementById('stamp-qr-img');
+                qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=" + encodeURIComponent(stampUrl) + "&bgcolor=FFFFFF&color=020617&format=svg";
+                qrImg.dataset.url = stampUrl;
+            }
+        } catch(e) {
+            console.error("Error loading QR dynamic data", e);
+        }
+    }
+
+    // === Download QR Card as JPG ===
+    async function downloadQRCard(index) {
+        const slide = document.getElementById('slide' + index);
+        const title = slide.querySelector('p').textContent;
+        const img = slide.querySelector('img');
+        const qrUrl = img.dataset.url || img.src;
+
+        // Create high-res canvas (1200x1200) for print quality
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 1200;
+        const ctx = canvas.getContext('2d');
+
+        // Draw dark background (VCard style #020617)
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, 1200, 1200);
+
+        // Draw ambient glows
+        const gradient = ctx.createRadialGradient(600, 600, 100, 600, 600, 600);
+        gradient.addColorStop(0, 'rgba(56, 189, 248, 0.08)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1200, 1200);
+
+        // Draw gold borders
+        ctx.strokeStyle = '#d1ca83';
+        ctx.lineWidth = 8;
+        ctx.strokeRect(40, 40, 1120, 1120);
+
+        ctx.strokeStyle = 'rgba(209, 202, 131, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(60, 60, 1080, 1080);
+
+        // Load logo first to draw it
+        const logoImg = new Image();
+        logoImg.src = '../Assets/Logo.jpg';
+        await new Promise((resolve) => { logoImg.onload = resolve; logoImg.onerror = resolve; });
+
+        // Draw Logo circular
+        if (logoImg.complete && logoImg.naturalWidth > 0) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(600, 200, 90, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(logoImg, 510, 110, 180, 180);
+            ctx.restore();
+        } else {
+            // Draw gold text fallback
+            ctx.fillStyle = '#d1ca83';
+            ctx.font = 'italic bold 48px "Playfair Display", serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Fiore de Enero', 600, 210);
+        }
+
+        // Title text (Playfair Display / Cormorant Garamond style)
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'italic bold 56px "Playfair Display", serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Fiore de Enero', 600, 360);
+
+        // Subtitle text (Outfit/Inter style)
+        ctx.fillStyle = '#d1ca83';
+        ctx.font = 'bold 36px "Inter", sans-serif';
+        ctx.fillText(title.toUpperCase(), 600, 430);
+
+        // Draw decorative line
+        ctx.strokeStyle = 'rgba(209, 202, 131, 0.3)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(450, 480);
+        ctx.lineTo(750, 480);
+        ctx.stroke();
+
+        // Load QR image (with CORS crossOrigin anonymous)
+        const qrImg = new Image();
+        qrImg.crossOrigin = "anonymous";
+        qrImg.src = img.src;
+        
+        await new Promise((resolve) => {
+            qrImg.onload = resolve;
+            qrImg.onerror = resolve; // Continue even if error
+        });
+
+        // Draw QR white container
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.roundRect(350, 540, 500, 500, 30);
+        ctx.fill();
+
+        // Draw QR code
+        if (qrImg.complete && qrImg.naturalWidth > 0) {
+            ctx.drawImage(qrImg, 380, 570, 440, 440);
+        } else {
+            ctx.fillStyle = '#ff3333';
+            ctx.font = '30px sans-serif';
+            ctx.fillText('Error cargando QR', 600, 790);
+        }
+
+        // Footer text
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = '30px "Inter", sans-serif';
+        if (index === 1) {
+            ctx.fillText('USO EXCLUSIVO DEL STAFF PARA SELLAR', 600, 1100);
+        } else {
+            ctx.fillText('ESCANEA CON TU CELULAR', 600, 1100);
+        }
+
+        // Trigger download
+        const link = document.createElement('a');
+        link.download = `QR_${title.replace(/\s+/g, '_')}_Fiore.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+    }
+
+    // === Regenerate Stamp QR with PIN Verification ===
+    async function regenerateStampQR() {
+        const pin = prompt("Introduce el PIN de Administración para regenerar el código QR:");
+        if (!pin) return;
+        
+        // Verify against cajera or admin PINs (1313 or 2033)
+        if (pin !== "1313" && pin !== "2033") {
+            alert("❌ PIN incorrecto. No tienes autorización.");
+            return;
+        }
+
+        if (!confirm("⚠️ ¿Estás seguro que deseas REGENERAR el código QR de sellos?\n\nEsto cambiará la firma de seguridad. Los códigos QR viejos impresos o guardados dejarán de funcionar inmediatamente. Los sellos que los clientes ya tienen acumulados NO se perderán.")) {
+            return;
+        }
+
+        // Generate a new 8-character random salt
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let newSalt = "";
+        for (let i = 0; i < 8; i++) {
+            newSalt += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        try {
+            // Fetch current config
+            const getRes = await fetch(WEBAPP_URL + "?action=get");
+            const data = await getRes.json();
+            
+            if (!data || !data.config) {
+                throw new Error("No se pudo obtener la configuración actual.");
+            }
+
+            // Update the stampSalt property
+            const config = data.config;
+            config.stampSalt = newSalt;
+
+            // Save back to Google Sheets
+            await fetch(WEBAPP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'saveConfig',
+                    data: config
+                })
+            });
+
+            // Update UI
+            const stampUrl = "https://fiore-de-enero.vercel.app/?sello=1313_" + newSalt;
+            const qrImg = document.getElementById('stamp-qr-img');
+            qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=" + encodeURIComponent(stampUrl) + "&bgcolor=FFFFFF&color=020617&format=svg";
+            qrImg.dataset.url = stampUrl;
+
+            alert("✅ Código QR Regenerado con éxito!\n\nLa firma de seguridad ha sido actualizada en la base de datos. Ya puedes descargar e imprimir el nuevo QR.");
+        } catch(err) {
+            console.error(err);
+            alert("❌ Error de conexión al regenerar el QR. Intenta de nuevo.");
+        }
+    }
+
     // === 3D Perspective Particle Mesh with Mouse Reaction ===
     const c = document.getElementById('mesh');
     const ctx = c.getContext('2d');
@@ -575,6 +784,9 @@
             else dot.classList.remove('active');
         });
     });
+
+    // Run initial sync for dynamic loyalty salt
+    loadQRData();
     </script>
 
 </body>

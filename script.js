@@ -21,7 +21,7 @@
 // Audio removed per client request
 
 // Early QR Stamp Detection — flag to suppress splash/promo when coming from loyalty QR
-var __fioreStampMode = new URLSearchParams(window.location.search).has('sello');
+var __fioreStampMode = new URLSearchParams(window.location.search).has('sello') || sessionStorage.getItem('fiore_pending_sello') !== null;
 
 
 // Consolidated Initialization logic
@@ -312,13 +312,16 @@ function initLoyaltySystem() {
         }
     }
 
-    // --- NEW: URL Parameter Scanner for QR Codes ---
+    // --- NEW: URL Parameter Scanner for QR Codes (Anti-Fraud & Session-safe) ---
     function checkUrlForStamp() {
         const urlParams = new URLSearchParams(window.location.search);
         const urlPin = urlParams.get('sello');
         
-        // If the URL has ?sello=1313
+        // If the URL has ?sello=...
         if (urlPin) {
+            // Store temporarily in sessionStorage so we can validate it even after cleaning the URL
+            sessionStorage.setItem('fiore_pending_sello', urlPin);
+            
             // Remove the parameter from URL immediately so refreshing doesn't add another stamp
             const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({path: newUrl}, '', newUrl);
@@ -333,42 +336,71 @@ function initLoyaltySystem() {
 
             // Navigate to rewards section instantly
             showSection('recompensas');
+        }
+    }
 
-            // Re-navigate after a short delay for reliability (in case async renders reset UI)
-            setTimeout(function() { showSection('recompensas'); }, 500);
+    function processPendingStamp(config, isFresh) {
+        const urlPin = sessionStorage.getItem('fiore_pending_sello');
+        if (!urlPin) return;
 
-            // Validate the PIN
-            if (urlPin === SECRET_PIN) {
-                if (currentStamps < MAX_STAMPS) {
-                    // Check logic to avoid multi-scans in short time (Anti-Cheat 12 hours)
-                    const lastScanTime = localStorage.getItem('fiore_last_scan_time');
-                    const now = new Date().getTime();
-                    
-                    // 12 hours in milliseconds = 12 * 60 * 60 * 1000 = 43200000
-                    const cooldown = 43200000; 
-                    
-                    if (!lastScanTime || (now - parseInt(lastScanTime)) > cooldown) {
-                        currentStamps++;
-                        localStorage.setItem(STORAGE_KEY, currentStamps);
-                        localStorage.setItem('fiore_last_scan_time', now.toString());
-                        updateStampsUI(true);
-                        
-                        showToast("¡Sello validado con éxito! 🌟", "fas fa-star");
-                    } else {
-                        // User tried to scan too soon
-                        showToast("Ya recibiste un sello hoy. Intenta mañana.", "fas fa-clock");
-                    }
+        // Force hide splash & promo modals
+        var splashEl = document.getElementById('intro-splash');
+        if (splashEl) splashEl.classList.add('hide');
+        var promoEl = document.getElementById('promo-modal');
+        if (promoEl) { promoEl.style.display = 'none'; promoEl.style.opacity = '0'; }
+
+        // Navigate to rewards section (multiple timeouts to ensure tab rendered and scroll matches)
+        showSection('recompensas');
+        setTimeout(function() { showSection('recompensas'); }, 200);
+        setTimeout(function() { showSection('recompensas'); }, 600);
+
+        // Expected PIN is SECRET_PIN + optionally active salt
+        const salt = (config && config.stampSalt) ? config.stampSalt : "";
+        const expectedPin = SECRET_PIN + (salt ? "_" + salt : "");
+
+        if (urlPin === expectedPin) {
+            // Valid QR and salt! Apply stamp
+            if (currentStamps < MAX_STAMPS) {
+                const lastScanTime = localStorage.getItem('fiore_last_scan_time');
+                const now = new Date().getTime();
+                const cooldown = 43200000; // 12 hours
+                
+                if (!lastScanTime || (now - parseInt(lastScanTime)) > cooldown) {
+                    currentStamps++;
+                    localStorage.setItem(STORAGE_KEY, currentStamps);
+                    localStorage.setItem('fiore_last_scan_time', now.toString());
+                    updateStampsUI(true);
+                    showToast("¡Sello validado con éxito! 🌟", "fas fa-star");
                 } else {
-                    showToast("¡Ya tienes la tarjeta llena!", "fas fa-gift");
+                    showToast("Ya recibiste un sello hoy. Intenta mañana.", "fas fa-clock");
                 }
             } else {
-                showToast("El QR escaneado es inválido.", "fas fa-times-circle");
+                showToast("¡Ya tienes la tarjeta llena!", "fas fa-gift");
+            }
+            sessionStorage.removeItem('fiore_pending_sello');
+        } else {
+            // No match. If this is the fresh/final config, we declare the QR invalid/expired.
+            if (isFresh) {
+                showToast("El QR escaneado es inválido o ha caducado.", "fas fa-times-circle");
+                sessionStorage.removeItem('fiore_pending_sello');
             }
         }
     }
 
+    // Expose validation externally to run once configuration loads
+    window.processFioreStamp = function(config, isFresh) {
+        processPendingStamp(config, isFresh);
+    };
+
     // Run the check on load
     checkUrlForStamp();
+
+    // Trigger immediate validation attempt with cached config (if any)
+    try {
+        const CACHE_KEY = 'fiore_config_v2';
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        processPendingStamp(cached, false);
+    } catch(e) {}
 
     // Small celebratory JS effect
     function triggerConfettiEffect() {
@@ -510,6 +542,11 @@ async function loadDynamicData() {
             localStorage.setItem(CACHE_KEY, JSON.stringify(data.config));
             applyConfig(data.config, true);
             applyEvents(data.config);
+            
+            // Process any pending stamp with fresh config
+            if (typeof window.processFioreStamp === 'function') {
+                window.processFioreStamp(data.config, true);
+            }
         }
 
         // Products (menu) — always from network
@@ -549,6 +586,13 @@ async function loadDynamicData() {
         }
     } catch(e) {
         console.error("VCard: Using offline/cache data.", e);
+        // Fallback to validating pending stamp with cached config as final
+        if (typeof window.processFioreStamp === 'function') {
+            try {
+                const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+                window.processFioreStamp(cached, true);
+            } catch(e2) {}
+        }
     }
 }
 
