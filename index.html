@@ -37,7 +37,18 @@
             100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
         #intro-splash { animation: splashAutoDismiss 3.5s ease forwards; }
+        /* When arriving via QR stamp, skip splash instantly */
+        #intro-splash.hide { animation: none !important; }
     </style>
+    <script>
+        // Ultra-early: if ?sello param exists, hide splash before it even renders
+        if (window.location.search.indexOf('sello') !== -1) {
+            document.addEventListener('DOMContentLoaded', function() {
+                var s = document.getElementById('intro-splash');
+                if (s) { s.style.animation = 'none'; s.style.opacity = '0'; s.style.visibility = 'hidden'; s.style.pointerEvents = 'none'; }
+            });
+        }
+    </script>
     <div id="intro-splash" class="intro-splash">
 
         <!-- TREZE LABS CO-BRANDING SPLASH -->

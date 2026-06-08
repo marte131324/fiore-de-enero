@@ -20,6 +20,9 @@
 // Global States
 // Audio removed per client request
 
+// Early QR Stamp Detection — flag to suppress splash/promo when coming from loyalty QR
+var __fioreStampMode = new URLSearchParams(window.location.search).has('sello');
+
 
 // Consolidated Initialization logic
 document.addEventListener('DOMContentLoaded', () => {
@@ -44,18 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (splash) {
-        // Auto-dismiss after 2.5s
-        const autoTimer = setTimeout(() => {
+        if (__fioreStampMode) {
+            // QR Stamp mode: kill splash immediately so user sees Club Fiore
             dismissSplash();
-        }, 2500);
-        
-        // Tap to dismiss immediately
-        const splashDismissHandler = () => {
-            clearTimeout(autoTimer);
-            dismissSplash();
-        };
-        splash.addEventListener('click', splashDismissHandler);
-        splash.addEventListener('touchstart', splashDismissHandler);
+        } else {
+            // Normal flow: Auto-dismiss after 2.5s
+            const autoTimer = setTimeout(() => {
+                dismissSplash();
+            }, 2500);
+            
+            // Tap to dismiss immediately
+            const splashDismissHandler = () => {
+                clearTimeout(autoTimer);
+                dismissSplash();
+            };
+            splash.addEventListener('click', splashDismissHandler);
+            splash.addEventListener('touchstart', splashDismissHandler);
+        }
     }
 });
 
@@ -315,8 +323,19 @@ function initLoyaltySystem() {
             const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({path: newUrl}, '', newUrl);
 
+            // Kill splash immediately if still visible
+            var splashEl = document.getElementById('intro-splash');
+            if (splashEl) splashEl.classList.add('hide');
+
+            // Close promo modal if it exists (prevent it from blocking)
+            var promoEl = document.getElementById('promo-modal');
+            if (promoEl) { promoEl.style.display = 'none'; promoEl.style.opacity = '0'; }
+
             // Navigate to rewards section instantly
             showSection('recompensas');
+
+            // Re-navigate after a short delay for reliability (in case async renders reset UI)
+            setTimeout(function() { showSection('recompensas'); }, 500);
 
             // Validate the PIN
             if (urlPin === SECRET_PIN) {
@@ -547,7 +566,8 @@ function applyConfig(config, showPopup) {
     }
 
     // Promo Pop-up — show right after splash (2.5s splash + 300ms buffer)
-    if(showPopup && config.promoActive === 'SI') {
+    // Skip promo when user arrives via QR stamp (don't block Club Fiore)
+    if(showPopup && config.promoActive === 'SI' && !__fioreStampMode) {
         const promoModal = document.getElementById('promo-modal');
         if(promoModal && promoModal.style.display !== 'flex') {
             document.getElementById('promo-title-display').innerText = config.promoTitle || '¡Promoción Especial!';
