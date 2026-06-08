@@ -80,6 +80,7 @@ Hojas configuradas:
 ## 📅 Historial de Cambios
 | Fecha | Cambio |
 |-------|--------|
+| 2026-06-08 | FEATURE: Validación dinámica de sello QR con stampSalt (anti-fraude), descargas en JPG con branding y regeneración segura en Bóveda |
 | 2026-05-10 | FIX CRÍTICO: sendToCocina ahora valida respuesta, reintenta 1x, alerta al mesero si falla, y loguea error al backend |
 | 2026-05-10 | FEATURE: Sistema ErrorLog — hoja ErrorLog en GSheets + panel visual en Admin con KPIs y cards |
 | 2026-05-10 | FEATURE: RBAC actualizado — Error Log visible solo para rol Admin |
